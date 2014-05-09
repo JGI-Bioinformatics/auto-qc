@@ -1,0 +1,8 @@
+tmp
+*.pyc
+.DS_Store
+dist
+*.egg-info
+env
+log
+install/

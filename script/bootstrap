@@ -1,0 +1,54 @@
+#!/bin/bash
+
+set -o errexit
+set -o pipefail
+
+ENV=env
+LIB=requirements.txt
+
+if ! [ -x $(which pip) ]; then
+    echo "Error: pip is not install or not in \$PATH"
+    exit 1
+fi
+
+if ! [ -x $(which virtualenv) ]; then
+    echo "Error: virtualenv is not install or not in \$PATH"
+    echo "This can be installed with \`pip install virtualenv\`"
+    exit 1
+fi
+
+mkdir -p log
+
+if test $LIB -nt $ENV; then
+    echo "Bootstrapping python environment."
+
+    virtualenv $ENV 2>&1 > log/virtualenv.txt
+    if [ $? -ne 0 ]; then
+        echo "Virtual env bootstrap failed. Output in log/virtualenv.txt."
+        exit 1
+    fi
+
+    $ENV/bin/pip install -r $LIB 2>&1 > log/pip.txt
+    if [ $? -ne 0 ]; then
+        echo "Pip libraries bootstrap failed.\nPlease see log/virtualenv.txt."
+        exit 1
+    fi
+
+    echo "Python environment bootstrap complete."
+fi
+
+TOKEN=.git/hooks/token
+HOOK_DIR=./hooks
+
+if test $HOOK_DIR -nt $TOKEN; then
+    ls hooks/* | xargs -I % cp % .git/hooks && touch $TOKEN 2>&1 > log/git_hooks.txt
+    if [ $? -ne 0 ]; then
+        echo "Installation of git hooks failed.\nPlease see log/git_hooks.txt"
+        exit 1
+    else
+        echo "Git hook installation is complete."
+    fi
+
+fi
+
+exit 0

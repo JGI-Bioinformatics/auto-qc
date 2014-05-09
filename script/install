@@ -1,0 +1,46 @@
+#!/bin/bash
+
+set -o errexit
+set -o pipefail
+
+readonly SRC_DIR=auto_qc
+
+if [ $SRC_DIR = "jgi_project_skeleton" ]; then
+    echo "Error: please change the value of \$SRC_DIR in 'script/install' to your project directory."
+    exit 1
+fi
+
+
+if [ $# -ne 0 ]
+then
+    LOC=$1
+else
+    LOC=install
+fi
+
+./script/bootstrap
+if [ $? -ne 0 ]
+    then
+    # Exit here if bootstrap not successful
+    exit 1
+fi
+
+if [ -d $LOC ]
+then
+    echo "Cannot install, directory '$LOC' already exists."
+    exit 1
+else
+    echo "Installing application to '$LOC'"
+    mkdir -p $LOC
+fi
+
+cp -r env bin $SRC_DIR VERSION $LOC 2>&1 > log/install.txt
+if [ $? -ne 0 ]
+then
+    echo "Error installing application.\nSee log/install.txt."
+    exit 1
+else
+    echo "Application successfully installed."
+    exit 0
+fi
+
