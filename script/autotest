@@ -17,4 +17,4 @@ set -o nounset
 readonly CMD='clear && ./script/test'
 
 eval $CMD
-fswatch ./something:./test "$CMD"
+fswatch ./auto_qc:./test "$CMD"
