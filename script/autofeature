@@ -1,0 +1,13 @@
+#!/bin/bash
+
+./script/bootstrap
+if [ $? -ne 0 ]
+    then
+    # Exit here if bootstrap not successful
+    exit 1
+fi
+
+readonly CMD="clear && ./script/feature $1"
+
+eval $CMD
+fswatch ./auto_qc:./test:./assets:./bin:./features "$CMD"
