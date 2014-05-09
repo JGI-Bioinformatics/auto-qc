@@ -9,7 +9,7 @@ Feature: Using the auto-qc tool
        | --analysis_file | none       |
    Then the standard error should contain:
       """
-      Analysis file not found: 'none'.
+      File not found: 'none'.
 
       """
      And the exit code should be 1
