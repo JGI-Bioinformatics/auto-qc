@@ -3,6 +3,7 @@ import auto_qc.util.workflow    as flow
 
 method_chain = [
     (fs.check_for_file, ['analysis_file']),
+    (fs.check_for_file, ['threshold_file']),
         ]
 
 def run(args):
