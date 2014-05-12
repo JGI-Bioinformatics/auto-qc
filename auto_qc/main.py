@@ -1,6 +1,8 @@
 import auto_qc.util.file_system as fs
 import auto_qc.util.workflow    as flow
 import operator                 as op
+import functools                as ft
+import yaml
 
 method_chain = [
     (fs.check_for_file, ['analysis_file']),
@@ -30,4 +32,14 @@ def run(args):
     status = flow.thread_status(method_chain, args)
     flow.exit_if_error(status)
 
+    thresholds = yaml.load(status['thresholds'])
+    analyses   = yaml.load(status['analyses'])
+    nodes      = thresholds['thresholds']
 
+    f          = ft.partial(evaluate_threshold_node, analyses)
+    failing    = map(f, nodes)
+
+    if any(failing):
+        print 'FAIL'
+    else:
+        print 'PASS'
