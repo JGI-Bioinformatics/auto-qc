@@ -18,6 +18,7 @@ Feature: Using the auto-qc tool
          auto-qc: 0.0.0
      thresholds:
      - node:
+         id: test_1
          analysis: object_1
          operator: greater_than
          args: ['metric_1/value', 1]
@@ -53,10 +54,12 @@ Feature: Using the auto-qc tool
          auto-qc: 0.0.0
      thresholds:
      - node:
+         id: test_1
          analysis: object_1
          operator: greater_than
          args: ['metric_1/value', 1]
      - node:
+         id: test_2
          analysis: object_2
          operator: greater_than
          args: ['metric_2/value', 5]
@@ -88,6 +91,7 @@ Feature: Using the auto-qc tool
          auto-qc: 0.0.0
      thresholds:
      - node:
+         id: test_1
          analysis: object_1
          operator: greater_than
          args: ['metric_1/value', 0]
@@ -123,10 +127,12 @@ Feature: Using the auto-qc tool
          auto-qc: 0.0.0
      thresholds:
      - node:
+         id: test_1
          analysis: object_1
          operator: greater_than
          args: ['metric_1/value', 0]
      - node:
+         id: test_2
          analysis: object_2
          operator: greater_than
          args: ['metric_2/value', 0]
@@ -162,10 +168,12 @@ Feature: Using the auto-qc tool
          auto-qc: 0.0.0
      thresholds:
      - node:
+         id: test_1
          analysis: object_1
          operator: greater_than
          args: ['metric_1/value', 1]
      - node:
+         id: test_2
          analysis: object_2
          operator: greater_than
          args: ['metric_2/value', 0]
@@ -201,10 +209,12 @@ Feature: Using the auto-qc tool
          auto-qc: 0.0.0
      thresholds:
      - node:
+         id: test_1
          analysis: object_1
          operator: greater_than
          args: ['metric_1/value', 1]
      - node:
+         id: test_2
          analysis: object_2
          operator: greater_than
          args: ['metric_2/value', 0]
@@ -228,6 +238,7 @@ Feature: Using the auto-qc tool
           - metric_1/value
           - 1
           fail: false
+          id: test_1
           operator: greater_than
       - node:
           analysis: object_2
@@ -235,6 +246,7 @@ Feature: Using the auto-qc tool
           - metric_2/value
           - 0
           fail: true
+          id: test_2
           operator: greater_than
 
 
