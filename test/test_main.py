@@ -2,18 +2,18 @@ from nose.tools     import *
 import auto_qc.main as aq
 
 def test_evaluate_threshold_node_with_gt():
-    node = {
+    node = {'node': {
       'analysis': 'object_1',
       'operator': 'greater_than',
       'args':     ['metric_1/value', 0]
-            }
+            }}
     analyses = [{
       'analysis': 'object_1',
       'outputs': {
           'metric_1': {'value': 1}
           }
       }]
-    assert_true(aq.evaluate_threshold_node(node,analyses))
+    assert_true(aq.evaluate_threshold_node(analyses, node))
 
 def test_find_analysis_value():
     analyses = [{

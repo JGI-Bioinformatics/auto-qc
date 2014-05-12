@@ -13,11 +13,12 @@ OPERATORS = {
     'greater_than': op.gt,
         }
 
-def evaluate_threshold_node(node, analyses):
-    path, threshold = node['args']
-    namespace       = node['analysis']
+def evaluate_threshold_node(analyses, node):
+    n = node['node']
+    path, threshold = n['args']
+    namespace       = n['analysis']
     value           = find_analysis_value(analyses, namespace, path)
-    f               = OPERATORS[node['operator']]
+    f               = OPERATORS[n['operator']]
     return f(value, threshold)
 
 def find_analysis_value(analyses, namespace, path):
