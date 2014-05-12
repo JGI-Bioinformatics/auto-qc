@@ -53,7 +53,7 @@ Feature: Using the auto-qc tool
        | --analysis_file  | analysis.yml  |
        | --threshold_file | threshold.yml |
    Then the standard error should be empty
-    And the standard output should contain:
+    And the standard out should contain:
       """
       PASS
 
