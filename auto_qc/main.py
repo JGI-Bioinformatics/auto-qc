@@ -7,8 +7,8 @@ import yaml
 method_chain = [
     (fs.check_for_file, ['analysis_file']),
     (fs.check_for_file, ['threshold_file']),
-    (fs.read_file_contents, ['threshold_file', 'thresholds']),
-    (fs.read_file_contents, ['analysis_file',  'analyses']),
+    (fs.read_yaml_file, ['threshold_file', 'thresholds']),
+    (fs.read_yaml_file, ['analysis_file',  'analyses']),
         ]
 
 OPERATORS = {
@@ -32,12 +32,11 @@ def run(args):
     status = flow.thread_status(method_chain, args)
     flow.exit_if_error(status)
 
-    thresholds = yaml.load(status['thresholds'])
-    analyses   = yaml.load(status['analyses'])
-    nodes      = thresholds['thresholds']
+    nodes    = status['thresholds']['thresholds']
+    analyses = status['analyses']
 
-    f          = ft.partial(evaluate_threshold_node, analyses)
-    failing    = map(f, nodes)
+    f       = ft.partial(evaluate_threshold_node, analyses)
+    failing = map(f, nodes)
 
     if any(failing):
         print 'FAIL'

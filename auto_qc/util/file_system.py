@@ -44,6 +44,16 @@ def read_file_contents(file_, destination, status):
         status[destination] = f.read().strip()
     return status
 
+@validate_status_key('file_')
+def read_yaml_file(file_, destination, status):
+    '''
+    Reads and parses the yaml file contents into the given key
+    '''
+    import yaml
+    s = read_file_contents(file_, destination, status)
+    s[destination] = yaml.load(s[destination])
+    return status
+
 def import_file(directory, file_name, destination, status):
     file_ = path.join(directory, file_name)
     with open(file_, 'r') as f:

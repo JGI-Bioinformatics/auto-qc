@@ -29,6 +29,7 @@ Feature: Using the auto-qc tool
       """
      And the exit code should be 1
 
+  @wip
   Scenario: Testing a single passing threshold
    Given I create the file "analysis.yml" with the contents:
      """
