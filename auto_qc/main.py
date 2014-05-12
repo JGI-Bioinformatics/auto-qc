@@ -4,6 +4,8 @@ import operator                 as op
 import functools                as ft
 import yaml
 
+from fn import iters as it
+
 method_chain = [
     (fs.check_for_file, ['analysis_file']),
     (fs.check_for_file, ['threshold_file']),
@@ -35,8 +37,9 @@ def run(args):
     nodes    = status['thresholds']['thresholds']
     analyses = status['analyses']
 
-    f       = ft.partial(evaluate_threshold_node, analyses)
-    failing = map(f, nodes)
+    f       = lambda n: [evaluate_threshold_node(analyses, n), n]
+    node_results = map(f, nodes)
+    failing      = map(it.head, node_results)
 
     if any(failing):
         print 'FAIL'
