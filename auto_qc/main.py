@@ -5,6 +5,8 @@ import operator                 as op
 method_chain = [
     (fs.check_for_file, ['analysis_file']),
     (fs.check_for_file, ['threshold_file']),
+    (fs.read_file_contents, ['threshold_file', 'thresholds']),
+    (fs.read_file_contents, ['analysis_file',  'analyses']),
         ]
 
 OPERATORS = {
@@ -25,4 +27,6 @@ def find_analysis_value(analyses, namespace, path):
 
 def run(args):
     status = flow.thread_status(method_chain, args)
-    flow.exit_status(status)
+    flow.exit_if_error(status)
+
+

@@ -15,16 +15,18 @@ def thread_status(functions, status):
 
     return reduce(reducer, functions, status)
 
-def exit_status(status):
-    '''
-    Exit code based on the status
-    '''
+def exit_if_error(status):
     if 'error' in status:
         from sys import stderr
         stderr.write(status['error'] + "\n")
         exit(1)
-    else:
-        exit(0)
+
+def exit_status(status):
+    '''
+    Exit code based on the status
+    '''
+    exit_if_error(status)
+    exit(0)
 
 def validate_status_key(status_key):
 
