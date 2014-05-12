@@ -59,3 +59,34 @@ Feature: Using the auto-qc tool
 
       """
      And the exit code should be 0
+
+  Scenario: Testing a single failing threshold
+   Given I create the file "analysis.yml" with the contents:
+     """
+     - analysis: object_1
+       outputs:
+         metric_1:
+           value: 1
+     """
+     And I create the file "threshold.yml" with the contents:
+     """
+     metadata:
+       version:
+         auto-qc: 0.0.0
+     thresholds:
+     - node:
+         analysis: object_1
+         operator: greater_than
+         args: ['metric_1/value', 0]
+     """
+    When I run the command "auto-qc" with the arguments:
+       | key              | value         |
+       | --analysis_file  | analysis.yml  |
+       | --threshold_file | threshold.yml |
+   Then the standard error should be empty
+    And the standard out should contain:
+      """
+      FAIL
+
+      """
+     And the exit code should be 0
