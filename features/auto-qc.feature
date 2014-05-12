@@ -29,7 +29,7 @@ Feature: Using the auto-qc tool
       """
      And the exit code should be 1
 
-  Scenario: Testing a single threshold
+  Scenario: Testing a single passing threshold
    Given I create the file "analysis.yml" with the contents:
      """
      - analysis: object_1
@@ -46,7 +46,7 @@ Feature: Using the auto-qc tool
      - node:
          analysis: object_1
          operator: greater_than
-         args: ['metric_1/value', 0]
+         args: ['metric_1/value', 1]
      """
     When I run the command "auto-qc" with the arguments:
        | key              | value         |
