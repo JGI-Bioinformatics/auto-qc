@@ -27,9 +27,14 @@ def find_analysis_value(analyses, namespace, path):
 def evaluate_nodes(destination, status):
     nodes    = status['thresholds']['thresholds']
     analyses = status['analyses']
-    f = lambda n: [evaluate_threshold_node(analyses, n), n]
-    status[destination] = map(f, nodes)
+    def update_node(n):
+         n['node']['fail'] = evaluate_threshold_node(analyses, n)
+         return n
+    status[destination] = map(update_node, nodes)
     return status
+
+def metadata():
+    return {'version': {'auto-qc': '0.0.0'}}
 
 
 
@@ -45,9 +50,18 @@ def run(args):
     status = flow.thread_status(method_chain, args)
     flow.exit_if_error(status)
 
-    failing = map(it.head, status['node_results'])
+    failing = map(lambda n: n['node']['fail'], status['node_results'])
 
-    if any(failing):
-        print 'FAIL'
+    if not args['yaml']:
+        msg = 'FAIL' if any(failing) else 'PASS'
     else:
-        print 'PASS'
+        output = {
+            'fail'      : any(failing),
+            'metadata'  : metadata(),
+            'thresholds': status['node_results']
+        }
+        msg = yaml.dump(output, default_flow_style=False)
+
+    print msg
+
+

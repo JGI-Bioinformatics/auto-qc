@@ -29,7 +29,6 @@ Feature: Using the auto-qc tool
       """
      And the exit code should be 1
 
-  @wip
   Scenario: Testing a single passing threshold
    Given I create the file "analysis.yml" with the contents:
      """
@@ -242,23 +241,28 @@ Feature: Using the auto-qc tool
        | --threshold_file | threshold.yml |
        | --yaml-output    |               |
    Then the standard error should be empty
-    And the standard out should contain:
+    And the standard out should equal:
       """
+      fail: true
       metadata:
         version:
           auto-qc: 0.0.0
-      pass: false
       thresholds:
-       - node:
-           analysis: object_1
-           args: ['metric_1/value', 1]
-           pass: true
-           operator: greater_than
-       - node:
-           analysis: object_2
-           args: ['metric_2/value', 0]
-           pass: false
-           operator: greater_than
+      - node:
+          analysis: object_1
+          args:
+          - metric_1/value
+          - 1
+          fail: false
+          operator: greater_than
+      - node:
+          analysis: object_2
+          args:
+          - metric_2/value
+          - 0
+          fail: true
+          operator: greater_than
+
 
       """
      And the exit code should be 0

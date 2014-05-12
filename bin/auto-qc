@@ -10,8 +10,9 @@ virtual_env(root)
 import argparse
 parser = argparse.ArgumentParser(
            description='Calculates if sample passes based on QC thresholds')
-parser.add_argument('--analysis_file',  '-a', dest='analysis_file', required=True)
+parser.add_argument('--analysis_file',  '-a', dest='analysis_file',  required=True)
 parser.add_argument('--threshold_file', '-t', dest='threshold_file', required=True)
+parser.add_argument('--yaml-output',    '-y', dest='yaml',           required=False, action='store_true')
 args = vars(parser.parse_args())
 
 from auto_qc.main import run
