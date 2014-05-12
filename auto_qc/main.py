@@ -11,6 +11,23 @@ OPERATORS = {
     'greater_than': op.gt,
         }
 
+def check_node_paths(analyses, n):
+    path, _   = n['node']['args']
+    namespace = n['node']['analysis']
+    id_       = n['node']['id']
+
+    analysis = filter(lambda x: x['analysis'] == namespace, analyses)
+    if len(analysis) == 0:
+        return "No matching analysis '{}' found for node '{}.'".\
+                format(namespace, id_)
+
+    for a in analysis:
+        try:
+            reduce(lambda a, k: a[k], path.split('/'), a['outputs'])
+        except KeyError, _:
+            return "No matching path '{}' found for node '{}.'".\
+                    format(path, id_)
+
 def evaluate_threshold_node(analyses, node):
     n = node['node']
     path, threshold = n['args']
