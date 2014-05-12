@@ -54,9 +54,9 @@ Feature: Error messages for incorrect use of auto-qc
        | --analysis_file  | analysis.yml  |
        | --threshold_file | threshold.yml |
    Then the standard out should be empty
-    And the standard error should contain:
+    And the standard error should equal:
       """
-      Path not found 'metric_1/non_path' in 'test_threshold.'
+      No matching path 'metric_1/non_path' found for node 'test_threshold.'
 
       """
     And the exit code should be 1
@@ -86,9 +86,9 @@ Feature: Error messages for incorrect use of auto-qc
        | --analysis_file  | analysis.yml  |
        | --threshold_file | threshold.yml |
    Then the standard out should be empty
-    And the standard error should contain:
+    And the standard error should equal:
       """
-      Analysis not found 'non_object' in 'test_threshold.'
+      No matching analysis 'non_object' found for node 'test_threshold.'
 
       """
     And the exit code should be 1

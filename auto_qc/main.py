@@ -5,6 +5,7 @@ import operator                 as op
 import functools                as ft
 import yaml
 
+from fn import F
 from fn import iters as it
 
 OPERATORS = {
@@ -41,6 +42,15 @@ def find_analysis_value(analyses, namespace, path):
     outputs = analysis['outputs']
     return reduce(lambda k, v: k[v], path.split('/'), outputs)
 
+def check_nodes(analyses, thresholds, status):
+    nodes    = status['thresholds']['thresholds']
+    analyses = status['analyses']
+    errors = filter(lambda i: i is not None,
+            map(F(check_node_paths, analyses), nodes))
+    if len(errors) > 0:
+        status['error'] = "\n".join(errors)
+    return status
+
 def evaluate_nodes(destination, status):
     nodes    = status['thresholds']['thresholds']
     analyses = status['analyses']
@@ -60,6 +70,7 @@ method_chain = [
     (fs.check_for_file, ['threshold_file']),
     (fs.read_yaml_file, ['threshold_file', 'thresholds']),
     (fs.read_yaml_file, ['analysis_file',  'analyses']),
+    (check_nodes,       ['analyses', 'thresholds']),
     (evaluate_nodes,    ['node_results']),
         ]
 
