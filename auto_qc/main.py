@@ -10,6 +10,7 @@ from fn import iters as it
 
 OPERATORS = {
     'greater_than': op.gt,
+    'less_than'   : op.lt,
         }
 
 def check_node_paths(analyses, n):
