@@ -62,9 +62,13 @@ def evaluate_nodes(destination, status):
     return status
 
 def metadata():
-    return {'version': {'auto-qc': '0.0.0'}}
+    return {'version': {'auto-qc': version()}}
 
-
+def version():
+    import os
+    path = os.path.join(os.path.dirname(__file__), '../VERSION')
+    with open(path, 'r') as f:
+        return f.read().strip()
 
 method_chain = [
     (fs.check_for_file, ['analysis_file']),
