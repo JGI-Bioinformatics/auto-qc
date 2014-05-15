@@ -17,4 +17,4 @@ if [ $? -ne 0 ]
     exit 1
 fi
 
-cp -r env bin $SRC_DIR VERSION $LOC 2>&1 > log/install.txt
+cp -r env bin $SRC_DIR VERSION $PREFIX
