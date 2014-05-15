@@ -8,27 +8,12 @@ from auto_qc.util.misc import virtual_env
 virtual_env(root)
 
 import argparse
-
-
-# Write a description of your project here
-parser = argparse.ArgumentParser(description='DESCRIPTION HERE')
-
-
-# An example of passing arguments to this command
-parser.add_argument('--library_file',     # This will be long name of the arg
-                    '-l',                 # This is the one character short-cut
-                    dest='library',       # The value will be placed in 'args' with this key
-                    required=True)        # Is this argument required or not
-
-# Collect the arguments into a dictionary
+parser = argparse.ArgumentParser(
+           description='Calculates if sample passes based on QC thresholds')
+parser.add_argument('--analysis_file',  '-a', dest='analysis_file',  required=True)
+parser.add_argument('--threshold_file', '-t', dest='threshold_file', required=True)
+parser.add_argument('--yaml-output',    '-y', dest='yaml',           required=False, action='store_true')
 args = vars(parser.parse_args())
 
-
-# Here the code is imported
-#
-#     directory           file        method
-#    -------------------- ----        ---
 from auto_qc.main import run
-
-# Call the imported method with the argument hash
 run(args)
