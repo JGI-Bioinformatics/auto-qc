@@ -29,6 +29,7 @@ Feature: Error messages for incorrect use of auto-qc
       """
      And the exit code should be 1
 
+  @wip
   Scenario: The given value does not exist
    Given I create the file "analysis.yml" with the contents:
      """
