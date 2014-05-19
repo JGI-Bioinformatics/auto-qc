@@ -13,8 +13,8 @@ OPERATORS = {
     'less_than'   : op.lt,
         }
 
-def check_node_paths(analyses, n):
-    path, _   = n['node']['args']
+def check_node_metric_paths(analyses, n):
+    metric    = n['node']['metric']
     namespace = n['node']['analysis']
     id_       = n['node']['id']
 
@@ -25,29 +25,30 @@ def check_node_paths(analyses, n):
 
     for a in analysis:
         try:
-            reduce(lambda a, k: a[k], path.split('/'), a['outputs'])
+            reduce(lambda a, k: a[k], metric.split('/'), a['outputs'])
         except KeyError, _:
-            return "No matching path '{}' found for node '{}.'".\
-                    format(path, id_)
+            return "No matching metric '{}' found for node '{}.'".\
+                    format(metric, id_)
 
 def evaluate_threshold_node(analyses, node):
     n = node['node']
-    path, threshold = n['args']
+    metric          = n['metric']
+    threshold       = n['threshold']
     namespace       = n['analysis']
-    value           = find_analysis_value(analyses, namespace, path)
+    value           = find_analysis_value(analyses, namespace, metric)
     f               = OPERATORS[n['operator']]
     return f(value, threshold)
 
-def find_analysis_value(analyses, namespace, path):
+def find_analysis_value(analyses, namespace, metric_path):
     analysis = filter(lambda x: x['analysis'] == namespace, analyses)[0]
     outputs = analysis['outputs']
-    return reduce(lambda k, v: k[v], path.split('/'), outputs)
+    return reduce(lambda k, v: k[v], metric_path.split('/'), outputs)
 
 def check_nodes(analyses, thresholds, status):
     nodes    = status['thresholds']['thresholds']
     analyses = status['analyses']
     errors = filter(lambda i: i is not None,
-            map(F(check_node_paths, analyses), nodes))
+            map(F(check_node_metric_paths, analyses), nodes))
     if len(errors) > 0:
         status['error'] = "\n".join(errors)
     return status

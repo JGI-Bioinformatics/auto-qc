@@ -47,7 +47,8 @@ Feature: Error messages for incorrect use of auto-qc
          id: test_threshold
          analysis: object_1
          operator: greater_than
-         args: ['metric_1/non_path', 1]
+         metric: 'metric_1/non_metric'
+         threshold: 1
      """
     When I run the command "auto-qc" with the arguments:
        | key              | value         |
@@ -56,7 +57,7 @@ Feature: Error messages for incorrect use of auto-qc
    Then the standard out should be empty
     And the standard error should equal:
       """
-      No matching path 'metric_1/non_path' found for node 'test_threshold.'
+      No matching metric 'metric_1/non_metric' found for node 'test_threshold.'
 
       """
     And the exit code should be 1
@@ -79,7 +80,8 @@ Feature: Error messages for incorrect use of auto-qc
          id: test_threshold
          analysis: non_object
          operator: greater_than
-         args: ['metric_1/value', 1]
+         metric: 'metric_1/value'
+         threshold: 1
      """
     When I run the command "auto-qc" with the arguments:
        | key              | value         |

@@ -3,9 +3,10 @@ import auto_qc.main as aq
 
 def test_evaluate_threshold_node_with_gt():
     node = {'node': {
-      'analysis': 'object_1',
-      'operator': 'greater_than',
-      'args':     ['metric_1/value', 0]
+      'analysis'  : 'object_1',
+      'operator'  : 'greater_than',
+      'metric'    : 'metric_1/value',
+      'threshold' : 0
             }}
     analyses = [{
       'analysis': 'object_1',
@@ -35,22 +36,24 @@ def test_check_node_paths_valid_node():
       'analysis' : 'object_1',
       'id'       : 'test_node',
       'operator' : 'greater_than',
-      'args'     : ['metric_1/value', 0] }}
+      'metric'   : 'metric_1/value',
+      'threshold': 0 }}
     analyses = [{
       'analysis': 'object_1',
       'outputs' : { 'metric_1': {'value': 1} } }]
-    assert_equal(aq.check_node_paths(analyses, node), None)
+    assert_equal(aq.check_node_metric_paths(analyses, node), None)
 
 def test_check_node_paths_with_missing_analysis():
     node = {'node': {
       'analysis': 'missing_object',
       'id':       'test_node',
       'operator': 'greater_than',
-      'args':     ['metric_1/value', 0] }}
+      'metric':   'metric_1/value',
+      'threshold': 0 }}
     analyses = [{
       'analysis': 'object_1',
       'outputs' : { 'metric_1': {'value': 1} } }]
-    assert_equal(aq.check_node_paths(analyses, node),
+    assert_equal(aq.check_node_metric_paths(analyses, node),
         "No matching analysis 'missing_object' found for node 'test_node.'")
 
 def test_check_node_paths_with_missing_path():
@@ -58,10 +61,11 @@ def test_check_node_paths_with_missing_path():
       'analysis': 'object_1',
       'id':       'test_node',
       'operator': 'greater_than',
-      'args':     ['metric_1/no_path', 0] }}
+      'metric':   'metric_1/no_path',
+      'threshold' : 0 }}
     analyses = [{
       'analysis': 'object_1',
       'outputs' : { 'metric_1': {'value': 1} } }]
-    assert_equal(aq.check_node_paths(analyses, node),
-        "No matching path 'metric_1/no_path' found for node 'test_node.'")
+    assert_equal(aq.check_node_metric_paths(analyses, node),
+        "No matching metric 'metric_1/no_path' found for node 'test_node.'")
 

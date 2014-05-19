@@ -21,7 +21,8 @@ Feature: Using the auto-qc tool
          id: test_1
          analysis: object_1
          operator: <operator>
-         args: ['metric_1/value', <threshold>]
+         threshold: <threshold>
+         metric: 'metric_1/value'
      """
     When I run the command "auto-qc" with the arguments:
        | key              | value         |
@@ -64,12 +65,14 @@ Feature: Using the auto-qc tool
          id: test_1
          analysis: object_1
          operator: greater_than
-         args: ['metric_1/value', <threshold_1>]
+         threshold: <threshold_1>
+         metric: 'metric_1/value'
      - node:
          id: test_2
          analysis: object_2
          operator: greater_than
-         args: ['metric_2/value', <threshold_2>]
+         threshold: <threshold_2>
+         metric: 'metric_2/value'
      """
     When I run the command "auto-qc" with the arguments:
        | key              | value         |
@@ -111,12 +114,14 @@ Feature: Using the auto-qc tool
          id: test_1
          analysis: object_1
          operator: greater_than
-         args: ['metric_1/value', 1]
+         threshold: 1
+         metric: 'metric_1/value'
      - node:
          id: test_2
          analysis: object_2
          operator: greater_than
-         args: ['metric_2/value', 0]
+         threshold: 1
+         metric: 'metric_2/value'
      """
     When I run the command "auto-qc" with the arguments:
        | key              | value         |
@@ -124,6 +129,7 @@ Feature: Using the auto-qc tool
        | --threshold_file | threshold.yml |
        | --yaml-output    |               |
    Then the standard error should be empty
+    And the exit code should be 0
     And the standard out should equal:
       """
       fail: true
@@ -133,21 +139,18 @@ Feature: Using the auto-qc tool
       thresholds:
       - node:
           analysis: object_1
-          args:
-          - metric_1/value
-          - 1
           fail: false
           id: test_1
+          metric: metric_1/value
           operator: greater_than
+          threshold: 1
       - node:
           analysis: object_2
-          args:
-          - metric_2/value
-          - 0
           fail: true
           id: test_2
+          metric: metric_2/value
           operator: greater_than
+          threshold: 1
 
 
       """
-     And the exit code should be 0
