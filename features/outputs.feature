@@ -1,96 +1,6 @@
-Feature: Using the auto-qc tool
-  In order to determine whether a sample passes QC
-  The auto-qc tool can be used to
-  Test quality thresholds
-
-  Scenario Outline: Threshold operators
-   Given I create the file "analysis.yml" with the contents:
-     """
-     - analysis: object_1
-       outputs:
-         metric_1:
-           value: <var>
-     """
-     And I create the file "threshold.yml" with the contents:
-     """
-     metadata:
-       version:
-         auto-qc: 0.2.0
-     thresholds:
-     - node:
-         id: test_1
-         analysis: object_1
-         operator: <operator>
-         threshold: <threshold>
-         metric: 'metric_1/value'
-     """
-    When I run the command "auto-qc" with the arguments:
-       | key              | value         |
-       | --analysis_file  | analysis.yml  |
-       | --threshold_file | threshold.yml |
-   Then the standard error should be empty
-    And the exit code should be 0
-    And the standard out should contain:
-      """
-      <result>
-
-      """
-
-  Examples: Operators
-      | var | operator     | threshold | result |
-      | 1   | greater_than | 0         | FAIL   |
-      | 1   | greater_than | 2         | PASS   |
-      | 1   | less_than    | 2         | FAIL   |
-      | 1   | less_than    | 0         | PASS   |
-
-  Scenario Outline: Testing multiple thresholds
-   Given I create the file "analysis.yml" with the contents:
-     """
-     - analysis: object_1
-       outputs:
-         metric_1:
-           value: <var_1>
-     - analysis: object_2
-       outputs:
-         metric_2:
-           value: <var_2>
-     """
-     And I create the file "threshold.yml" with the contents:
-     """
-     metadata:
-       version:
-         auto-qc: 0.2.0
-     thresholds:
-     - node:
-         id: test_1
-         analysis: object_1
-         operator: greater_than
-         threshold: <threshold_1>
-         metric: 'metric_1/value'
-     - node:
-         id: test_2
-         analysis: object_2
-         operator: greater_than
-         threshold: <threshold_2>
-         metric: 'metric_2/value'
-     """
-    When I run the command "auto-qc" with the arguments:
-       | key              | value         |
-       | --analysis_file  | analysis.yml  |
-       | --threshold_file | threshold.yml |
-   Then the standard error should be empty
-    And the exit code should be 0
-    And the standard out should contain:
-      """
-      <result>
-
-      """
-
-  Examples: Multiple thresholds
-      | var_1 | var_2 | threshold_1 | threshold_2 | result |
-      | 1     | 1     | 2           | 2           | PASS   |
-      | 3     | 1     | 2           | 2           | FAIL   |
-      | 3     | 3     | 2           | 2           | FAIL   |
+Feature: Printing different output formats
+  In order to visualise the QC results
+  The auto-qc tool can generate different output formats
 
   Scenario: Generating yaml description of threshold tests
    Given I create the file "analysis.yml" with the contents:
@@ -108,7 +18,7 @@ Feature: Using the auto-qc tool
      """
      metadata:
        version:
-         auto-qc: 0.2.0
+         auto-qc: 0.2.1
      thresholds:
      - node:
          id: test_1
@@ -135,7 +45,7 @@ Feature: Using the auto-qc tool
       fail: true
       metadata:
         version:
-          auto-qc: 0.2.0
+          auto-qc: 0.2.1
       thresholds:
       - node:
           analysis: object_1
@@ -167,12 +77,16 @@ Feature: Using the auto-qc tool
        outputs:
          metric_2:
            value: 2000000
+     - analysis: object_3
+       outputs:
+         metric_3:
+           value: 1
      """
      And I create the file "threshold.yml" with the contents:
      """
      metadata:
        version:
-         auto-qc: 0.2.0
+         auto-qc: 0.2.1
      thresholds:
      - node:
          id: test_1
@@ -186,6 +100,12 @@ Feature: Using the auto-qc tool
          operator: greater_than
          threshold: 1
          metric: 'metric_2/value'
+     - node:
+         id: test_3
+         analysis: object_3
+         operator: greater_than
+         threshold: 1.5
+         metric: 'metric_3/value'
      """
     When I run the command "auto-qc" with the arguments:
        | key              | value         |
@@ -202,7 +122,8 @@ Feature: Using the auto-qc tool
 
       test_1:                    > 1           1
       longer_test_name:          > 1   2,000,000   FAIL
+      test_3:                  > 1.5           1
 
-      Auto QC Version: 0.2.0
+      Auto QC Version: 0.2.1
 
       """
