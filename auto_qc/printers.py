@@ -47,8 +47,8 @@ def text_threshold_table(nodes):
         pass_fail = 'FAIL' if nd.node_fail(node) else ''
         value = nd.metric_value(node)
         return [id_ + ':',
-                OPERATOR_STRING[oper] + ' ' + format(threshold, ",d"),
-                format(value, ",d"),
+                OPERATOR_STRING[oper] + ' ' + "{:,}".format(threshold),
+                "{:,}".format(value),
                 pass_fail]
 
     values = header + map(f, nodes)
