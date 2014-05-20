@@ -181,7 +181,7 @@ Feature: Using the auto-qc tool
          threshold: 1
          metric: 'metric_1/value'
      - node:
-         id: test_2
+         id: longer_test_name
          analysis: object_2
          operator: greater_than
          threshold: 1
@@ -198,10 +198,10 @@ Feature: Using the auto-qc tool
       """
       Status: FAIL
 
-                         Failure At      Actual
-                         ----------      ------
-      test_1:                   > 1           1
-      longer_test_name:         > 1   2,000,000   FAIL
+                          Failure At      Actual
+
+      test_1:                    > 1           1
+      longer_test_name:          > 1   2,000,000   FAIL
 
       Auto QC Version: 0.1.0
 

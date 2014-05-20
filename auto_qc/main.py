@@ -1,27 +1,14 @@
 import auto_qc.util.file_system as fs
 import auto_qc.util.workflow    as flow
 import auto_qc.printers         as prn
-import operator                 as op
+import auto_qc.node             as nd
 import functools                as ft
 
 from fn import F
 from fn import iters as it
 
-OPERATORS = {
-    'greater_than': op.gt,
-    'less_than'   : op.lt,
-        }
-
-def destructure_node(n):
-    id_       = n['node']['id']
-    namespace = n['node']['analysis']
-    metric    = n['node']['metric']
-    threshold = n['node']['threshold']
-    operator  = OPERATORS[n['node']['operator']]
-    return [id_, namespace, metric, threshold, operator]
-
 def check_node_metric_paths(analyses, n):
-    id_, namespace, metric, _, _ = destructure_node(n)
+    id_, namespace, metric, _, _ = nd.destructure_node(n)
 
     analysis = filter(lambda x: x['analysis'] == namespace, analyses)
     if len(analysis) == 0:
@@ -36,7 +23,7 @@ def check_node_metric_paths(analyses, n):
                     format(metric, id_)
 
 def resolve_node(analyses, n):
-    _, namespace, metric, threshold, f = destructure_node(n)
+    _, namespace, metric, threshold, f = nd.destructure_node(n)
     value = find_analysis_value(analyses, namespace, metric)
     n['node']['metric_value'] = value
     n['node']['fail']         = f(value, threshold)
