@@ -154,5 +154,55 @@ Feature: Using the auto-qc tool
           operator: greater_than
           threshold: 1
 
+      """
+
+  Scenario: Generating a text description of the threshold tests
+   Given I create the file "analysis.yml" with the contents:
+     """
+     - analysis: object_1
+       outputs:
+         metric_1:
+           value: 1
+     - analysis: object_2
+       outputs:
+         metric_2:
+           value: 2000000
+     """
+     And I create the file "threshold.yml" with the contents:
+     """
+     metadata:
+       version:
+         auto-qc: 0.1.0
+     thresholds:
+     - node:
+         id: test_1
+         analysis: object_1
+         operator: greater_than
+         threshold: 1
+         metric: 'metric_1/value'
+     - node:
+         id: longer_test_name
+         analysis: object_2
+         operator: greater_than
+         threshold: 1
+         metric: 'metric_2/value'
+     """
+    When I run the command "auto-qc" with the arguments:
+       | key              | value         |
+       | --analysis_file  | analysis.yml  |
+       | --threshold_file | threshold.yml |
+       | --text-output    |               |
+   Then the standard error should be empty
+    And the exit code should be 0
+    And the standard out should equal:
+      """
+      Status: FAIL
+
+                          Failure At      Actual
+
+      test_1:                    > 1           1
+      longer_test_name:          > 1   2,000,000   FAIL
+
+      Auto QC Version: 0.1.0
 
       """
