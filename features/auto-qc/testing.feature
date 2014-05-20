@@ -142,6 +142,7 @@ Feature: Using the auto-qc tool
           fail: false
           id: test_1
           metric: metric_1/value
+          metric_value: 1
           operator: greater_than
           threshold: 1
       - node:
@@ -149,6 +150,7 @@ Feature: Using the auto-qc tool
           fail: true
           id: test_2
           metric: metric_2/value
+          metric_value: 2
           operator: greater_than
           threshold: 1
 

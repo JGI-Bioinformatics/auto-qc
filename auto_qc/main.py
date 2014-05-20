@@ -12,10 +12,16 @@ OPERATORS = {
     'less_than'   : op.lt,
         }
 
-def check_node_metric_paths(analyses, n):
-    metric    = n['node']['metric']
-    namespace = n['node']['analysis']
+def destructure_node(n):
     id_       = n['node']['id']
+    namespace = n['node']['analysis']
+    metric    = n['node']['metric']
+    threshold = n['node']['threshold']
+    operator  = OPERATORS[n['node']['operator']]
+    return [id_, namespace, metric, threshold, operator]
+
+def check_node_metric_paths(analyses, n):
+    id_, namespace, metric, _, _ = destructure_node(n)
 
     analysis = filter(lambda x: x['analysis'] == namespace, analyses)
     if len(analysis) == 0:
@@ -29,14 +35,12 @@ def check_node_metric_paths(analyses, n):
             return "No matching metric '{}' found for node '{}.'".\
                     format(metric, id_)
 
-def evaluate_threshold_node(analyses, node):
-    n = node['node']
-    metric          = n['metric']
-    threshold       = n['threshold']
-    namespace       = n['analysis']
-    value           = find_analysis_value(analyses, namespace, metric)
-    f               = OPERATORS[n['operator']]
-    return f(value, threshold)
+def resolve_node(analyses, n):
+    _, namespace, metric, threshold, f = destructure_node(n)
+    value = find_analysis_value(analyses, namespace, metric)
+    n['node']['metric_value'] = value
+    n['node']['fail']         = f(value, threshold)
+    return n
 
 def find_analysis_value(analyses, namespace, metric_path):
     analysis = filter(lambda x: x['analysis'] == namespace, analyses)[0]
@@ -55,10 +59,8 @@ def check_nodes(analyses, thresholds, status):
 def evaluate_nodes(destination, status):
     nodes    = status['thresholds']['thresholds']
     analyses = status['analyses']
-    def update_node(n):
-         n['node']['fail'] = evaluate_threshold_node(analyses, n)
-         return n
-    status[destination] = map(update_node, nodes)
+    f = F(resolve_node, analyses)
+    status[destination] = map(f, nodes)
     return status
 
 method_chain = [
