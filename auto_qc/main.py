@@ -74,9 +74,11 @@ def run(args):
     status = flow.thread_status(method_chain, args)
     flow.exit_if_error(status)
 
-    if not args['yaml']:
-        msg = prn.simple(status)
-    else:
+    if args['yaml']:
         msg = prn.yaml(status)
+    elif args['text']:
+        msg = prn.text(status)
+    else:
+        msg = prn.simple(status)
 
     print msg

@@ -1,4 +1,4 @@
-from nose.tools     import *
+from nose.tools import *
 import auto_qc.main as aq
 
 def test_evaluate_threshold_node_with_gt():

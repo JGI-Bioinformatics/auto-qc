@@ -19,3 +19,15 @@ def yaml(status):
         'thresholds': status['node_results']
     }
     return yaml.dump(output, default_flow_style=False).strip()
+
+def text(status):
+    return """\
+Status: {0}
+
+{1}
+
+Auto QC Version: {2}
+    """.format(simple(status), threshold_table(status), version()).strip()
+
+def text_threshold_table(status):
+    None
