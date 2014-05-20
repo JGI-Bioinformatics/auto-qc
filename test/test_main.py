@@ -3,6 +3,7 @@ import auto_qc.main as aq
 
 def test_evaluate_threshold_node_with_gt():
     node = {'node': {
+      'id'        : 'id',
       'analysis'  : 'object_1',
       'operator'  : 'greater_than',
       'metric'    : 'metric_1/value',
@@ -14,7 +15,9 @@ def test_evaluate_threshold_node_with_gt():
           'metric_1': {'value': 1}
           }
       }]
-    assert_true(aq.evaluate_threshold_node(analyses, node))
+    resolved = aq.resolve_node(analyses, node)
+    assert_true(resolved['node']['fail'])
+    assert_equal(resolved['node']['metric_value'], 1)
 
 def test_find_analysis_value():
     analyses = [{
