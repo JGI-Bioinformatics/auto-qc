@@ -18,7 +18,7 @@ Feature: Printing different output formats
      """
      metadata:
        version:
-         auto-qc: 0.2.0
+         auto-qc: 0.2.1
      thresholds:
      - node:
          id: test_1
@@ -45,7 +45,7 @@ Feature: Printing different output formats
       fail: true
       metadata:
         version:
-          auto-qc: 0.2.0
+          auto-qc: 0.2.1
       thresholds:
       - node:
           analysis: object_1
@@ -86,7 +86,7 @@ Feature: Printing different output formats
      """
      metadata:
        version:
-         auto-qc: 0.2.0
+         auto-qc: 0.2.1
      thresholds:
      - node:
          id: test_1
@@ -124,6 +124,6 @@ Feature: Printing different output formats
       longer_test_name:          > 1   2,000,000   FAIL
       test_3:                  > 1.5           1
 
-      Auto QC Version: 0.2.0
+      Auto QC Version: 0.2.1
 
       """

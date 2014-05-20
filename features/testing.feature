@@ -15,7 +15,7 @@ Feature: Using the auto-qc tool
      """
      metadata:
        version:
-         auto-qc: 0.2.0
+         auto-qc: 0.2.1
      thresholds:
      - node:
          id: test_1
@@ -59,7 +59,7 @@ Feature: Using the auto-qc tool
      """
      metadata:
        version:
-         auto-qc: 0.2.0
+         auto-qc: 0.2.1
      thresholds:
      - node:
          id: test_1
