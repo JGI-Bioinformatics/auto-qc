@@ -37,3 +37,21 @@ test:             > 1,000    2,000   FAIL
     """
     asrt.assert_diff(prn.text_threshold_table([node]),
                      expected.rstrip())
+
+def test_text_threshold_table_with_float():
+    node = {'node' : {
+        'id'           : 'test',
+        'operator'     : 'greater_than',
+        'metric_value' : 2,
+        'analysis'     : None,
+        'metric'       : None,
+        'threshold'    : 1.5,
+        'fail'         : False
+        }}
+    expected = """\
+               Failure At   Actual
+
+test:               > 1.5        2
+    """
+    asrt.assert_diff(prn.text_threshold_table([node]),
+                     expected.rstrip())

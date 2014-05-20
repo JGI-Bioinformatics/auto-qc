@@ -77,6 +77,10 @@ Feature: Printing different output formats
        outputs:
          metric_2:
            value: 2000000
+     - analysis: object_3
+       outputs:
+         metric_3:
+           value: 1
      """
      And I create the file "threshold.yml" with the contents:
      """
@@ -96,6 +100,12 @@ Feature: Printing different output formats
          operator: greater_than
          threshold: 1
          metric: 'metric_2/value'
+     - node:
+         id: test_3
+         analysis: object_3
+         operator: greater_than
+         threshold: 1.5
+         metric: 'metric_3/value'
      """
     When I run the command "auto-qc" with the arguments:
        | key              | value         |
@@ -112,6 +122,7 @@ Feature: Printing different output formats
 
       test_1:                    > 1           1
       longer_test_name:          > 1   2,000,000   FAIL
+      test_3:                  > 1.5           1
 
       Auto QC Version: 0.2.0
 
