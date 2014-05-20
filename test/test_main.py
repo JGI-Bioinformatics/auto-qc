@@ -15,7 +15,9 @@ def test_evaluate_threshold_node_with_gt():
           'metric_1': {'value': 1}
           }
       }]
-    assert_true(aq.evaluate_threshold_node(analyses, node))
+    resolved = aq.resolve_node(analyses, node)
+    assert_true(resolved['node']['fail'])
+    assert_equal(resolved['node']['metric_value'], 1)
 
 def test_find_analysis_value():
     analyses = [{

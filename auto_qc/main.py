@@ -36,10 +36,12 @@ def check_node_metric_paths(analyses, n):
             return "No matching metric '{}' found for node '{}.'".\
                     format(metric, id_)
 
-def evaluate_threshold_node(analyses, node):
-    _, namespace, metric, threshold, f = destructure_node(node)
+def resolve_node(analyses, n):
+    _, namespace, metric, threshold, f = destructure_node(n)
     value = find_analysis_value(analyses, namespace, metric)
-    return f(value, threshold)
+    n['node']['metric_value'] = value
+    n['node']['fail']         = f(value, threshold)
+    return n
 
 def find_analysis_value(analyses, namespace, metric_path):
     analysis = filter(lambda x: x['analysis'] == namespace, analyses)[0]
@@ -58,10 +60,8 @@ def check_nodes(analyses, thresholds, status):
 def evaluate_nodes(destination, status):
     nodes    = status['thresholds']['thresholds']
     analyses = status['analyses']
-    def update_node(n):
-         n['node']['fail'] = evaluate_threshold_node(analyses, n)
-         return n
-    status[destination] = map(update_node, nodes)
+    f = F(resolve_node, analyses)
+    status[destination] = map(f, nodes)
     return status
 
 def metadata():
