@@ -92,6 +92,7 @@ Feature: Using the auto-qc tool
       | 3     | 1     | 2           | 2           | FAIL   |
       | 3     | 3     | 2           | 2           | FAIL   |
 
+  @wip
   Scenario: Generating yaml description of threshold tests
    Given I create the file "analysis.yml" with the contents:
      """
@@ -142,6 +143,7 @@ Feature: Using the auto-qc tool
           fail: false
           id: test_1
           metric: metric_1/value
+          metric_value: 1
           operator: greater_than
           threshold: 1
       - node:
@@ -149,6 +151,7 @@ Feature: Using the auto-qc tool
           fail: true
           id: test_2
           metric: metric_2/value
+          metric_value: 1
           operator: greater_than
           threshold: 1
 

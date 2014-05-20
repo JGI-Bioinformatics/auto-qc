@@ -13,10 +13,16 @@ OPERATORS = {
     'less_than'   : op.lt,
         }
 
-def check_node_metric_paths(analyses, n):
-    metric    = n['node']['metric']
-    namespace = n['node']['analysis']
+def destructure_node(n):
     id_       = n['node']['id']
+    namespace = n['node']['analysis']
+    metric    = n['node']['metric']
+    threshold = n['node']['threshold']
+    operator  = OPERATORS[n['node']['operator']]
+    return [id_, namespace, metric, threshold, operator]
+
+def check_node_metric_paths(analyses, n):
+    id_, namespace, metric, _, _ = destructure_node(n)
 
     analysis = filter(lambda x: x['analysis'] == namespace, analyses)
     if len(analysis) == 0:
@@ -31,12 +37,8 @@ def check_node_metric_paths(analyses, n):
                     format(metric, id_)
 
 def evaluate_threshold_node(analyses, node):
-    n = node['node']
-    metric          = n['metric']
-    threshold       = n['threshold']
-    namespace       = n['analysis']
-    value           = find_analysis_value(analyses, namespace, metric)
-    f               = OPERATORS[n['operator']]
+    _, namespace, metric, threshold, f = destructure_node(node)
+    value = find_analysis_value(analyses, namespace, metric)
     return f(value, threshold)
 
 def find_analysis_value(analyses, namespace, metric_path):
@@ -97,5 +99,4 @@ def run(args):
         msg = yaml.dump(output, default_flow_style=False)
 
     print msg
-
 

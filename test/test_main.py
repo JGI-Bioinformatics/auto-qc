@@ -3,6 +3,7 @@ import auto_qc.main as aq
 
 def test_evaluate_threshold_node_with_gt():
     node = {'node': {
+      'id'        : 'id',
       'analysis'  : 'object_1',
       'operator'  : 'greater_than',
       'metric'    : 'metric_1/value',
