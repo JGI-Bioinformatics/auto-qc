@@ -15,7 +15,7 @@ Feature: Using the auto-qc tool
      """
      metadata:
        version:
-         auto-qc: 0.1.0
+         auto-qc: 0.2.0
      thresholds:
      - node:
          id: test_1
@@ -59,7 +59,7 @@ Feature: Using the auto-qc tool
      """
      metadata:
        version:
-         auto-qc: 0.1.0
+         auto-qc: 0.2.0
      thresholds:
      - node:
          id: test_1
@@ -108,7 +108,7 @@ Feature: Using the auto-qc tool
      """
      metadata:
        version:
-         auto-qc: 0.1.0
+         auto-qc: 0.2.0
      thresholds:
      - node:
          id: test_1
@@ -135,7 +135,7 @@ Feature: Using the auto-qc tool
       fail: true
       metadata:
         version:
-          auto-qc: 0.1.0
+          auto-qc: 0.2.0
       thresholds:
       - node:
           analysis: object_1
@@ -172,7 +172,7 @@ Feature: Using the auto-qc tool
      """
      metadata:
        version:
-         auto-qc: 0.1.0
+         auto-qc: 0.2.0
      thresholds:
      - node:
          id: test_1
@@ -203,6 +203,6 @@ Feature: Using the auto-qc tool
       test_1:                    > 1           1
       longer_test_name:          > 1   2,000,000   FAIL
 
-      Auto QC Version: 0.1.0
+      Auto QC Version: 0.2.0
 
       """
