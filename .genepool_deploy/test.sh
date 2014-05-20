@@ -3,3 +3,4 @@
 set -ex
 module load python
 ./script/test
+./script/feature
