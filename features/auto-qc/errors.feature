@@ -41,7 +41,7 @@ Feature: Error messages for incorrect use of auto-qc
      """
      metadata:
        version:
-         auto-qc: 0.1.0
+         auto-qc: 0.2.0
      thresholds:
      - node:
          id: test_threshold
@@ -74,7 +74,7 @@ Feature: Error messages for incorrect use of auto-qc
      """
      metadata:
        version:
-         auto-qc: 0.1.0
+         auto-qc: 0.2.0
      thresholds:
      - node:
          id: test_threshold
