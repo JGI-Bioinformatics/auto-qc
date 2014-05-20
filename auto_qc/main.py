@@ -1,9 +1,8 @@
 import auto_qc.util.file_system as fs
 import auto_qc.util.workflow    as flow
-import auto_qc.util.workflow    as flow
+import auto_qc.printers         as prn
 import operator                 as op
 import functools                as ft
-import yaml
 
 from fn import F
 from fn import iters as it
@@ -62,19 +61,6 @@ def evaluate_nodes(destination, status):
     status[destination] = map(update_node, nodes)
     return status
 
-def metadata():
-    return {'version': {'auto-qc': version()}}
-
-def version():
-    import os
-    path = os.path.join(os.path.dirname(__file__), '../VERSION')
-    with open(path, 'r') as f:
-        return f.read().strip()
-
-def failed(status):
-    failing = map(lambda n: n['node']['fail'], status['node_results'])
-    return any(failing)
-
 method_chain = [
     (fs.check_for_file, ['analysis_file']),
     (fs.check_for_file, ['threshold_file']),
@@ -88,18 +74,9 @@ def run(args):
     status = flow.thread_status(method_chain, args)
     flow.exit_if_error(status)
 
-    any_failing = failed(status)
-
     if not args['yaml']:
-        msg = 'FAIL' if any_failing else 'PASS'
+        msg = prn.simple(status)
     else:
-        output = {
-            'fail'      : any_failing,
-            'metadata'  : metadata(),
-            'thresholds': status['node_results']
-        }
-        msg = yaml.dump(output, default_flow_style=False)
+        msg = prn.yaml(status)
 
     print msg
-
-

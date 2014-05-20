@@ -152,7 +152,6 @@ Feature: Using the auto-qc tool
           operator: greater_than
           threshold: 1
 
-
       """
 
   Scenario: Generating a text description of the threshold tests
@@ -203,6 +202,5 @@ Feature: Using the auto-qc tool
       longer_test_name:         > 1   2,000,000   FAIL
 
       Auto QC Version: 0.1.0
-
 
       """
