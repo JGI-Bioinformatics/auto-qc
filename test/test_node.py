@@ -40,3 +40,21 @@ def test_greater_than_with_literal_and_variable():
           'outputs'  : {
             'metric_1' : 2 }}]
     assert_true(node.resolve(a, n))
+
+def test_validate_operator_node_with_no_errors():
+    assert_equal(None, node.validate({}, operator('greater_than')))
+
+def test_validate_literal_node_with_no_errors():
+    assert_equal(None, node.validate({}, literal(1)))
+
+def test_validate_variable_node_with_no_errors():
+    n = variable('ref/metric_1')
+    a = [{'analysis' : 'ref',
+          'outputs'  : {
+            'metric_1' : 2 }}]
+    assert_equal(None, node.validate(a, n))
+
+def test_validate_unknown_node_type():
+    n = {'node' : 'unknown', 'value' : 1}
+    assert_equal('Unknown node type: "unknown"', node.validate({}, n))
+

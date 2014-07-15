@@ -35,3 +35,8 @@ def resolve(analyses, node):
     f    = it.head(expr)
     args = it.tail(expr)
     return f(*args)
+
+def validate(analysis, node):
+    type_ = node['node']
+    if type_ not in ['variable', 'literal', 'operator']:
+        return 'Unknown node type: "{}"'.format(type_)
