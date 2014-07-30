@@ -8,9 +8,6 @@ OPERATORS = {
     'or'          : lambda *args: any(args),
         }
 
-def literal(v):
-    return v
-
 def operator(v):
     return OPERATORS[v]
 
