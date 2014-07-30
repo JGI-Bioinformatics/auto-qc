@@ -13,7 +13,7 @@ def operator(v):
     return OPERATORS[v]
 
 def variable(analyses, v):
-    path = v.split('/')
+    path = v[1:].split('/')
     namespace = it.head(path)
     rest      = it.tail(path)
     analysis = it.head(filter(lambda x: x['analysis'] == namespace, analyses))
@@ -22,21 +22,11 @@ def variable(analyses, v):
 def resolve(analyses, node):
 
     def _resolve(n):
-        type_ = n['node']
-        value = n['value']
-        if type_ == 'literal':
-            return literal(value)
-        elif type_ == 'operator':
-            return operator(value)
-        elif type_ == 'variable':
-            return variable(analyses, value)
+        if isinstance(n, basestring) and it.head(n) == ':':
+            return variable(analyses, n)
+        else:
+            return n
 
-    expr = map(_resolve, node)
-    f    = it.head(expr)
-    args = it.tail(expr)
+    f    = operator(it.head(node))
+    args = map(_resolve, it.tail(node))
     return f(*args)
-
-def validate(analysis, node):
-    type_ = node['node']
-    if type_ not in ['variable', 'literal', 'operator']:
-        return 'Unknown node type: "{}"'.format(type_)
