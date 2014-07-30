@@ -18,12 +18,9 @@ Feature: Using the auto-qc tool
          auto-qc: 0.3.0
      thresholds:
      -
-       - node: operator
-         value: <operator>
-       - node: variable
-         value: 'object_1/metric_1/value'
-       - node: literal
-         value: <literal>
+       - <operator>
+       - :object_1/metric_1/value
+       - <literal>
      """
     When I run the command "auto-qc" with the arguments:
        | key              | value         |
