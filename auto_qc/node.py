@@ -4,6 +4,8 @@ from fn import iters as it
 OPERATORS = {
     'greater_than': op.gt,
     'less_than'   : op.lt,
+    'and'         : lambda *args: all(args),
+    'or'          : lambda *args: any(args),
         }
 
 def literal(v):
