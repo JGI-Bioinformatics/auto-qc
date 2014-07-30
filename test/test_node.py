@@ -22,3 +22,11 @@ def test_greater_than_with_literal_and_variable():
           'outputs'  : {
             'metric_1' : 2 }}]
     assert_true(node.resolve(a, n))
+
+def test_true_with_nested_lists():
+    n = ['and', ['greater_than', 2, 1],['greater_than', 2, 1]]
+    assert_true(node.resolve({}, n))
+
+def test_false_with_nested_lists():
+    n = ['and', ['greater_than', 1, 2],['greater_than', 1, 2]]
+    assert_false(node.resolve({}, n))

@@ -88,3 +88,47 @@ Feature: Using the auto-qc tool
       | 1     | 0     | 0     | 1     | FAIL   |
       | 0     | 1     | 1     | 0     | FAIL   |
       | 0     | 1     | 0     | 1     | PASS   |
+
+  Scenario Outline: Nested thresholds
+   Given I create the file "analysis.yml" with the contents:
+     """
+     - analysis: object_1
+       outputs:
+         metric_1:
+           value: <var_1>
+     """
+     And I create the file "threshold.yml" with the contents:
+     """
+     metadata:
+       version:
+         auto-qc: 0.3.0
+     thresholds:
+     -
+       - and
+       -
+         - greater_than
+         - :object_1/metric_1/value
+         - <lit_1>
+       -
+         - greater_than
+         - :object_1/metric_1/value
+         - <lit_2>
+     """
+    When I run the command "auto-qc" with the arguments:
+       | key              | value         |
+       | --analysis_file  | analysis.yml  |
+       | --threshold_file | threshold.yml |
+   Then the standard error should be empty
+    And the exit code should be 0
+    And the standard out should contain:
+      """
+      <result>
+
+      """
+
+  Examples: Operators
+      | var_1 | lit_1 | lit_2 | result |
+      | 1     | 0     | 0     | FAIL   |
+      | 1     | 0     | 1     | PASS   |
+      | 1     | 1     | 0     | PASS   |
+      | 1     | 1     | 1     | PASS   |

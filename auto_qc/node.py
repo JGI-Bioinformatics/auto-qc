@@ -23,6 +23,8 @@ def resolve(analyses, node):
     def _resolve(n):
         if isinstance(n, basestring) and it.head(n) == ':':
             return variable(analyses, n)
+        elif isinstance(n, list):
+            return resolve(analyses, n)
         else:
             return n
 
