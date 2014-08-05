@@ -52,13 +52,3 @@ Feature: Printing different output formats
       | variable | operator     | literal | status |
       | 1        | greater_than | 0       | true   |
       | 1        | greater_than | 2       | false  |
-      | 1        | less_than    | 2       | true   |
-      | 1        | less_than    | 0       | false  |
-      | True     | and          | True    | true   |
-      | False    | and          | True    | false  |
-      | True     | and          | False   | false  |
-      | False    | and          | False   | false  |
-      | True     | or           | True    | true   |
-      | False    | or           | True    | true   |
-      | True     | or           | False   | true   |
-      | False    | or           | False   | false  |
