@@ -10,12 +10,6 @@ def failed(status):
     failing = map(nd.node_fail, status['node_results'])
     return any(failing)
 
-def version():
-    import os
-    path = os.path.join(os.path.dirname(__file__), '../VERSION')
-    with open(path, 'r') as f:
-        return f.read().strip()
-
 def simple(status):
     return 'FAIL' if failed(status) else 'PASS'
 
