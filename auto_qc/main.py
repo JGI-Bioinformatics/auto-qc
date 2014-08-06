@@ -25,17 +25,17 @@ method_chain = [
 
     (fs.read_yaml_file,    ['analysis_file',  'analyses']),
     (qc.evaluate,          ['evaluated_nodes', 'thresholds', 'analyses']),
-    (qc.apply_thresholds,  ['node_results', 'evaluated_nodes'])
+    (qc.apply_thresholds,  ['node_results', 'evaluated_nodes']),
+    (qc.build_qc_dict,     ['qc_dict', 'thresholds', 'evaluated_nodes', 'node_results'])
         ]
 
 def run(args):
     status = flow.thread_status(method_chain, args)
     flow.exit_if_error(status)
 
-    nodes_failing = status['node_results']
-
-    if any(nodes_failing):
-        print 'FAIL'
+    if args['yaml']:
+        f = prn.yaml
     else:
-        print 'PASS'
+        f = prn.simple
 
+    print f(status['qc_dict'])

@@ -30,20 +30,18 @@ Feature: Printing different output formats
     And the exit code should be 0
     And the standard out should equal:
       """
+      evaluation:
+      - - <operator>
+        - <variable>
+        - <literal>
       metadata:
         version:
           auto-qc: 1.0.0
-      status:
+      state:
         fail: <status>
       thresholds:
-      -
-        - <operator>
+      - - <operator>
         - :object_1/metric_1/value
-        - <literal>
-      evaluation:
-      -
-        - <operator>
-        - <variable>
         - <literal>
 
       """

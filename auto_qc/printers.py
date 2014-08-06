@@ -6,21 +6,12 @@ OPERATOR_STRING = {
         op.lt : '<'
         }
 
-def failed(status):
-    failing = map(nd.node_fail, status['node_results'])
-    return any(failing)
+def simple(qc_dict):
+    return 'FAIL' if qc_dict['state']['fail'] else 'PASS'
 
-def simple(status):
-    return 'FAIL' if failed(status) else 'PASS'
-
-def yaml(status):
+def yaml(qc_dict):
     import yaml
-    output = {
-        'fail'      : failed(status),
-        'metadata'  : {'version': {'auto-qc': version()}},
-        'thresholds': status['node_results']
-    }
-    return yaml.dump(output, default_flow_style=False).strip()
+    return yaml.dump(qc_dict, default_flow_style=False).strip()
 
 def text(status):
     return """\

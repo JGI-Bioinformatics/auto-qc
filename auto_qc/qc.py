@@ -19,3 +19,13 @@ def apply_thresholds(destination, nodes, status):
     status[destination] = map(node.apply_operator, nodes)
     return status
 
+def build_qc_dict(destination, thresholds, nodes, results, status):
+    """
+    Build a dict QC containing all data about this evaluation.
+    """
+    qc_dict = status[thresholds].copy()
+    qc_dict['state'] = {'fail': any(status[results])}
+    qc_dict['evaluation'] = status[nodes]
+
+    status[destination] = qc_dict
+    return status
