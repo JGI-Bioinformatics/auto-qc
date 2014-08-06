@@ -4,26 +4,6 @@ import auto_qc.printers         as prn
 import auto_qc.qc               as qc
 import auto_qc.util.metadata    as meta
 
-from fn import F
-from fn import iters as it
-
-def evaluate(destination, thresholds, analyses, status):
-    """
-    Map variables to their analysis file values.
-    """
-    nodes    = status[thresholds]['thresholds']
-    analyses = status[analyses]
-    f = F(node.eval_variables, analyses)
-    status[destination] = map(f, nodes)
-    return status
-
-def apply_thresholds(destination, nodes, status):
-    """
-    Apply operations to nodes
-    """
-    nodes = status[nodes]
-    status[destination] = map(node.apply_operator, nodes)
-    return status
 
 def check_version_number(threshold, status):
     version =  meta.major_version()
@@ -43,9 +23,9 @@ method_chain = [
     (fs.read_yaml_file, ['threshold_file', 'thresholds']),
     (check_version_number, ['thresholds']),
 
-    (fs.read_yaml_file, ['analysis_file',  'analyses']),
-    (evaluate,          ['evaluated_nodes', 'thresholds', 'analyses']),
-    (apply_thresholds,  ['node_results', 'evaluated_nodes'])
+    (fs.read_yaml_file,    ['analysis_file',  'analyses']),
+    (qc.evaluate,          ['evaluated_nodes', 'thresholds', 'analyses']),
+    (qc.apply_thresholds,  ['node_results', 'evaluated_nodes'])
         ]
 
 def run(args):
