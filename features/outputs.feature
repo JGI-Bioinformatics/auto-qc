@@ -132,7 +132,6 @@ Feature: Printing different output formats
 
       """
 
-  @wip
   Scenario: Generating text readable output for a passing nested metric
    Given I create the file "analysis.yml" with the contents:
      """
@@ -141,7 +140,7 @@ Feature: Printing different output formats
          metric_1:
            value: 1
          metric_2:
-           value: 2
+           value: 1
      """
      And I create the file "threshold.yml" with the contents:
      """
@@ -153,12 +152,12 @@ Feature: Printing different output formats
        - and
        -
          - less_than
-         - 2
          - :object_1/metric_1/value
+         - 2
        -
          - greater_than
-         - 2
          - :object_1/metric_2/value
+         - 2
      """
     When I run the command "auto-qc" with the arguments:
        | key              | value         |
@@ -171,11 +170,11 @@ Feature: Printing different output formats
       """
       Status: PASS
 
-                                  Failure At  Actual
+                                 Failure At   Actual
 
       AND:
-        :object_1/metric_1/value         < 2        1   F
-        :object_2/metric_2/value         > 2        1
+      :object_1/metric_1/value          < 2        1   FAIL
+      :object_1/metric_2/value          > 2        1
 
       Auto QC Version: 1.0.0
 
@@ -201,12 +200,12 @@ Feature: Printing different output formats
        - or
        -
          - less_than
-         - 2
          - :object_1/metric_1/value
+         - 2
        -
          - greater_than
+         - :object_1/metric_2/value
          - 2
-         - :object_1/metric_1/value
      """
     When I run the command "auto-qc" with the arguments:
        | key              | value         |
@@ -219,11 +218,11 @@ Feature: Printing different output formats
       """
       Status: FAIL
 
-                                  Failure At   Actual
+                                 Failure At   Actual
 
-      OR:                                            FAIL
-        :object_1/metric_1/value         < 2        1   F
-        :object_2/metric_2/value         > 2        1
+      OR:                                              FAIL
+      :object_1/metric_1/value          < 2        1   FAIL
+      :object_1/metric_2/value          > 2        2
 
       Auto QC Version: 1.0.0
 

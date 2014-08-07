@@ -4,6 +4,8 @@ import auto_qc.node as node
 OPERATORS = {
         'greater_than' : '>',
         'less_than'    : '<',
+        'and'          : 'AND:',
+        'or'           : 'OR:'
         }
 
 def simple(qc_dict):
@@ -27,19 +29,26 @@ Auto QC Version: {2}
 def threshold_row_array(thresholds, evaluations):
 
     def eval_result(r):
-        return 'FAIL' if r else ''
+        return 'FAIL' if node.apply_operator(r) else ''
 
-    def f((index, threshold)):
-        evaluation = evaluations[index]
+    def f(accum, (evaluation, threshold)):
+
         operator, variable_value, threshold_value = evaluation
         _, variable_name, _ = threshold
 
-        return [str(variable_name),
+        if operator in ["and", "or"]:
+            return accum + \
+                [[OPERATORS[operator], '', '', eval_result(evaluation)]] + \
+                reduce(f, zip(evaluation, threshold)[1:], [])
+        else:
+            return accum + [[
+                str(variable_name),
                 OPERATORS[operator] + ' ' + str(threshold_value),
                 str(variable_value),
-                eval_result(node.apply_operator(evaluation))]
+                eval_result((evaluation))
+                ]]
 
-    return map(f, enumerate(thresholds))
+    return reduce(f, zip(evaluations, thresholds), [])
 
 
 def text_table(rows):
