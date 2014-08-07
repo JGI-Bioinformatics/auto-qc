@@ -157,7 +157,7 @@ Feature: Printing different output formats
        -
          - greater_than
          - 2
-         - :object_2/metric_2/value
+         - :object_1/metric_2/value
      """
     When I run the command "auto-qc" with the arguments:
        | key              | value         |
@@ -173,7 +173,7 @@ Feature: Printing different output formats
                                   Failure   Actual
 
       AND:
-        :object_1/metric_1/value      < 2        1   FAIL
+        :object_1/metric_1/value      < 2        1   F
         :object_2/metric_2/value      > 2        1
 
       Auto QC Version: 1.0.0
@@ -216,7 +216,7 @@ Feature: Printing different output formats
     And the exit code should be 0
     And the standard out should equal:
       """
-      Status: PASS
+      Status: FAIL
 
                                   Failure   Actual
 
