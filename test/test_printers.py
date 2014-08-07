@@ -19,3 +19,9 @@ def test_nested_passing_and_threshold():
     evaluation = [['and', ['less_than', 1, 2], ['greater_than', 1, 2]]]
     expected   = [['AND:', '', '', ''], [':var_1', '< 2', '1', 'FAIL'], [':var_1', '> 2', '1', '']]
     assert_equal(expected, prn.threshold_row_array(threshold, evaluation))
+
+def test_nested_failing_or_threshold():
+    threshold  = [['or', ['less_than', ':var_1', 2], ['greater_than', ':var_1', 2]]]
+    evaluation = [['or', ['less_than', 1, 2], ['greater_than', 1, 2]]]
+    expected   = [['OR:', '', '', 'FAIL'], [':var_1', '< 2', '1', 'FAIL'], [':var_1', '> 2', '1', '']]
+    assert_equal(expected, prn.threshold_row_array(threshold, evaluation))

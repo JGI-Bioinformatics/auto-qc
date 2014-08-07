@@ -28,25 +28,32 @@ Auto QC Version: {2}
 
 def threshold_row_array(thresholds, evaluations):
 
-    def eval_result(r):
-        return 'FAIL' if node.apply_operator(r) else ''
+    def eval_result(n):
+        return 'FAIL' if node.apply_operator(n) else ''
+
+    def format_branch(evaluation):
+        operator = evaluation[0]
+        return [OPERATORS[operator], '', '', eval_result(evaluation)]
+
+    def format_node(evaluation, threshold):
+        operator, variable_value, threshold_value = evaluation
+        _, variable_name, _ = threshold
+        return [str(variable_name),
+                OPERATORS[operator] + ' ' + str(threshold_value),
+                str(variable_value),
+                eval_result((evaluation)) ]
 
     def f(accum, (evaluation, threshold)):
 
-        operator, variable_value, threshold_value = evaluation
+        operator, _, _ = evaluation
         _, variable_name, _ = threshold
 
         if operator in ["and", "or"]:
             return accum + \
-                [[OPERATORS[operator], '', '', eval_result(evaluation)]] + \
+                [format_branch(evaluation)] + \
                 reduce(f, zip(evaluation, threshold)[1:], [])
         else:
-            return accum + [[
-                str(variable_name),
-                OPERATORS[operator] + ' ' + str(threshold_value),
-                str(variable_value),
-                eval_result((evaluation))
-                ]]
+            return accum + [format_node(evaluation, threshold)]
 
     return reduce(f, zip(evaluations, thresholds), [])
 
