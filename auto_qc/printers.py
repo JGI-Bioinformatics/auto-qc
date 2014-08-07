@@ -1,9 +1,9 @@
-import auto_qc.node as nd
-import operator     as op
+import auto_qc.util.metadata as meta
+import auto_qc.node as node
 
-OPERATOR_STRING = {
-        op.gt : '>',
-        op.lt : '<'
+OPERATORS = {
+        'greater_than' : '>',
+        'less_than'    : '<',
         }
 
 def simple(qc_dict):
@@ -13,30 +13,38 @@ def yaml(qc_dict):
     import yaml
     return yaml.dump(qc_dict, default_flow_style=False).strip()
 
-def text(status):
+def text(qc_dict):
     return """\
 Status: {0}
 
 {1}
 
 Auto QC Version: {2}
-    """.format(simple(status),
-               text_threshold_table(status['node_results']),
-               version()).strip()
+    """.format(simple(qc_dict),
+               text_table(threshold_row_array(qc_dict['thresholds'], qc_dict['evaluation'])),
+               meta.version()).strip()
 
-def text_threshold_table(nodes):
+def threshold_row_array(thresholds, evaluations):
+
+    def eval_result(r):
+        return 'FAIL' if r else ''
+
+    def f((index, threshold)):
+        evaluation = evaluations[index]
+        operator, variable_value, threshold_value = evaluation
+        _, variable_name, _ = threshold
+
+        return [str(variable_name),
+                OPERATORS[operator] + ' ' + str(threshold_value),
+                str(variable_value),
+                eval_result(node.apply_operator(evaluation))]
+
+    return map(f, enumerate(thresholds))
+
+
+def text_table(rows):
     header = [['', 'Failure At', 'Actual', ''], ['', '', '', '']]
-
-    def f(node):
-        id_, _, _, threshold, oper = nd.destructure_node(node)
-        pass_fail = 'FAIL' if nd.node_fail(node) else ''
-        value = nd.metric_value(node)
-        return [id_ + ':',
-                OPERATOR_STRING[oper] + ' ' + "{:,}".format(threshold),
-                "{:,}".format(value),
-                pass_fail]
-
-    values = header + map(f, nodes)
+    values = header + rows
 
     max_col_1 = max([12] + map(lambda i: len(i[0]), values))
     max_col_2 = max(map(lambda i: len(i[1]), values))
@@ -47,6 +55,5 @@ def text_threshold_table(nodes):
                 col_2.rjust(max_col_2, ' ') + "   " +\
                 col_3.rjust(max_col_3, ' ') + "   " +\
                 col_4).rstrip()
-
 
     return "\n".join(map(padd, values)).rstrip()

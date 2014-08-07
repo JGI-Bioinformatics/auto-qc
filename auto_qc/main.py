@@ -35,6 +35,8 @@ def run(args):
 
     if args['yaml']:
         f = prn.yaml
+    elif args['text']:
+        f = prn.text
     else:
         f = prn.simple
 
