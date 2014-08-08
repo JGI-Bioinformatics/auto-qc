@@ -1,6 +1,7 @@
 import auto_qc.util.metadata as meta
 import auto_qc.node as node
 from fn import iters as it
+from fn import F
 
 OPERATORS = {
         'greater_than' : '>',
@@ -24,7 +25,7 @@ Status: {0}
 
 Auto QC Version: {2}
     """.format(simple(qc_dict),
-               text_table(threshold_row_array(qc_dict['thresholds'], qc_dict['evaluation'])),
+               text_table(row_array(zip(qc_dict['thresholds'], qc_dict['evaluation']))),
                meta.version()).strip()
 
 def row_array(n):
@@ -46,10 +47,7 @@ def row_array(n):
                     'actual'   : str(variable_value),
                     'fail'     : fail}
 
-    def f(accum, n):
-        return accum + [format_node(n)]
-
-    return reduce(f, n, [])
+    return reduce(lambda acc, i: acc + [format_node(i)], n, [])
 
 def _threshold_row_array(thresholds, evaluations):
 
