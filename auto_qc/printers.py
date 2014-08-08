@@ -82,8 +82,18 @@ def _threshold_row_array(thresholds, evaluations):
 
 
 def text_table(rows):
-    header = [['', 'Failure At', 'Actual', ''], ['', '', '', '']]
-    values = header + rows
+
+    values = [['', 'Failure At', 'Actual', ''], ['', '', '', '']]
+
+    def f(indent, row):
+        values.append([
+             indent + row['name'],
+             row.get('expected', ''),
+             row.get('actual', ''),
+             "FAIL" if row['fail'] else ""])
+        map(F(f, indent + "  "), row.get('children', []))
+
+    map(F(f, ""), rows)
 
     max_col_1 = max([12] + map(lambda i: len(i[0]), values))
     max_col_2 = max(map(lambda i: len(i[1]), values))
@@ -96,3 +106,4 @@ def text_table(rows):
                 col_4).rstrip()
 
     return "\n".join(map(padd, values)).rstrip()
+

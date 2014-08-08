@@ -170,11 +170,11 @@ Feature: Printing different output formats
       """
       Status: PASS
 
-                                 Failure At   Actual
+                                   Failure At   Actual
 
       AND:
-      :object_1/metric_1/value          < 2        1   FAIL
-      :object_1/metric_2/value          > 2        1
+        :object_1/metric_1/value          < 2        1   FAIL
+        :object_1/metric_2/value          > 2        1
 
       Auto QC Version: 1.0.0
 
@@ -218,11 +218,11 @@ Feature: Printing different output formats
       """
       Status: FAIL
 
-                                 Failure At   Actual
+                                   Failure At   Actual
 
-      OR:                                              FAIL
-      :object_1/metric_1/value          < 2        1   FAIL
-      :object_1/metric_2/value          > 2        2
+      OR:                                                FAIL
+        :object_1/metric_1/value          < 2        1   FAIL
+        :object_1/metric_2/value          > 2        2
 
       Auto QC Version: 1.0.0
 
