@@ -57,7 +57,7 @@ Feature: Error messages for incorrect use of auto-qc
     And the standard error should contain:
       """
       Incompatible threshold file syntax: <version>.
-      Please update the syntax to match version 1.
+      Please update the syntax to version >= 1.0.0.
 
       """
 
