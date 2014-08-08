@@ -29,6 +29,9 @@ Auto QC Version: {2}
                meta.version()).strip()
 
 def row_array(n):
+    """
+    Map thresholds and evaluations into rows
+    """
 
     def format_node((threshold, evaluation)):
         operator = it.head(evaluation)
@@ -49,39 +52,11 @@ def row_array(n):
 
     return reduce(lambda acc, i: acc + [format_node(i)], n, [])
 
-def _threshold_row_array(thresholds, evaluations):
-
-    def eval_result(n):
-        return 'FAIL' if node.apply_operator(n) else ''
-
-    def format_branch(evaluation):
-        operator = evaluation[0]
-        return [OPERATORS[operator], '', '', eval_result(evaluation)]
-
-    def format_node(evaluation, threshold):
-        operator, variable_value, threshold_value = evaluation
-        _, variable_name, _ = threshold
-        return [str(variable_name),
-                OPERATORS[operator] + ' ' + str(threshold_value),
-                str(variable_value),
-                eval_result((evaluation)) ]
-
-    def f(accum, (evaluation, threshold)):
-
-        operator, _, _ = evaluation
-        _, variable_name, _ = threshold
-
-        if operator in ["and", "or"]:
-            return accum + \
-                [format_branch(evaluation)] + \
-                reduce(f, zip(evaluation, threshold)[1:], [])
-        else:
-            return accum + [format_node(evaluation, threshold)]
-
-    return reduce(f, zip(evaluations, thresholds), [])
-
 
 def text_table(rows):
+    """
+    Convert array of nested rows to a human readable text format
+    """
 
     values = [['', 'Failure At', 'Actual', ''], ['', '', '', '']]
 
