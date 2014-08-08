@@ -1,5 +1,6 @@
 import auto_qc.util.metadata as meta
 import auto_qc.node as node
+from fn import iters as it
 
 OPERATORS = {
         'greater_than' : '>',
@@ -26,7 +27,31 @@ Auto QC Version: {2}
                text_table(threshold_row_array(qc_dict['thresholds'], qc_dict['evaluation'])),
                meta.version()).strip()
 
-def threshold_row_array(thresholds, evaluations):
+def row_array(n):
+
+    def format_node((threshold, evaluation)):
+        operator = it.head(evaluation)
+        fail     = node.apply_operator(evaluation)
+
+        if operator in ["or", "and"]:
+            return {'name'     : OPERATORS[operator],
+                    'fail'     : fail,
+                    'children' : row_array(zip(it.tail(threshold), it.tail(evaluation)))
+            }
+        else:
+            _, variable_value, threshold_value = evaluation
+            _, variable_name, _ = threshold
+            return {'name'     : str(variable_name),
+                    'expected' : OPERATORS[operator] + ' ' + str(threshold_value),
+                    'actual'   : str(variable_value),
+                    'fail'     : fail}
+
+    def f(accum, n):
+        return accum + [format_node(n)]
+
+    return reduce(f, n, [])
+
+def _threshold_row_array(thresholds, evaluations):
 
     def eval_result(n):
         return 'FAIL' if node.apply_operator(n) else ''
