@@ -1,5 +1,7 @@
 import auto_qc.util.metadata as meta
 import auto_qc.node as node
+from fn import iters as it
+from fn import F
 
 OPERATORS = {
         'greater_than' : '>',
@@ -23,44 +25,50 @@ Status: {0}
 
 Auto QC Version: {2}
     """.format(simple(qc_dict),
-               text_table(threshold_row_array(qc_dict['thresholds'], qc_dict['evaluation'])),
+               text_table(row_array(zip(qc_dict['thresholds'], qc_dict['evaluation']))),
                meta.version()).strip()
 
-def threshold_row_array(thresholds, evaluations):
+def row_array(n):
+    """
+    Map thresholds and evaluations into rows
+    """
 
-    def eval_result(n):
-        return 'FAIL' if node.apply_operator(n) else ''
+    def format_node((threshold, evaluation)):
+        operator = it.head(evaluation)
+        fail     = node.apply_operator(evaluation)
 
-    def format_branch(evaluation):
-        operator = evaluation[0]
-        return [OPERATORS[operator], '', '', eval_result(evaluation)]
-
-    def format_node(evaluation, threshold):
-        operator, variable_value, threshold_value = evaluation
-        _, variable_name, _ = threshold
-        return [str(variable_name),
-                OPERATORS[operator] + ' ' + str(threshold_value),
-                str(variable_value),
-                eval_result((evaluation)) ]
-
-    def f(accum, (evaluation, threshold)):
-
-        operator, _, _ = evaluation
-        _, variable_name, _ = threshold
-
-        if operator in ["and", "or"]:
-            return accum + \
-                [format_branch(evaluation)] + \
-                reduce(f, zip(evaluation, threshold)[1:], [])
+        if operator in ["or", "and"]:
+            return {'name'     : OPERATORS[operator],
+                    'fail'     : fail,
+                    'children' : row_array(zip(it.tail(threshold), it.tail(evaluation)))
+            }
         else:
-            return accum + [format_node(evaluation, threshold)]
+            _, variable_value, threshold_value = evaluation
+            _, variable_name, _ = threshold
+            return {'name'     : str(variable_name),
+                    'expected' : OPERATORS[operator] + ' ' + str(threshold_value),
+                    'actual'   : str(variable_value),
+                    'fail'     : fail}
 
-    return reduce(f, zip(evaluations, thresholds), [])
+    return reduce(lambda acc, i: acc + [format_node(i)], n, [])
 
 
 def text_table(rows):
-    header = [['', 'Failure At', 'Actual', ''], ['', '', '', '']]
-    values = header + rows
+    """
+    Convert array of nested rows to a human readable text format
+    """
+
+    values = [['', 'Failure At', 'Actual', ''], ['', '', '', '']]
+
+    def f(indent, row):
+        values.append([
+             indent + row['name'],
+             row.get('expected', ''),
+             row.get('actual', ''),
+             "FAIL" if row['fail'] else ""])
+        map(F(f, indent + "  "), row.get('children', []))
+
+    map(F(f, ""), rows)
 
     max_col_1 = max([12] + map(lambda i: len(i[0]), values))
     max_col_2 = max(map(lambda i: len(i[1]), values))
@@ -73,3 +81,4 @@ def text_table(rows):
                 col_4).rstrip()
 
     return "\n".join(map(padd, values)).rstrip()
+
