@@ -136,3 +136,83 @@ Feature: Using the auto-qc tool
       | 1     | 0     | 1     | PASS   |
       | 1     | 1     | 0     | PASS   |
       | 1     | 1     | 1     | PASS   |
+
+  Scenario: A library passing on insert size
+   Given I create the file "analysis.yml" with the contents:
+     """
+     - analysis: insert_size
+       outputs:
+         metrics:
+           mode: 198
+     - analysis: library_type
+       outputs:
+         protocol: Ultra-Low Input (DNA)
+     """
+     And I create the file "threshold.yml" with the contents:
+     """
+     metadata:
+       version:
+         auto-qc: 1.0.0
+     thresholds:
+     -
+       - and
+       -
+         - less_than
+         - :insert_size/metrics/mode
+         - 200
+       -
+         - not_equals
+         - :library_type/protocol
+         - Ultra-Low Input (DNA)
+     """
+    When I run the command "auto-qc" with the arguments:
+       | key              | value         |
+       | --analysis_file  | analysis.yml  |
+       | --threshold_file | threshold.yml |
+   Then the standard error should be empty
+    And the exit code should be 0
+    And the standard out should contain:
+      """
+      PASS
+
+      """
+
+  Scenario: A library failing on insert size
+   Given I create the file "analysis.yml" with the contents:
+     """
+     - analysis: insert_size
+       outputs:
+         metrics:
+           mode: 198
+     - analysis: library_type
+       outputs:
+         protocol: Standard
+     """
+     And I create the file "threshold.yml" with the contents:
+     """
+     metadata:
+       version:
+         auto-qc: 1.0.0
+     thresholds:
+     -
+       - and
+       -
+         - less_than
+         - :insert_size/metrics/mode
+         - 200
+       -
+         - not_equals
+         - :library_type/protocol
+         - Ultra-Low Input (DNA)
+     """
+    When I run the command "auto-qc" with the arguments:
+       | key              | value         |
+       | --analysis_file  | analysis.yml  |
+       | --threshold_file | threshold.yml |
+   Then the standard error should be empty
+    And the exit code should be 0
+    And the standard out should contain:
+      """
+      FAIL
+
+      """
