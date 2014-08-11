@@ -48,6 +48,10 @@ Feature: Using the auto-qc tool
       | False    | or           | True    | FAIL   |
       | True     | or           | False   | FAIL   |
       | False    | or           | False   | PASS   |
+      | 1        | not_equals   | 1       | PASS   |
+      | 2        | not_equals   | 1       | FAIL   |
+      | 1        | equals       | 1       | FAIL   |
+      | 2        | equals       | 1       | PASS   |
 
   Scenario Outline: Multiple thresholds
    Given I create the file "analysis.yml" with the contents:
