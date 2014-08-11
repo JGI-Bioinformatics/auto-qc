@@ -101,5 +101,5 @@ Feature: Error messages for incorrect use of auto-qc
 
   Examples: Errors
     | variable                     | error                                                           |
-    | :object_1/metric_1/non_value | No matching metric 'metric_1/non_metric' found for ':object_1.' |
+    | :object_1/metric_1/non_value | No matching metric 'metric_1/non_value' found in ':object_1.'   |
     | :non_object/metric_1/value   | No matching analysis called 'non_object' found.                 |

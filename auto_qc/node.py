@@ -18,7 +18,7 @@ def eval_variables(analyses, node):
     Replace all variables in a node with their referenced literal value.
     """
     def _eval(n):
-        if isinstance(n, basestring) and it.head(n) == ':':
+        if var.is_variable(n):
             return var.variable(analyses, n)
         elif isinstance(n, list):
             return eval_variables(analyses, n)

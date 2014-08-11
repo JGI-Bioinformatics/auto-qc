@@ -1,5 +1,11 @@
 from fn import iters as it
 
+def is_variable(var):
+    """
+    Is the string a variable reference?
+    """
+    return isinstance(var, basestring) and it.head(var) == ':'
+
 def split_into_namespace_and_path(variable_string):
     drop_colon = variable_string[1:]
     path_array = drop_colon.split('/')

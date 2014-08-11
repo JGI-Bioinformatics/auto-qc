@@ -1,4 +1,8 @@
+import fn.iters as it
+import string   as st
+
 import auto_qc.util.metadata as meta
+import auto_qc.variable      as var
 
 def check_version_number(threshold, status):
     version =  meta.major_version()
@@ -12,3 +16,40 @@ Please update the syntax to version >= {}.0.0.
 
     return status
 
+
+def check_node_paths(nodes, analyses, status):
+    """
+    Set an error message in the status if node variable paths are not valid.
+    """
+
+    def f(node):
+        paths  = reduce(fetch_paths, node, [])
+        errors = list(it.compact(map(eval_path, paths)))
+        if len(errors) > 0:
+            return errors
+
+    def fetch_paths(acc, n):
+        if var.is_variable(n):
+            return acc + [n]
+        elif isinstance(n, list):
+            return reduce(fetch_paths, n, acc)
+        else:
+            return acc
+
+    def eval_path(p):
+        namespace, path = var.split_into_namespace_and_path(p)
+        analysis = var.get_analysis(status[analyses], p)
+        if analysis is None:
+            return "No matching analysis called '{}' found.".format(namespace)
+        try:
+            variable = var.get_variable_value(analysis, p)
+        except KeyError as e:
+            msg = "No matching metric '{}' found in ':{}.'"
+            return msg.format(st.join(path, "/"), namespace)
+
+    errors = list(it.compact(it.flatten(map(f, status[nodes]['thresholds']))))
+
+    if len(errors) > 0:
+        status['error'] = st.join(errors, "\n")
+
+    return status
