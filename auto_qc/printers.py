@@ -9,7 +9,9 @@ OPERATORS = {
         'and'          : 'AND:',
         'or'           : 'OR:',
         'equals'       : '==',
-        'not_equals'   : '=/='
+        'not_equals'   : '=/=',
+        'is_in'        : 'is in',
+        'is_not_in'    : 'is not in'
         }
 
 def simple(qc_dict):
