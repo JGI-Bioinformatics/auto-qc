@@ -7,7 +7,9 @@ OPERATORS = {
         'greater_than' : '>',
         'less_than'    : '<',
         'and'          : 'AND:',
-        'or'           : 'OR:'
+        'or'           : 'OR:',
+        'equals'       : '==',
+        'not_equals'   : '=/='
         }
 
 def simple(qc_dict):
