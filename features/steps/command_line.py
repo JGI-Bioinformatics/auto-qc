@@ -81,7 +81,7 @@ def step_impl(context,stream):
         s = context.output.stderr
     else:
         raise RuntimeError('Unknown stream "{}"'.format(stream))
-    assert_in(context.text, s)
+    assert_in(context.text.strip(), s)
 
 @then('the standard {stream} should equal')
 def step_impl(context,stream):

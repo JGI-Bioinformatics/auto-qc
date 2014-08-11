@@ -1,57 +1,76 @@
-import auto_qc.node as nd
-import operator     as op
+import auto_qc.util.metadata as meta
+import auto_qc.node as node
+from fn import iters as it
+from fn import F
 
-OPERATOR_STRING = {
-        op.gt : '>',
-        op.lt : '<'
+OPERATORS = {
+        'greater_than' : '>',
+        'less_than'    : '<',
+        'and'          : 'AND:',
+        'or'           : 'OR:',
+        'equals'       : '==',
+        'not_equals'   : '=/='
         }
 
-def failed(status):
-    failing = map(nd.node_fail, status['node_results'])
-    return any(failing)
+def simple(qc_dict):
+    return 'FAIL' if qc_dict['state']['fail'] else 'PASS'
 
-def version():
-    import os
-    path = os.path.join(os.path.dirname(__file__), '../VERSION')
-    with open(path, 'r') as f:
-        return f.read().strip()
-
-def simple(status):
-    return 'FAIL' if failed(status) else 'PASS'
-
-def yaml(status):
+def yaml(qc_dict):
     import yaml
-    output = {
-        'fail'      : failed(status),
-        'metadata'  : {'version': {'auto-qc': version()}},
-        'thresholds': status['node_results']
-    }
-    return yaml.dump(output, default_flow_style=False).strip()
+    return yaml.dump(qc_dict, default_flow_style=False).strip()
 
-def text(status):
+def text(qc_dict):
     return """\
 Status: {0}
 
 {1}
 
 Auto QC Version: {2}
-    """.format(simple(status),
-               text_threshold_table(status['node_results']),
-               version()).strip()
+    """.format(simple(qc_dict),
+               text_table(row_array(zip(qc_dict['thresholds'], qc_dict['evaluation']))),
+               meta.version()).strip()
 
-def text_threshold_table(nodes):
-    header = [['', 'Failure At', 'Actual', ''], ['', '', '', '']]
+def row_array(n):
+    """
+    Map thresholds and evaluations into rows
+    """
 
-    def f(node):
-        id_, _, _, threshold, oper = nd.destructure_node(node)
-        pass_fail = 'FAIL' if nd.node_fail(node) else ''
-        value = nd.metric_value(node)
-        return [id_ + ':',
-                OPERATOR_STRING[oper] + ' ' + "{:,}".format(threshold),
-                "{:,}".format(value),
-                pass_fail]
+    def format_node((threshold, evaluation)):
+        operator = it.head(evaluation)
+        fail     = node.apply_operator(evaluation)
 
-    values = header + map(f, nodes)
+        if operator in ["or", "and"]:
+            return {'name'     : OPERATORS[operator],
+                    'fail'     : fail,
+                    'children' : row_array(zip(it.tail(threshold), it.tail(evaluation)))
+            }
+        else:
+            _, variable_value, threshold_value = evaluation
+            _, variable_name, _ = threshold
+            return {'name'     : str(variable_name),
+                    'expected' : OPERATORS[operator] + ' ' + str(threshold_value),
+                    'actual'   : str(variable_value),
+                    'fail'     : fail}
+
+    return reduce(lambda acc, i: acc + [format_node(i)], n, [])
+
+
+def text_table(rows):
+    """
+    Convert array of nested rows to a human readable text format
+    """
+
+    values = [['', 'Failure At', 'Actual', ''], ['', '', '', '']]
+
+    def f(indent, row):
+        values.append([
+             indent + row['name'],
+             row.get('expected', ''),
+             row.get('actual', ''),
+             "FAIL" if row['fail'] else ""])
+        map(F(f, indent + "  "), row.get('children', []))
+
+    map(F(f, ""), rows)
 
     max_col_1 = max([12] + map(lambda i: len(i[0]), values))
     max_col_2 = max(map(lambda i: len(i[1]), values))
@@ -63,5 +82,5 @@ def text_threshold_table(nodes):
                 col_3.rjust(max_col_3, ' ') + "   " +\
                 col_4).rstrip()
 
-
     return "\n".join(map(padd, values)).rstrip()
+

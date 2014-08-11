@@ -29,7 +29,7 @@ Feature: Error messages for incorrect use of auto-qc
       """
      And the exit code should be 1
 
-  Scenario: The given value does not exist
+  Scenario Outline: Incompatible threshold file version number
    Given I create the file "analysis.yml" with the contents:
      """
      - analysis: object_1
@@ -41,28 +41,34 @@ Feature: Error messages for incorrect use of auto-qc
      """
      metadata:
        version:
-         auto-qc: 0.2.1
+         auto-qc: <version>
      thresholds:
-     - node:
-         id: test_threshold
-         analysis: object_1
-         operator: greater_than
-         metric: 'metric_1/non_metric'
-         threshold: 1
+     -
+       - greater_than
+       - :object_1/metric_1/value
+       - 1
      """
     When I run the command "auto-qc" with the arguments:
        | key              | value         |
        | --analysis_file  | analysis.yml  |
        | --threshold_file | threshold.yml |
    Then the standard out should be empty
-    And the standard error should equal:
-      """
-      No matching metric 'metric_1/non_metric' found for node 'test_threshold.'
-
-      """
     And the exit code should be 1
+    And the standard error should contain:
+      """
+      Incompatible threshold file syntax: <version>.
+      Please update the syntax to version >= 1.0.0.
 
-  Scenario: The given analysis does not exist
+      """
+
+  Examples: Versions
+      | version |
+      | 0       |
+      | 0.1     |
+      | 0.1.2   |
+
+  @wip
+  Scenario Outline: The given value does not exist
    Given I create the file "analysis.yml" with the contents:
      """
      - analysis: object_1
@@ -74,14 +80,12 @@ Feature: Error messages for incorrect use of auto-qc
      """
      metadata:
        version:
-         auto-qc: 0.2.1
+         auto-qc: 1.0.0
      thresholds:
-     - node:
-         id: test_threshold
-         analysis: non_object
-         operator: greater_than
-         metric: 'metric_1/value'
-         threshold: 1
+     -
+       - greater_than
+       - <variable>
+       - 1
      """
     When I run the command "auto-qc" with the arguments:
        | key              | value         |
@@ -90,7 +94,12 @@ Feature: Error messages for incorrect use of auto-qc
    Then the standard out should be empty
     And the standard error should equal:
       """
-      No matching analysis 'non_object' found for node 'test_threshold.'
+      <error>
 
       """
     And the exit code should be 1
+
+  Examples: Errors
+    | variable                     | error                                                           |
+    | :object_1/metric_1/non_value | No matching metric 'metric_1/non_value' found in ':object_1.'   |
+    | :non_object/metric_1/value   | No matching analysis called 'non_object' found.                 |

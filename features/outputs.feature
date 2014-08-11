@@ -2,36 +2,24 @@ Feature: Printing different output formats
   In order to visualise the QC results
   The auto-qc tool can generate different output formats
 
-  Scenario: Generating yaml description of threshold tests
+  Scenario Outline: Generating YAML output
    Given I create the file "analysis.yml" with the contents:
      """
      - analysis: object_1
        outputs:
          metric_1:
-           value: 1
-     - analysis: object_2
-       outputs:
-         metric_2:
-           value: 2
+           value: <variable>
      """
      And I create the file "threshold.yml" with the contents:
      """
      metadata:
        version:
-         auto-qc: 0.2.1
+         auto-qc: 1.0.0
      thresholds:
-     - node:
-         id: test_1
-         analysis: object_1
-         operator: greater_than
-         threshold: 1
-         metric: 'metric_1/value'
-     - node:
-         id: test_2
-         analysis: object_2
-         operator: greater_than
-         threshold: 1
-         metric: 'metric_2/value'
+     -
+       - <operator>
+       - :object_1/metric_1/value
+       - <literal>
      """
     When I run the command "auto-qc" with the arguments:
        | key              | value         |
@@ -42,70 +30,127 @@ Feature: Printing different output formats
     And the exit code should be 0
     And the standard out should equal:
       """
-      fail: true
+      evaluation:
+      - - <operator>
+        - <variable>
+        - <literal>
       metadata:
         version:
-          auto-qc: 0.2.1
+          auto-qc: 1.0.0
+      state:
+        fail: <status>
       thresholds:
-      - node:
-          analysis: object_1
-          fail: false
-          id: test_1
-          metric: metric_1/value
-          metric_value: 1
-          operator: greater_than
-          threshold: 1
-      - node:
-          analysis: object_2
-          fail: true
-          id: test_2
-          metric: metric_2/value
-          metric_value: 2
-          operator: greater_than
-          threshold: 1
+      - - <operator>
+        - :object_1/metric_1/value
+        - <literal>
 
       """
 
-  Scenario: Generating a text description of the threshold tests
+  Examples: Operators
+      | variable | operator     | literal | status |
+      | 1        | greater_than | 0       | true   |
+      | 1        | greater_than | 2       | false  |
+
+  Scenario Outline: Using different text format operators
    Given I create the file "analysis.yml" with the contents:
      """
      - analysis: object_1
        outputs:
          metric_1:
            value: 1
-     - analysis: object_2
+     """
+     And I create the file "threshold.yml" with the contents:
+     """
+     metadata:
+       version:
+         auto-qc: 1.0.0
+     thresholds:
+     -
+       - <operator>
+       - :object_1/metric_1/value
+       - 2
+     """
+    When I run the command "auto-qc" with the arguments:
+       | key              | value         |
+       | --analysis_file  | analysis.yml  |
+       | --threshold_file | threshold.yml |
+       | --text-output    |               |
+   Then the standard error should be empty
+    And the exit code should be 0
+    And the standard out should contain:
+      """
+      <output> 2
+
+      """
+
+  Examples: Operators
+      | operator     | output |
+      | greater_than | >      |
+      | less_than    | <      |
+      | equals       | ==     |
+      | not_equals   | =/=    |
+
+
+  Scenario: Generating text readable output for a failing metric
+   Given I create the file "analysis.yml" with the contents:
+     """
+     - analysis: object_1
        outputs:
-         metric_2:
-           value: 2000000
-     - analysis: object_3
-       outputs:
-         metric_3:
+         metric_1:
            value: 1
      """
      And I create the file "threshold.yml" with the contents:
      """
      metadata:
        version:
-         auto-qc: 0.2.1
+         auto-qc: 1.0.0
      thresholds:
-     - node:
-         id: test_1
-         analysis: object_1
-         operator: greater_than
-         threshold: 1
-         metric: 'metric_1/value'
-     - node:
-         id: longer_test_name
-         analysis: object_2
-         operator: greater_than
-         threshold: 1
-         metric: 'metric_2/value'
-     - node:
-         id: test_3
-         analysis: object_3
-         operator: greater_than
-         threshold: 1.5
-         metric: 'metric_3/value'
+     -
+       - greater_than
+       - :object_1/metric_1/value
+       - 2
+     """
+    When I run the command "auto-qc" with the arguments:
+       | key              | value         |
+       | --analysis_file  | analysis.yml  |
+       | --threshold_file | threshold.yml |
+       | --text-output    |               |
+   Then the standard error should be empty
+    And the exit code should be 0
+    And the standard out should equal:
+      """
+      Status: PASS
+
+                                 Failure At   Actual
+
+      :object_1/metric_1/value          > 2        1
+
+      Auto QC Version: 1.0.0
+
+      """
+
+  Scenario: Generating text readable output for a multiple metrics
+   Given I create the file "analysis.yml" with the contents:
+     """
+     - analysis: object_1
+       outputs:
+         metric_1:
+           value: 1
+     """
+     And I create the file "threshold.yml" with the contents:
+     """
+     metadata:
+       version:
+         auto-qc: 1.0.0
+     thresholds:
+     -
+       - less_than
+       - :object_1/metric_1/value
+       - 2
+     -
+       - greater_than
+       - :object_1/metric_1/value
+       - 2
      """
     When I run the command "auto-qc" with the arguments:
        | key              | value         |
@@ -118,12 +163,107 @@ Feature: Printing different output formats
       """
       Status: FAIL
 
-                          Failure At      Actual
+                                 Failure At   Actual
 
-      test_1:                    > 1           1
-      longer_test_name:          > 1   2,000,000   FAIL
-      test_3:                  > 1.5           1
+      :object_1/metric_1/value          < 2        1   FAIL
+      :object_1/metric_1/value          > 2        1
 
-      Auto QC Version: 0.2.1
+      Auto QC Version: 1.0.0
+
+      """
+
+  Scenario: Generating text readable output for a passing nested metric
+   Given I create the file "analysis.yml" with the contents:
+     """
+     - analysis: object_1
+       outputs:
+         metric_1:
+           value: 1
+         metric_2:
+           value: 1
+     """
+     And I create the file "threshold.yml" with the contents:
+     """
+     metadata:
+       version:
+         auto-qc: 1.0.0
+     thresholds:
+     -
+       - and
+       -
+         - less_than
+         - :object_1/metric_1/value
+         - 2
+       -
+         - greater_than
+         - :object_1/metric_2/value
+         - 2
+     """
+    When I run the command "auto-qc" with the arguments:
+       | key              | value         |
+       | --analysis_file  | analysis.yml  |
+       | --threshold_file | threshold.yml |
+       | --text-output    |               |
+   Then the standard error should be empty
+    And the exit code should be 0
+    And the standard out should equal:
+      """
+      Status: PASS
+
+                                   Failure At   Actual
+
+      AND:
+        :object_1/metric_1/value          < 2        1   FAIL
+        :object_1/metric_2/value          > 2        1
+
+      Auto QC Version: 1.0.0
+
+      """
+
+  Scenario: Generating text readable output for a failing nested metric
+   Given I create the file "analysis.yml" with the contents:
+     """
+     - analysis: object_1
+       outputs:
+         metric_1:
+           value: 1
+         metric_2:
+           value: 2
+     """
+     And I create the file "threshold.yml" with the contents:
+     """
+     metadata:
+       version:
+         auto-qc: 1.0.0
+     thresholds:
+     -
+       - or
+       -
+         - less_than
+         - :object_1/metric_1/value
+         - 2
+       -
+         - greater_than
+         - :object_1/metric_2/value
+         - 2
+     """
+    When I run the command "auto-qc" with the arguments:
+       | key              | value         |
+       | --analysis_file  | analysis.yml  |
+       | --threshold_file | threshold.yml |
+       | --text-output    |               |
+   Then the standard error should be empty
+    And the exit code should be 0
+    And the standard out should equal:
+      """
+      Status: FAIL
+
+                                   Failure At   Actual
+
+      OR:                                                FAIL
+        :object_1/metric_1/value          < 2        1   FAIL
+        :object_1/metric_2/value          > 2        2
+
+      Auto QC Version: 1.0.0
 
       """
