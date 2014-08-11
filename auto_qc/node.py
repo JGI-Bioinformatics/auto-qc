@@ -6,6 +6,8 @@ import auto_qc.variable as var
 OPERATORS = {
     'greater_than': op.gt,
     'less_than'   : op.lt,
+    'equals'      : op.eq,
+    'not_equals'  : op.ne,
     'and'         : lambda *args: all(args),
     'or'          : lambda *args: any(args),
         }
