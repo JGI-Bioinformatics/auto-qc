@@ -66,3 +66,40 @@ Feature: Error messages for incorrect use of auto-qc
       | 0       |
       | 0.1     |
       | 0.1.2   |
+
+  @wip
+  Scenario Outline: The given value does not exist
+   Given I create the file "analysis.yml" with the contents:
+     """
+     - analysis: object_1
+       outputs:
+         metric_1:
+           value: 1
+     """
+     And I create the file "threshold.yml" with the contents:
+     """
+     metadata:
+       version:
+         auto-qc: 1.0.0
+     thresholds:
+     -
+       - greater_than
+       - <variable>
+       - 1
+     """
+    When I run the command "auto-qc" with the arguments:
+       | key              | value         |
+       | --analysis_file  | analysis.yml  |
+       | --threshold_file | threshold.yml |
+   Then the standard out should be empty
+    And the standard error should equal:
+      """
+      <error>
+
+      """
+    And the exit code should be 1
+
+  Examples: Errors
+    | variable                     | error                                                           |
+    | :object_1/metric_1/non_value | No matching metric 'metric_1/non_value' found in ':object_1.'   |
+    | :non_object/metric_1/value   | No matching analysis called 'non_object' found.                 |
