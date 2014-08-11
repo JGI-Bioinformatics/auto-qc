@@ -267,3 +267,41 @@ Feature: Printing different output formats
       Auto QC Version: 1.0.0
 
       """
+
+  Scenario: Generating text readable output for a list metric
+   Given I create the file "analysis.yml" with the contents:
+     """
+     - analysis: object_1
+       outputs:
+         metric_1:
+           value: A
+     """
+     And I create the file "threshold.yml" with the contents:
+     """
+     metadata:
+       version:
+         auto-qc: 1.0.0
+     thresholds:
+     -
+       - is_in
+       - :object_1/metric_1/value
+       - [list, A, B, C]
+     """
+    When I run the command "auto-qc" with the arguments:
+       | key              | value         |
+       | --analysis_file  | analysis.yml  |
+       | --threshold_file | threshold.yml |
+       | --text-output    |               |
+   Then the standard error should be empty
+    And the exit code should be 0
+    And the standard out should equal:
+      """
+      Status: FAIL
+
+                                                    Failure At   Actual
+
+      :object_1/metric_1/value   is in ['list', 'A', 'B', 'C']        A   FAIL
+
+      Auto QC Version: 1.0.0
+
+      """
