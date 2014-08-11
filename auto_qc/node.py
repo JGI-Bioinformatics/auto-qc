@@ -1,5 +1,6 @@
 import operator      as op
 from fn import iters as it
+from fn import F
 
 import auto_qc.variable as var
 
@@ -10,6 +11,9 @@ OPERATORS = {
     'not_equals'  : op.ne,
     'and'         : lambda *args: all(args),
     'or'          : lambda *args: any(args),
+    'is_in'       : lambda x, y: x in y,
+    'is_not_in'   : lambda x, y: x not in y,
+    'list'        : lambda *args: list(args)
         }
 
 def operator(v):

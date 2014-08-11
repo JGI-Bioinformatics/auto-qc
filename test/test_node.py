@@ -17,6 +17,17 @@ def test_apply_operator_false_with_nested_lists():
     n = ['and', ['greater_than', 1, 2],['greater_than', 1, 2]]
     assert_false(node.apply_operator(n))
 
+def test_apply_operator_with_list():
+    n = ['list', 2, 1]
+    assert_equal([2, 1], node.apply_operator(n))
+
+def test_apply_operator_with_is_in():
+    n = ['is_in', 2, ['list', 2, 1]]
+    assert_true(node.apply_operator(n))
+
+def test_apply_operator_with_is_not_in():
+    n = ['is_not_in', 2, ['list', 2, 1]]
+    assert_false(node.apply_operator(n))
 
 def test_eval_variable_with_literal_and_variable():
     n = ['less_than', ':ref/metric_1', 1]
