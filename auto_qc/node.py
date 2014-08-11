@@ -1,6 +1,8 @@
 import operator      as op
 from fn import iters as it
 
+import auto_qc.variable as var
+
 OPERATORS = {
     'greater_than': op.gt,
     'less_than'   : op.lt,
@@ -11,21 +13,13 @@ OPERATORS = {
 def operator(v):
     return OPERATORS[v]
 
-def variable(analyses, v):
-    path = v[1:].split('/')
-
-    namespace = it.head(path)
-    analysis  = it.head(filter(lambda x: x['analysis'] == namespace, analyses))
-    rest      = it.tail(path)
-    return reduce(lambda a, k: a[k], rest, analysis['outputs'])
-
 def eval_variables(analyses, node):
     """
     Replace all variables in a node with their referenced literal value.
     """
     def _eval(n):
         if isinstance(n, basestring) and it.head(n) == ':':
-            return variable(analyses, n)
+            return var.variable(analyses, n)
         elif isinstance(n, list):
             return eval_variables(analyses, n)
         else:
