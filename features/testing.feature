@@ -53,6 +53,44 @@ Feature: Using the auto-qc tool
       | 1        | equals       | 1       | FAIL   |
       | 2        | equals       | 1       | PASS   |
 
+  Scenario Outline: Using list operators
+   Given I create the file "analysis.yml" with the contents:
+     """
+     - analysis: object_1
+       outputs:
+         metric_1:
+           value: <variable>
+     """
+     And I create the file "threshold.yml" with the contents:
+     """
+     metadata:
+       version:
+         auto-qc: 1.0.0
+     thresholds:
+     -
+       - <operator>
+       - :object_1/metric_1/value
+       - <literal>
+     """
+    When I run the command "auto-qc" with the arguments:
+       | key              | value         |
+       | --analysis_file  | analysis.yml  |
+       | --threshold_file | threshold.yml |
+   Then the standard error should be empty
+    And the exit code should be 0
+    And the standard out should contain:
+      """
+      <result>
+
+      """
+
+  Examples: Operators
+      | variable | operator     | literal | result |
+      | A        | is_in        | [list, A, B]  | FAIL   |
+      | C        | is_in        | [list, A, B]  | PASS   |
+      | A        | is_not_in    | [list, A, B]  | PASS   |
+      | C        | is_not_in    | [list, A, B]  | FAIL   |
+
   Scenario Outline: Multiple thresholds
    Given I create the file "analysis.yml" with the contents:
      """
