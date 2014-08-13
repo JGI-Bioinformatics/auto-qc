@@ -43,6 +43,14 @@ def test_multiple_nested_failing_and_threshold():
         ]}]
     assert_equal(expected, prn.row_array(zip(threshold, evaluation)))
 
+def test_row_array_with_long_list():
+    threshold  = [['is_in', ':var_1', ['list', 'A', 'B', 'C', 'D', 'E']]]
+    evaluation = [['is_in', 'A',  ['list', 'A', 'B', 'C', 'D', 'E']]]
+    expected   = [{'name'     : ':var_1',
+                   'expected' : "is in [A, B, C, ...]",
+                   'actual'   : 'A',
+                   'fail'     : True}]
+    assert_equal(expected, prn.row_array(zip(threshold, evaluation)))
 
 
 def test_text_table_with_single_failing_metric():

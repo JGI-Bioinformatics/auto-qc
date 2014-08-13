@@ -1,7 +1,8 @@
 import auto_qc.util.metadata as meta
 import auto_qc.node as node
 from fn import iters as it
-from fn import F
+from fn import F, _
+from re import sub
 
 OPERATORS = {
         'greater_than' : '>',
@@ -32,6 +33,15 @@ Auto QC Version: {2}
                text_table(row_array(zip(qc_dict['thresholds'], qc_dict['evaluation']))),
                meta.version()).strip()
 
+def format_threshold(thr):
+    f = F() << str
+    if isinstance(thr, list):
+        f = f << F(sub, "'", "") << str << list << it.tail
+        if len(thr) > 4:
+            f = f << F(_ + ['...']) << list << F(it.take, 4)
+
+    return f(thr)
+
 def row_array(n):
     """
     Map thresholds and evaluations into rows
@@ -44,13 +54,12 @@ def row_array(n):
         if operator in ["or", "and"]:
             return {'name'     : OPERATORS[operator],
                     'fail'     : fail,
-                    'children' : row_array(zip(it.tail(threshold), it.tail(evaluation)))
-            }
+                    'children' : row_array(zip(it.tail(threshold), it.tail(evaluation)))}
         else:
             _, variable_value, threshold_value = evaluation
             _, variable_name, _ = threshold
             return {'name'     : str(variable_name),
-                    'expected' : OPERATORS[operator] + ' ' + str(threshold_value),
+                    'expected' : OPERATORS[operator] + ' ' + format_threshold(threshold_value),
                     'actual'   : str(variable_value),
                     'fail'     : fail}
 
