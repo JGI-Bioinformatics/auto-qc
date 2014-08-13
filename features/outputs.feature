@@ -268,7 +268,7 @@ Feature: Printing different output formats
 
       """
 
-  Scenario: Generating text readable output for a list metric
+  Scenario: Generating text readable output for a long list metric
    Given I create the file "analysis.yml" with the contents:
      """
      - analysis: object_1
@@ -285,7 +285,7 @@ Feature: Printing different output formats
      -
        - is_in
        - :object_1/metric_1/value
-       - [list, A, B, C]
+       - [list, A, B, C, D, E, F, G]
      """
     When I run the command "auto-qc" with the arguments:
        | key              | value         |
@@ -298,9 +298,9 @@ Feature: Printing different output formats
       """
       Status: FAIL
 
-                                                    Failure At   Actual
+                                           Failure At   Actual
 
-      :object_1/metric_1/value   is in ['list', 'A', 'B', 'C']        A   FAIL
+      :object_1/metric_1/value   is in [A, B, C, ...]        A   FAIL
 
       Auto QC Version: 1.0.0
 
