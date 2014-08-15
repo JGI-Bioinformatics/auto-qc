@@ -8,7 +8,7 @@ def test_single_passing_threshold():
     expected   = [{'name'     : ':var_1',
                    'expected' : '> 2',
                    'actual'   : '1',
-                   'fail'     : False}]
+                   'value'     : False}]
     assert_equal(expected, prn.row_array(zip(threshold, evaluation)))
 
 def test_single_failing_threshold():
@@ -17,29 +17,29 @@ def test_single_failing_threshold():
     expected   = [{'name'     : ':var_1',
                    'expected' : '< 2',
                    'actual'   : '1',
-                   'fail'     : True}]
+                   'value'     : True}]
     assert_equal(expected, prn.row_array(zip(threshold, evaluation)))
 
 def test_multiple_passing_threshold():
     threshold  = [['greater_than', ':var_1', 2], ['greater_than', ':var_1', 2]]
     evaluation = [['greater_than',       1,  2], ['greater_than',       1,  2]]
-    expected   = [{'name' : ':var_1', 'expected' : '> 2', 'actual' : '1', 'fail' : False},
-                  {'name' : ':var_1', 'expected' : '> 2', 'actual' : '1', 'fail' : False}]
+    expected   = [{'name' : ':var_1', 'expected' : '> 2', 'actual' : '1', 'value' : False},
+                  {'name' : ':var_1', 'expected' : '> 2', 'actual' : '1', 'value' : False}]
     assert_equal(expected, prn.row_array(zip(threshold, evaluation)))
 
 def test_nested_failing_and_threshold():
     threshold  = [['and', ['less_than', ':var_1', 2]]]
     evaluation = [['and', ['less_than', 1, 2]]]
-    expected   = [{'name' : 'AND:', 'fail': True, 'children' : [
-        {'name' : ':var_1', 'expected' : '< 2', 'actual' : '1', 'fail' : True}]}]
+    expected   = [{'name' : 'AND:', 'value': True, 'children' : [
+        {'name' : ':var_1', 'expected' : '< 2', 'actual' : '1', 'value' : True}]}]
     assert_equal(expected, prn.row_array(zip(threshold, evaluation)))
 
 def test_multiple_nested_failing_and_threshold():
     threshold  = [['and', ['less_than', ':var_1', 2], ['less_than', ':var_1', 2]]]
     evaluation = [['and', ['less_than', 1, 2], ['less_than', 1, 2]]]
-    expected   = [{'name' : 'AND:', 'fail': True, 'children' : [
-        {'name' : ':var_1', 'expected' : '< 2', 'actual' : '1', 'fail' : True},
-        {'name' : ':var_1', 'expected' : '< 2', 'actual' : '1', 'fail' : True},
+    expected   = [{'name' : 'AND:', 'value': True, 'children' : [
+        {'name' : ':var_1', 'expected' : '< 2', 'actual' : '1', 'value' : True},
+        {'name' : ':var_1', 'expected' : '< 2', 'actual' : '1', 'value' : True},
         ]}]
     assert_equal(expected, prn.row_array(zip(threshold, evaluation)))
 
@@ -49,7 +49,7 @@ def test_row_array_with_long_list():
     expected   = [{'name'     : ':var_1',
                    'expected' : "is in [A, B, C, ...]",
                    'actual'   : 'A',
-                   'fail'     : True}]
+                   'value'     : True}]
     assert_equal(expected, prn.row_array(zip(threshold, evaluation)))
 
 
@@ -57,7 +57,7 @@ def test_text_table_with_single_failing_metric():
     row = [{'name'     : ':object_1/metric_1/value',
             'expected' : '< 2',
             'actual'   : '1',
-            'fail'     : True}]
+            'value'    : True}]
     expected = """\
                            Failure At   Actual
 
@@ -69,7 +69,7 @@ def test_text_table_with_single_passing_metric():
     row = [{'name'     : ':object_1/metric_1/value',
             'expected' : '< 2',
             'actual'   : '1',
-            'fail'     : False}]
+            'value'    : False}]
     expected = """\
                            Failure At   Actual
 
@@ -79,8 +79,8 @@ def test_text_table_with_single_passing_metric():
 
 
 def test_text_table_with_single_nested_failing_metric():
-    row = [{'name' : 'AND:', 'fail': True, 'children' : [
-        {'name' : ':object_1/metric_1/value', 'expected' : '< 2', 'actual' : '1', 'fail' : True}]}]
+    row = [{'name' : 'AND:', 'value': True, 'children' : [
+        {'name' : ':object_1/metric_1/value', 'expected' : '< 2', 'actual' : '1', 'value' : True}]}]
 
     expected = """\
                              Failure At   Actual

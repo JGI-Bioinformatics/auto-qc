@@ -49,11 +49,11 @@ def row_array(n):
 
     def format_node((threshold, evaluation)):
         operator = it.head(evaluation)
-        fail     = node.apply_operator(evaluation)
+        value    = node.apply_operator(evaluation)
 
         if operator in ["or", "and"]:
             return {'name'     : OPERATORS[operator],
-                    'fail'     : fail,
+                    'value'    : value,
                     'children' : row_array(zip(it.tail(threshold), it.tail(evaluation)))}
         else:
             _, variable_value, threshold_value = evaluation
@@ -61,7 +61,7 @@ def row_array(n):
             return {'name'     : str(variable_name),
                     'expected' : OPERATORS[operator] + ' ' + format_threshold(threshold_value),
                     'actual'   : str(variable_value),
-                    'fail'     : fail}
+                    'value'    : value}
 
     return reduce(lambda acc, i: acc + [format_node(i)], n, [])
 
@@ -78,7 +78,7 @@ def text_table(rows):
              indent + row['name'],
              row.get('expected', ''),
              row.get('actual', ''),
-             "FAIL" if row['fail'] else ""])
+             "FAIL" if row['value'] else ""])
         map(F(f, indent + "  "), row.get('children', []))
 
     map(F(f, ""), rows)
