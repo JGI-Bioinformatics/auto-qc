@@ -61,19 +61,19 @@ def test_text_table_with_single_failing_metric():
     expected = """\
                            Failure At   Actual
 
-:object_1/metric_1/value          < 2        1   FAIL
+:object_1/metric_1/value          < 2        1   T   FAIL
 """.rstrip()
     asrt.assert_diff(expected, prn.text_table(row))
 
 def test_text_table_with_single_passing_metric():
     row = [{'name'     : ':object_1/metric_1/value',
-            'expected' : '< 2',
+            'expected' : '> 2',
             'actual'   : '1',
             'value'    : False}]
     expected = """\
                            Failure At   Actual
 
-:object_1/metric_1/value          < 2        1
+:object_1/metric_1/value          > 2        1   F
 """.rstrip()
     asrt.assert_diff(expected, prn.text_table(row))
 
@@ -83,10 +83,10 @@ def test_text_table_with_single_nested_failing_metric():
         {'name' : ':object_1/metric_1/value', 'expected' : '< 2', 'actual' : '1', 'value' : True}]}]
 
     expected = """\
-                             Failure At   Actual
+                              Failure At   Actual
 
-AND:                                               FAIL
-  :object_1/metric_1/value          < 2        1   FAIL
+AND:                                                T      FAIL
+   :object_1/metric_1/value          < 2        1   +--T
 """.rstrip()
     asrt.assert_diff(expected, prn.text_table(row))
 

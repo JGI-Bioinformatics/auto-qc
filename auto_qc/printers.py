@@ -71,27 +71,46 @@ def text_table(rows):
     Convert array of nested rows to a human readable text format
     """
 
-    values = [['', 'Failure At', 'Actual', ''], ['', '', '', '']]
+    values = [['', 'Failure At', 'Actual', '', ''], ['', '', '', '', '']]
 
-    def f(indent, row):
+    def indent(level, value):
+        level_ = 0 if level < 0 else (level * 3)
+        return level_ * " " + value
+
+    def pass_fail(level, value):
+        return "FAIL" if (value and level == 0) else ""
+
+    def tree(level, value):
+        char = "T" if value else "F"
+        if level > 0:
+            char = '+--' + char
+        return indent(level - 1, char)
+
+
+
+
+    def f(level, row):
         values.append([
-             indent + row['name'],
+             indent(level, row['name']),
              row.get('expected', ''),
              row.get('actual', ''),
-             "FAIL" if row['value'] else ""])
-        map(F(f, indent + "  "), row.get('children', []))
+             tree(level, row.get('value')),
+             pass_fail(level, row.get('value'))])
+        map(F(f, level + 1), row.get('children', []))
 
-    map(F(f, ""), rows)
+    map(F(f, 0), rows)
 
     max_col_1 = max([12] + map(lambda i: len(i[0]), values))
     max_col_2 = max(map(lambda i: len(i[1]), values))
     max_col_3 = max(map(lambda i: len(i[2]), values))
+    max_col_4 = max(map(lambda i: len(i[3]), values))
 
-    def padd((col_1, col_2, col_3, col_4)):
+    def padd((col_1, col_2, col_3, col_4, col_5)):
         return (col_1.ljust(max_col_1, ' ') + "   " +\
                 col_2.rjust(max_col_2, ' ') + "   " +\
                 col_3.rjust(max_col_3, ' ') + "   " +\
-                col_4).rstrip()
+                col_4.ljust(max_col_4, ' ') + "   " +\
+                col_5).rstrip()
 
     return "\n".join(map(padd, values)).rstrip()
 
