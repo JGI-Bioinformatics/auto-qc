@@ -13,6 +13,7 @@ method_chain = [
 
     (fs.read_yaml_file,    ['analysis_file',  'analyses']),
     (er.check_node_paths,  ['thresholds', 'analyses']),
+    (er.check_operators,   ['thresholds']),
     (qc.evaluate,          ['evaluated_nodes', 'thresholds', 'analyses']),
     (qc.apply_thresholds,  ['node_results', 'evaluated_nodes']),
     (qc.build_qc_dict,     ['qc_dict', 'thresholds', 'evaluated_nodes', 'node_results'])

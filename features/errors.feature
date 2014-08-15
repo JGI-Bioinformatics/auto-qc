@@ -67,14 +67,13 @@ Feature: Error messages for incorrect use of auto-qc
       | 0.1     |
       | 0.1.2   |
 
-  @wip
   Scenario Outline: The given value does not exist
    Given I create the file "analysis.yml" with the contents:
      """
-     - analysis: object_1
+     - analysis: anl
        outputs:
          metric_1:
-           value: 1
+           val: 1
      """
      And I create the file "threshold.yml" with the contents:
      """
@@ -83,7 +82,7 @@ Feature: Error messages for incorrect use of auto-qc
          auto-qc: 1.0.0
      thresholds:
      -
-       - greater_than
+       - <operator>
        - <variable>
        - 1
      """
@@ -100,6 +99,7 @@ Feature: Error messages for incorrect use of auto-qc
     And the exit code should be 1
 
   Examples: Errors
-    | variable                     | error                                                           |
-    | :object_1/metric_1/non_value | No matching metric 'metric_1/non_value' found in ':object_1.'   |
-    | :non_object/metric_1/value   | No matching analysis called 'non_object' found.                 |
+    | operator     | variable                   | error                                                    |
+    | greater_than | :anl/metric_1/non_value    | No matching metric 'metric_1/non_value' found in ':anl.' |
+    | greater_than | :non_object/metric_1/val   | No matching analysis called 'non_object' found.          |
+    | unknown      | :anl/metric_1/val          | Unknown operator 'unknown.'                              |
