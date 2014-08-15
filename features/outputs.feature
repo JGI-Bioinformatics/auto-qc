@@ -123,7 +123,7 @@ Feature: Printing different output formats
 
                                  Failure At   Actual
 
-      :object_1/metric_1/value          > 2        1
+      :object_1/metric_1/value          > 2        1   F
 
       Auto QC Version: 1.0.0
 
@@ -165,8 +165,8 @@ Feature: Printing different output formats
 
                                  Failure At   Actual
 
-      :object_1/metric_1/value          < 2        1   FAIL
-      :object_1/metric_1/value          > 2        1
+      :object_1/metric_1/value          < 2        1   T   FAIL
+      :object_1/metric_1/value          > 2        1   F
 
       Auto QC Version: 1.0.0
 
@@ -212,9 +212,9 @@ Feature: Printing different output formats
 
                                    Failure At   Actual
 
-      AND:
-        :object_1/metric_1/value          < 2        1   FAIL
-        :object_1/metric_2/value          > 2        1
+      AND:                                               F
+        :object_1/metric_1/value          < 2        1   ├─T
+        :object_1/metric_2/value          > 2        1   └─F
 
       Auto QC Version: 1.0.0
 
@@ -260,9 +260,9 @@ Feature: Printing different output formats
 
                                    Failure At   Actual
 
-      OR:                                                FAIL
-        :object_1/metric_1/value          < 2        1   FAIL
-        :object_1/metric_2/value          > 2        2
+      OR:                                                T     FAIL
+        :object_1/metric_1/value          < 2        1   ├─T
+        :object_1/metric_2/value          > 2        2   └─F
 
       Auto QC Version: 1.0.0
 
@@ -300,7 +300,7 @@ Feature: Printing different output formats
 
                                            Failure At   Actual
 
-      :object_1/metric_1/value   is in [A, B, C, ...]        A   FAIL
+      :object_1/metric_1/value   is in [A, B, C, ...]        A   T   FAIL
 
       Auto QC Version: 1.0.0
 
