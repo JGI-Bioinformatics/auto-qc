@@ -16,6 +16,9 @@ OPERATORS = {
     'list'        : lambda *args: list(args)
         }
 
+def is_operator(v):
+    return op.contains(OPERATORS.keys(), v)
+
 def operator(v):
     return OPERATORS[v]
 

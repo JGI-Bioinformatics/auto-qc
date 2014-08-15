@@ -44,3 +44,14 @@ def test_check_node_paths_with_unknown_path():
     status = {'nodes' : {'thresholds' : n}, 'analyses' : a}
     assert_in('error', er.check_node_paths('nodes', 'analyses', status))
     assert_equal(status['error'], "No matching metric 'unknown' found in ':ref.'")
+
+def test_check_operators_with_known_operator():
+    n = [['less_than', 2, 1]]
+    status = {'nodes' : {'thresholds' : n}}
+    assert_not_in('error', er.check_operators('nodes', status))
+
+def test_check_operators_with_unknown_operator():
+    n = [['unknown', 2, 1]]
+    status = {'nodes' : {'thresholds' : n}}
+    assert_in('error', er.check_operators('nodes', status))
+    assert_equal(status['error'], "Unknown operator 'unknown.'")

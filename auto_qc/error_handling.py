@@ -1,8 +1,10 @@
 import fn.iters as it
 import string   as st
+from fn import F, _
 
 import auto_qc.util.metadata as meta
 import auto_qc.variable      as var
+import auto_qc.node          as nd
 
 def check_version_number(threshold, status):
     version =  meta.major_version()
@@ -49,6 +51,24 @@ def check_node_paths(nodes, analyses, status):
 
     errors = list(it.compact(it.flatten(map(f, status[nodes]['thresholds']))))
 
+    if len(errors) > 0:
+        status['error'] = st.join(errors, "\n")
+
+    return status
+
+def check_operators(nodes, status):
+
+    def fetch_operators(acc, n):
+        if isinstance(n, list):
+            operator = it.head(n)
+            rest     = it.tail(n)
+            return reduce(fetch_operators, rest, acc + [operator])
+        else:
+            return acc
+
+    f = F(it.map, lambda x: "Unknown operator '{}.'".format(x)) << F(it.filterfalse, nd.is_operator)
+
+    errors = list(f(reduce(fetch_operators, status[nodes]['thresholds'], [])))
     if len(errors) > 0:
         status['error'] = st.join(errors, "\n")
 
