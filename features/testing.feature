@@ -24,8 +24,8 @@ Feature: Using the auto-qc tool
      """
     When I run the command "auto-qc" with the arguments:
        | key              | value         |
-       | --analysis_file  | analysis.yml  |
-       | --threshold_file | threshold.yml |
+       | --analysis-file  | analysis.yml  |
+       | --threshold-file | threshold.yml |
    Then the standard error should be empty
     And the exit code should be 0
     And the standard out should contain:
@@ -80,8 +80,8 @@ Feature: Using the auto-qc tool
      """
     When I run the command "auto-qc" with the arguments:
        | key              | value         |
-       | --analysis_file  | analysis.yml  |
-       | --threshold_file | threshold.yml |
+       | --analysis-file  | analysis.yml  |
+       | --threshold-file | threshold.yml |
    Then the standard error should be empty
     And the exit code should be 0
     And the standard out should contain:
@@ -124,8 +124,8 @@ Feature: Using the auto-qc tool
      """
     When I run the command "auto-qc" with the arguments:
        | key              | value         |
-       | --analysis_file  | analysis.yml  |
-       | --threshold_file | threshold.yml |
+       | --analysis-file  | analysis.yml  |
+       | --threshold-file | threshold.yml |
    Then the standard error should be empty
     And the exit code should be 0
     And the standard out should contain:
@@ -171,8 +171,8 @@ Feature: Using the auto-qc tool
      """
     When I run the command "auto-qc" with the arguments:
        | key              | value         |
-       | --analysis_file  | analysis.yml  |
-       | --threshold_file | threshold.yml |
+       | --analysis-file  | analysis.yml  |
+       | --threshold-file | threshold.yml |
    Then the standard error should be empty
     And the exit code should be 0
     And the standard out should contain:
@@ -211,8 +211,8 @@ Feature: Using the auto-qc tool
      """
     When I run the command "auto-qc" with the arguments:
        | key              | value         |
-       | --analysis_file  | analysis.yml  |
-       | --threshold_file | threshold.yml |
+       | --analysis-file  | analysis.yml  |
+       | --threshold-file | threshold.yml |
    Then the standard error should be empty
     And the exit code should be 0
     And the standard out should contain:
