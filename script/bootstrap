@@ -35,6 +35,15 @@ if test $LIB -nt $ENV; then
     fi
 
     echo "Python environment bootstrap complete."
+
+    echo "Bootstrapping ruby gem environment."
+
+    gem install ronn --install-dir $ENV 2>&1 > log/gem.txt
+    if [ $? -ne 0 ]; then
+        echo "Ruby gem environment install failed. Output in log/gem.txt"
+        exit 1
+    fi
+    echo "Ruby gem environment bootstrap complete."
 fi
 
 TOKEN=.git/hooks/token

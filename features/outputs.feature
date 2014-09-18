@@ -23,8 +23,8 @@ Feature: Printing different output formats
      """
     When I run the command "auto-qc" with the arguments:
        | key              | value         |
-       | --analysis_file  | analysis.yml  |
-       | --threshold_file | threshold.yml |
+       | --analysis-file  | analysis.yml  |
+       | --threshold-file | threshold.yml |
        | --yaml-output    |               |
    Then the standard error should be empty
     And the exit code should be 0
@@ -72,8 +72,8 @@ Feature: Printing different output formats
      """
     When I run the command "auto-qc" with the arguments:
        | key              | value         |
-       | --analysis_file  | analysis.yml  |
-       | --threshold_file | threshold.yml |
+       | --analysis-file  | analysis.yml  |
+       | --threshold-file | threshold.yml |
        | --text-output    |               |
    Then the standard error should be empty
     And the exit code should be 0
@@ -112,8 +112,8 @@ Feature: Printing different output formats
      """
     When I run the command "auto-qc" with the arguments:
        | key              | value         |
-       | --analysis_file  | analysis.yml  |
-       | --threshold_file | threshold.yml |
+       | --analysis-file  | analysis.yml  |
+       | --threshold-file | threshold.yml |
        | --text-output    |               |
    Then the standard error should be empty
     And the exit code should be 0
@@ -154,8 +154,8 @@ Feature: Printing different output formats
      """
     When I run the command "auto-qc" with the arguments:
        | key              | value         |
-       | --analysis_file  | analysis.yml  |
-       | --threshold_file | threshold.yml |
+       | --analysis-file  | analysis.yml  |
+       | --threshold-file | threshold.yml |
        | --text-output    |               |
    Then the standard error should be empty
     And the exit code should be 0
@@ -201,8 +201,8 @@ Feature: Printing different output formats
      """
     When I run the command "auto-qc" with the arguments:
        | key              | value         |
-       | --analysis_file  | analysis.yml  |
-       | --threshold_file | threshold.yml |
+       | --analysis-file  | analysis.yml  |
+       | --threshold-file | threshold.yml |
        | --text-output    |               |
    Then the standard error should be empty
     And the exit code should be 0
@@ -249,8 +249,8 @@ Feature: Printing different output formats
      """
     When I run the command "auto-qc" with the arguments:
        | key              | value         |
-       | --analysis_file  | analysis.yml  |
-       | --threshold_file | threshold.yml |
+       | --analysis-file  | analysis.yml  |
+       | --threshold-file | threshold.yml |
        | --text-output    |               |
    Then the standard error should be empty
     And the exit code should be 0
@@ -293,8 +293,8 @@ Feature: Printing different output formats
      """
     When I run the command "auto-qc" with the arguments:
        | key              | value         |
-       | --analysis_file  | analysis.yml  |
-       | --threshold_file | threshold.yml |
+       | --analysis-file  | analysis.yml  |
+       | --threshold-file | threshold.yml |
        | --text-output    |               |
    Then the standard error should be empty
     And the exit code should be 0
@@ -335,8 +335,8 @@ Feature: Printing different output formats
      """
     When I run the command "auto-qc" with the arguments:
        | key              | value         |
-       | --analysis_file  | analysis.yml  |
-       | --threshold_file | threshold.yml |
+       | --analysis-file  | analysis.yml  |
+       | --threshold-file | threshold.yml |
        | --text-output    |               |
    Then the standard error should be empty
     And the exit code should be 0

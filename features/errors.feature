@@ -7,8 +7,8 @@ Feature: Error messages for incorrect use of auto-qc
    Given I create the file "thresholds.yml"
     When I run the command "auto-qc" with the arguments:
        | key              | value          |
-       | --analysis_file  | none           |
-       | --threshold_file | thresholds.yml |
+       | --analysis-file  | none           |
+       | --threshold-file | thresholds.yml |
    Then the standard error should contain:
       """
       File not found: 'none'.
@@ -20,8 +20,8 @@ Feature: Error messages for incorrect use of auto-qc
    Given I create the file "analysis.yml"
     When I run the command "auto-qc" with the arguments:
        | key              | value          |
-       | --analysis_file  | analysis.yml   |
-       | --threshold_file | none           |
+       | --analysis-file  | analysis.yml   |
+       | --threshold-file | none           |
    Then the standard error should contain:
       """
       File not found: 'none'.
@@ -50,8 +50,8 @@ Feature: Error messages for incorrect use of auto-qc
      """
     When I run the command "auto-qc" with the arguments:
        | key              | value         |
-       | --analysis_file  | analysis.yml  |
-       | --threshold_file | threshold.yml |
+       | --analysis-file  | analysis.yml  |
+       | --threshold-file | threshold.yml |
    Then the standard out should be empty
     And the exit code should be 1
     And the standard error should contain:
@@ -88,8 +88,8 @@ Feature: Error messages for incorrect use of auto-qc
      """
     When I run the command "auto-qc" with the arguments:
        | key              | value         |
-       | --analysis_file  | analysis.yml  |
-       | --threshold_file | threshold.yml |
+       | --analysis-file  | analysis.yml  |
+       | --threshold-file | threshold.yml |
    Then the standard out should be empty
     And the standard error should equal:
       """
