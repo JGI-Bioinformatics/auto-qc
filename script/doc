@@ -1,0 +1,13 @@
+#!/bin/bash
+
+set -o errexit
+set -o pipefail
+
+./script/bootstrap
+if [ $? -ne 0 ]
+    then
+    # Exit here if bootstrap not successful
+    exit 1
+fi
+
+GEM_HOME=env PATH=$PATH:./env/bin ronn --man ./man/auto-qc.1.mkd
