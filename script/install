@@ -2,6 +2,7 @@
 
 set -o errexit
 set -o pipefail
+set -o xtrace
 
 readonly SRC_DIR=auto_qc
 
@@ -17,4 +18,6 @@ if [ $? -ne 0 ]
     exit 1
 fi
 
-cp -r env bin $SRC_DIR VERSION $PREFIX
+cp -r env bin ${SRC_DIR} VERSION ${PREFIX}
+mkdir -p ${PREFIX}/share/man/man1/
+cp man/auto-qc.1 ${PREFIX}/share/man/man1
