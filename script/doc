@@ -10,4 +10,4 @@ if [ $? -ne 0 ]
     exit 1
 fi
 
-GEM_HOME=env PATH=$PATH:./env/bin ronn --man ./man/auto-qc.1.mkd
+GEM_HOME=env PATH=$PATH:./env/bin ronn ./man/auto-qc.1.mkd
