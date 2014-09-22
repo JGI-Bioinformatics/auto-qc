@@ -22,7 +22,7 @@ Feature: Using the auto-qc tool
        - :object_1/metric_1/value
        - <literal>
      """
-    When I run the command "auto-qc" with the arguments:
+    When I run the command "../bin/auto-qc" with the arguments:
        | key              | value         |
        | --analysis-file  | analysis.yml  |
        | --threshold-file | threshold.yml |
@@ -78,7 +78,7 @@ Feature: Using the auto-qc tool
      - [greater_than, ':object_1/metric_1/value', <lit_1>]
      - [greater_than, ':object_2/metric_2/value', <lit_2>]
      """
-    When I run the command "auto-qc" with the arguments:
+    When I run the command "../bin/auto-qc" with the arguments:
        | key              | value         |
        | --analysis-file  | analysis.yml  |
        | --threshold-file | threshold.yml |
@@ -122,7 +122,7 @@ Feature: Using the auto-qc tool
          - :object_1/metric_1/value
          - <lit_2>
      """
-    When I run the command "auto-qc" with the arguments:
+    When I run the command "../bin/auto-qc" with the arguments:
        | key              | value         |
        | --analysis-file  | analysis.yml  |
        | --threshold-file | threshold.yml |
@@ -169,7 +169,7 @@ Feature: Using the auto-qc tool
          - :library_type/protocol
          - Ultra-Low Input (DNA)
      """
-    When I run the command "auto-qc" with the arguments:
+    When I run the command "../bin/auto-qc" with the arguments:
        | key              | value         |
        | --analysis-file  | analysis.yml  |
        | --threshold-file | threshold.yml |
@@ -209,7 +209,7 @@ Feature: Using the auto-qc tool
          - :library_type/protocol
          - Ultra-Low Input (DNA)
      """
-    When I run the command "auto-qc" with the arguments:
+    When I run the command "../bin/auto-qc" with the arguments:
        | key              | value         |
        | --analysis-file  | analysis.yml  |
        | --threshold-file | threshold.yml |

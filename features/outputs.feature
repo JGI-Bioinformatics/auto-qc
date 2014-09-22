@@ -21,7 +21,7 @@ Feature: Printing different output formats
        - :object_1/metric_1/value
        - <literal>
      """
-    When I run the command "auto-qc" with the arguments:
+    When I run the command "../bin/auto-qc" with the arguments:
        | key              | value         |
        | --analysis-file  | analysis.yml  |
        | --threshold-file | threshold.yml |
@@ -70,7 +70,7 @@ Feature: Printing different output formats
        - :object_1/metric_1/value
        - 2
      """
-    When I run the command "auto-qc" with the arguments:
+    When I run the command "../bin/auto-qc" with the arguments:
        | key              | value         |
        | --analysis-file  | analysis.yml  |
        | --threshold-file | threshold.yml |
@@ -110,7 +110,7 @@ Feature: Printing different output formats
        - :object_1/metric_1/value
        - 2
      """
-    When I run the command "auto-qc" with the arguments:
+    When I run the command "../bin/auto-qc" with the arguments:
        | key              | value         |
        | --analysis-file  | analysis.yml  |
        | --threshold-file | threshold.yml |
@@ -152,7 +152,7 @@ Feature: Printing different output formats
        - :object_1/metric_1/value
        - 2
      """
-    When I run the command "auto-qc" with the arguments:
+    When I run the command "../bin/auto-qc" with the arguments:
        | key              | value         |
        | --analysis-file  | analysis.yml  |
        | --threshold-file | threshold.yml |
@@ -199,7 +199,7 @@ Feature: Printing different output formats
          - :object_1/metric_2/value
          - 2
      """
-    When I run the command "auto-qc" with the arguments:
+    When I run the command "../bin/auto-qc" with the arguments:
        | key              | value         |
        | --analysis-file  | analysis.yml  |
        | --threshold-file | threshold.yml |
@@ -247,7 +247,7 @@ Feature: Printing different output formats
          - :object_1/metric_2/value
          - 2
      """
-    When I run the command "auto-qc" with the arguments:
+    When I run the command "../bin/auto-qc" with the arguments:
        | key              | value         |
        | --analysis-file  | analysis.yml  |
        | --threshold-file | threshold.yml |
@@ -291,7 +291,7 @@ Feature: Printing different output formats
          - [less_than,    ':object_1/metric_1/value', 2]
          - [greater_than, ':object_1/metric_2/value', 2]
      """
-    When I run the command "auto-qc" with the arguments:
+    When I run the command "../bin/auto-qc" with the arguments:
        | key              | value         |
        | --analysis-file  | analysis.yml  |
        | --threshold-file | threshold.yml |
@@ -333,7 +333,7 @@ Feature: Printing different output formats
        - :object_1/metric_1/value
        - [list, A, B, C, D, E, F, G]
      """
-    When I run the command "auto-qc" with the arguments:
+    When I run the command "../bin/auto-qc" with the arguments:
        | key              | value         |
        | --analysis-file  | analysis.yml  |
        | --threshold-file | threshold.yml |
