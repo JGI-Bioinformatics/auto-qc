@@ -7,3 +7,4 @@ PyYAML           == 3.11
 fn               == 0.2.13
 
 -e git+git@bitbucket.org:michaelbarton/jgi-behave-command-line.git#egg=behave_command_line
+-e git+git@bitbucket.org:michaelbarton/more-assertive-nose.git#egg=more_assertive_nose

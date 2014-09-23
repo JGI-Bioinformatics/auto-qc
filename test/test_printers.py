@@ -1,6 +1,6 @@
 from nose.tools import *
-import auto_qc.printers as prn
-import assertions       as asrt
+import auto_qc.printers               as prn
+import more_assertive_nose.assertions as asrt
 
 def test_single_passing_threshold():
     threshold  = [['greater_than', ':var_1', 2]]
