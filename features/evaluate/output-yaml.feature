@@ -68,3 +68,119 @@ Feature: Using the auto-qc tool
       | C        | is_in        | [list, A, B] | false  |
       | A        | is_not_in    | [list, A, B] | false  |
       | C        | is_not_in    | [list, A, B] | true   |
+
+  Scenario Outline: Multiple thresholds
+   Given I create the file "analysis.yml" with the contents:
+     """
+     - analysis: object_1
+       outputs:
+         metric_1:
+           value: <var_1>
+     - analysis: object_2
+       outputs:
+         metric_2:
+           value: <var_2>
+     """
+     And I create the file "threshold.yml" with the contents:
+     """
+     metadata:
+       version:
+         auto-qc: 1.0.0
+     thresholds:
+     - [greater_than, ':object_1/metric_1/value', <lit_1>]
+     - [greater_than, ':object_2/metric_2/value', <lit_2>]
+     """
+    When I run the command "../bin/auto-qc-evaluate" with the arguments:
+       | key              | value         |
+       | --analysis-file  | analysis.yml  |
+       | --threshold-file | threshold.yml |
+   Then the standard error should be empty
+    And the exit code should be 0
+    And the YAML-format standard out should equal:
+      """
+      evaluation:
+      - - greater_than
+        - var_1
+        - lit_1
+      - - greater_than
+        - var_2
+        - lit_2
+      metadata:
+        version:
+          auto-qc: 1.0.0
+      state:
+        fail: <status>
+      thresholds:
+      - - greater_than
+        - :object_1/metric_1/value
+        - lit_1
+      - - greater_than
+        - :object_2/metric_2/value
+        - lit_2
+
+      """
+
+  Examples: Operators
+      | var_1 | lit_1 | var_2 | lit_2 | status |
+      | 1     | 0     | 1     | 0     | true   |
+      | 1     | 0     | 0     | 1     | true   |
+      | 0     | 1     | 1     | 0     | true   |
+      | 0     | 1     | 0     | 1     | false  |
+
+  Scenario Outline: Nested thresholds
+   Given I create the file "analysis.yml" with the contents:
+     """
+     - analysis: object_1
+       outputs:
+         metric_1:
+           value: <var_1>
+     - analysis: object_2
+       outputs:
+         metric_2:
+           value: <var_2>
+     """
+     And I create the file "threshold.yml" with the contents:
+     """
+     metadata:
+       version:
+         auto-qc: 1.0.0
+     thresholds:
+     - - and
+       - [greater_than, ':object_1/metric_1/value', <lit_1>]
+       - [greater_than, ':object_2/metric_2/value', <lit_2>]
+     """
+    When I run the command "../bin/auto-qc-evaluate" with the arguments:
+       | key              | value         |
+       | --analysis-file  | analysis.yml  |
+       | --threshold-file | threshold.yml |
+   Then the standard error should be empty
+    And the exit code should be 0
+    And the YAML-format standard out should equal:
+      """
+      evaluation:
+      -
+        - and
+        - - greater_than
+          - var_1
+          - lit_1
+        - - greater_than
+          - var_2
+          - lit_2
+      metadata:
+        version:
+          auto-qc: 1.0.0
+      state:
+        fail: <status>
+      thresholds:
+      - - and
+        - [greater_than, ':object_1/metric_1/value', <lit_1>]
+        - [greater_than, ':object_2/metric_2/value', <lit_2>]
+
+      """
+
+  Examples: Operators
+      | var_1 | lit_1 | var_2 | lit_2 | status |
+      | 1     | 0     | 1     | 0     | true   |
+      | 1     | 0     | 0     | 1     | true   |
+      | 0     | 1     | 1     | 0     | true   |
+      | 0     | 1     | 0     | 1     | false  |
