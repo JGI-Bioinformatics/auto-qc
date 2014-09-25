@@ -1,9 +1,8 @@
 import auto_qc.util.file_system as fs
 import auto_qc.util.workflow    as flow
-import auto_qc.printers         as prn
-import auto_qc.qc               as qc
-import auto_qc.error_handling   as er
 
+import auto_qc.evaluate.error   as er
+import auto_qc.evaluate.qc      as qc
 
 method_chain = [
     (fs.check_for_file, ['analysis_file']),
@@ -19,8 +18,11 @@ method_chain = [
     (qc.build_qc_dict,     ['qc_dict', 'thresholds', 'evaluated_nodes', 'node_results'])
         ]
 
+def yaml(qc_dict):
+    import yaml
+    return yaml.dump(qc_dict, default_flow_style=False).strip()
+
 def run(args):
     status = flow.thread_status(method_chain, args)
     flow.exit_if_error(status)
-
-    print prn.yaml(status['qc_dict'])
+    print yaml(status['qc_dict'])

@@ -18,9 +18,6 @@ OPERATORS = {
 def simple(qc_dict):
     return 'FAIL' if qc_dict['state']['fail'] else 'PASS'
 
-def yaml(qc_dict):
-    import yaml
-    return yaml.dump(qc_dict, default_flow_style=False).strip()
 
 def text(qc_dict):
     return """\
