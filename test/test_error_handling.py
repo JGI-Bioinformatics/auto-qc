@@ -1,5 +1,5 @@
 from nose.tools import *
-import auto_qc.error_handling as er
+import auto_qc.evaluate.error as er
 
 def test_check_version_number():
 

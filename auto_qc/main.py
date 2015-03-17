@@ -1,8 +1,8 @@
 import auto_qc.util.file_system as fs
 import auto_qc.util.workflow    as flow
 import auto_qc.printers         as prn
-import auto_qc.qc               as qc
-import auto_qc.error_handling   as er
+import auto_qc.evaluate.qc      as qc
+import auto_qc.evaluate.error   as er
 
 
 method_chain = [
