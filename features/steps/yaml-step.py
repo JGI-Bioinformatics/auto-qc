@@ -1,5 +1,5 @@
 import behave                         as bh
-import behave_command_line.assertions as asrt
+import more_assertive_nose.assertions as asrt
 import yaml                           as yml
 
 @bh.then(u'the YAML-format standard {stream} should equal')
