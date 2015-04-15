@@ -14,7 +14,7 @@ Feature: Printing different output formats
      """
      metadata:
        version:
-         auto-qc: 1.0.0
+         auto-qc: 1.1.0
      thresholds:
      -
        - <operator>
@@ -36,7 +36,7 @@ Feature: Printing different output formats
         - <literal>
       metadata:
         version:
-          auto-qc: 1.0.0
+          auto-qc: 1.1.0
       state:
         fail: <status>
       thresholds:
@@ -63,7 +63,7 @@ Feature: Printing different output formats
      """
      metadata:
        version:
-         auto-qc: 1.0.0
+         auto-qc: 1.1.0
      thresholds:
      -
        - <operator>
@@ -103,7 +103,7 @@ Feature: Printing different output formats
      """
      metadata:
        version:
-         auto-qc: 1.0.0
+         auto-qc: 1.1.0
      thresholds:
      -
        - greater_than
@@ -125,7 +125,7 @@ Feature: Printing different output formats
 
       :object_1/metric_1/value          > 2        1
 
-      Auto QC Version: 1.0.0
+      Auto QC Version: 1.1.0
 
       """
 
@@ -141,7 +141,7 @@ Feature: Printing different output formats
      """
      metadata:
        version:
-         auto-qc: 1.0.0
+         auto-qc: 1.1.0
      thresholds:
      -
        - less_than
@@ -168,7 +168,7 @@ Feature: Printing different output formats
       :object_1/metric_1/value          < 2        1   FAIL
       :object_1/metric_1/value          > 2        1
 
-      Auto QC Version: 1.0.0
+      Auto QC Version: 1.1.0
 
       """
 
@@ -186,7 +186,7 @@ Feature: Printing different output formats
      """
      metadata:
        version:
-         auto-qc: 1.0.0
+         auto-qc: 1.1.0
      thresholds:
      -
        - and
@@ -216,7 +216,7 @@ Feature: Printing different output formats
         :object_1/metric_1/value          < 2        1   FAIL
         :object_1/metric_2/value          > 2        1
 
-      Auto QC Version: 1.0.0
+      Auto QC Version: 1.1.0
 
       """
 
@@ -234,7 +234,7 @@ Feature: Printing different output formats
      """
      metadata:
        version:
-         auto-qc: 1.0.0
+         auto-qc: 1.1.0
      thresholds:
      -
        - or
@@ -264,7 +264,7 @@ Feature: Printing different output formats
         :object_1/metric_1/value          < 2        1   FAIL
         :object_1/metric_2/value          > 2        2
 
-      Auto QC Version: 1.0.0
+      Auto QC Version: 1.1.0
 
       """
 
@@ -280,7 +280,7 @@ Feature: Printing different output formats
      """
      metadata:
        version:
-         auto-qc: 1.0.0
+         auto-qc: 1.1.0
      thresholds:
      -
        - is_in
@@ -302,6 +302,6 @@ Feature: Printing different output formats
 
       :object_1/metric_1/value   is in [A, B, C, ...]        A   FAIL
 
-      Auto QC Version: 1.0.0
+      Auto QC Version: 1.1.0
 
       """
