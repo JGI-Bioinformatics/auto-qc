@@ -1,4 +1,5 @@
-test = PYTHONPATH=env/lib/python2.7/site-packages env/bin/nosetests --rednose
+test    = PYTHONPATH=env/lib/python2.7/site-packages env/bin/nosetests --rednose
+feature = PYTHONPATH=env/lib/python2.7/site-packages env/bin/behave --stop
 
 bootstrap: env
 
@@ -14,7 +15,12 @@ autotest:
 	clear && $(test)
 	fswatch -o ./auto_qc -o ./test | xargs -n 1 -I {} bash -c "clear && $(test)"
 
-feature: env
-	PYTHONPATH=$</lib/python2.7/site-packages $</bin/behave --stop
+autofeature:
+	clear && $(feature)
+	fswatch -o ./auto_qc -o ./test -o ./bin -o ./features \
+		| xargs -n 1 -I {} bash -c "clear && $(feature)"
 
-.PHONY: test feature autotest
+feature: env
+	$(feature)
+
+.PHONY: test feature autotest autofeature
