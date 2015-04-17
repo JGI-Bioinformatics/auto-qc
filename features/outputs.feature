@@ -264,7 +264,7 @@ Feature: Printing different output formats
          :object_1/metric_1/value          < 2        1   +--T
          :object_1/metric_2/value          > 2        2   +--F
 
-      Auto QC Version: 1.0.0
+      Auto QC Version: 1.1.0
 
       """
 
@@ -282,7 +282,7 @@ Feature: Printing different output formats
      """
      metadata:
        version:
-         auto-qc: 1.0.0
+         auto-qc: 1.1.0
      thresholds:
      -
        - and
