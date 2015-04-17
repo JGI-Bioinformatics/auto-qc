@@ -5,16 +5,4 @@ hash fswatch 2>/dev/null || {
   exit 1
 }
 
-./script/bootstrap
-if [ $? -ne 0 ]
-    then
-    # Exit here if bootstrap not successful
-    exit 1
-fi
-
-set -o nounset
-
-readonly CMD='clear && ./script/test'
-
-eval $CMD
-fswatch ./auto_qc:./test "$CMD"
+make autotest
