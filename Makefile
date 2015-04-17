@@ -8,6 +8,8 @@ env: requirements.txt
 test: env
 	PYTHONPATH=$</lib/python2.7/site-packages $</bin/nosetests --rednose
 
+feature: env
+	PYTHONPATH=$</lib/python2.7/site-packages $</bin/behave --stop
 
 
-.PHONY: test
+.PHONY: test feature
