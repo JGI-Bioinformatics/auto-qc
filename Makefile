@@ -8,6 +8,9 @@ env: requirements.txt
 	virtualenv $@ 2>&1 > log/virtualenv.txt
 	$@/bin/pip install -r $< 2>&1 > log/pip.txt
 
+doc: $(find man/*.mkd) Gemfile.lock
+	bundle exec ronn ./man/auto-qc.1.mkd
+
 test: env
 	$(test)
 
@@ -23,9 +26,8 @@ autofeature:
 feature: env
 	$(feature)
 
-.PHONY: test feature autotest autofeature
-
-
 Gemfile.lock: Gemfile
 	mkdir -p log
 	bundle install --path env 2>&1 > log/gem.txt
+
+.PHONY: bootstrap test feature autotest autofeature doc
