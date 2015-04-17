@@ -6,3 +6,7 @@ dist
 env
 log
 install/
+man/*
+!man/*.mkd
+Gemfile.lock
+.bundle
