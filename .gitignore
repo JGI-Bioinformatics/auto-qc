@@ -3,7 +3,7 @@ tmp
 .DS_Store
 dist
 *.egg-info
-env
+vendor
 log
 install/
 man/*

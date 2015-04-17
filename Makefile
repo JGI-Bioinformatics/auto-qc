@@ -1,9 +1,9 @@
-test    = PYTHONPATH=env/lib/python2.7/site-packages env/bin/nosetests --rednose
-feature = PYTHONPATH=env/lib/python2.7/site-packages env/bin/behave --stop
+test    = PYTHONPATH=vendor/python/lib/python2.7/site-packages vendor/python/bin/nosetests --rednose
+feature = PYTHONPATH=vendor/python/lib/python2.7/site-packages vendor/python/bin/behave --stop
 
-bootstrap: Gemfile.lock env
+bootstrap: Gemfile.lock vendor/python
 
-env: requirements.txt
+vendor/python: requirements.txt
 	mkdir -p log
 	virtualenv $@ 2>&1 > log/virtualenv.txt
 	$@/bin/pip install -r $< 2>&1 > log/pip.txt
@@ -11,7 +11,7 @@ env: requirements.txt
 doc: $(find man/*.mkd) Gemfile.lock
 	bundle exec ronn ./man/auto-qc.1.mkd
 
-test: env
+test: vendor/python
 	$(test)
 
 autotest:
@@ -23,11 +23,11 @@ autofeature:
 	fswatch -o ./auto_qc -o ./test -o ./bin -o ./features \
 		| xargs -n 1 -I {} bash -c "clear && $(feature)"
 
-feature: env
+feature: vendor/python
 	$(feature)
 
 Gemfile.lock: Gemfile
 	mkdir -p log
-	bundle install --path env 2>&1 > log/gem.txt
+	bundle install --path vendor/ruby 2>&1 > log/gem.txt
 
 .PHONY: bootstrap test feature autotest autofeature doc
