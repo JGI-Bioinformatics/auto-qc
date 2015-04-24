@@ -2,13 +2,9 @@
 
 set -o errexit
 set -o pipefail
+set -o xtrace
 
 readonly SRC_DIR=auto_qc
-
-if [ $SRC_DIR = "jgi_project_skeleton" ]; then
-    echo "Error: please change the value of \$SRC_DIR in 'script/install' to your project directory."
-    exit 1
-fi
 
 ./script/bootstrap
 if [ $? -ne 0 ]
@@ -17,4 +13,7 @@ if [ $? -ne 0 ]
     exit 1
 fi
 
-cp -r env bin $SRC_DIR VERSION $PREFIX
+cp -r env bin ${SRC_DIR} VERSION ${PREFIX}
+
+mkdir -p ${PREFIX}/share/man/man1/
+cp man/auto-qc.1 ${PREFIX}/share/man/man1
