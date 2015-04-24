@@ -314,6 +314,52 @@ Feature: Printing different output formats
 
       """
 
+  Scenario: Generating text readable output for a double nested metric
+   Given I create the file "analysis.yml" with the contents:
+     """
+     - analysis: object_1
+       outputs:
+         metric_1:
+           value: 1
+         metric_2:
+           value: 1
+     """
+     And I create the file "threshold.yml" with the contents:
+     """
+     metadata:
+       version:
+         auto-qc: 1.1.0
+     thresholds:
+     -
+       - and
+       - [less_than, ':object_1/metric_1/value', 2]
+       - - or
+         - [less_than,    ':object_1/metric_1/value', 2]
+         - [greater_than, ':object_1/metric_2/value', 2]
+     """
+    When I run the command "../bin/auto-qc" with the arguments:
+       | key              | value         |
+       | --analysis-file  | analysis.yml  |
+       | --threshold-file | threshold.yml |
+       | --text-output    |               |
+   Then the standard error should be empty
+    And the exit code should be 0
+    And the standard out should equal:
+      """
+      Status: FAIL
+
+                                       Failure At   Actual
+
+      AND:                                                   T         FAIL
+         :object_1/metric_1/value             < 2        1   +--T
+         OR:                                                 +--T
+            :object_1/metric_1/value          < 2        1      +--T
+            :object_1/metric_2/value          > 2        1      +--F
+
+      Auto QC Version: 1.1.0
+
+      """
+
   Scenario: Generating text readable output for a long list metric
    Given I create the file "analysis.yml" with the contents:
      """

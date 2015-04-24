@@ -6,5 +6,7 @@ behave           == 1.2.3
 PyYAML           == 3.11
 fn               == 0.2.13
 
--e git+git@bitbucket.org:michaelbarton/jgi-behave-command-line.git#egg=behave_command_line
--e git+git@bitbucket.org:michaelbarton/more-assertive-nose.git#egg=more_assertive_nose
+--extra-index-url https://pypi.fury.io/8w9pcGeJPCmAGrxTL_Ze/michaelbarton/
+
+behave_command_line >= 0.0.1
+more_assertive_nose >= 0.0.3
