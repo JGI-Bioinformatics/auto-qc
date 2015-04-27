@@ -163,6 +163,7 @@ Michael Barton <mbarton@lbl.gov>
 
 ## HISTORY
 
+* 1.1.0 - Mon 27 Apr 2015
 * 1.0.0 - Fri 15 Aug 2014
 * 0.2.1 - Tue 20 May 2014
 * 0.2.0 - Mon 19 May 2014
