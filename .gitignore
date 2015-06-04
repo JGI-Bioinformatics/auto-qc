@@ -3,6 +3,10 @@ tmp
 .DS_Store
 dist
 *.egg-info
-env
+vendor
 log
 install/
+man/*
+!man/*.mkd
+Gemfile.lock
+.bundle

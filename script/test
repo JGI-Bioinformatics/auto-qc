@@ -1,13 +1,3 @@
 #!/bin/bash
 
-set -o errexit
-set -o pipefail
-
-./script/bootstrap
-if [ $? -ne 0 ]
-    then
-    # Exit here if bootstrap not successful
-    exit 1
-fi
-
-PYTHONPATH=env/lib/python2.7/site-packages env/bin/nosetests --rednose
+make test
