@@ -92,10 +92,10 @@ Feature: Using the auto-qc tool
 
   Examples: Operators
       | var_1 | lit_1 | var_2 | lit_2 | result |
-      | 1     | 0     | 1     | 0     | FAIL   |
+      | 1     | 0     | 1     | 0     | PASS   |
       | 1     | 0     | 0     | 1     | FAIL   |
       | 0     | 1     | 1     | 0     | FAIL   |
-      | 0     | 1     | 0     | 1     | PASS   |
+      | 0     | 1     | 0     | 1     | FAIL   |
 
   Scenario Outline: Nested thresholds
    Given I create the file "analysis.yml" with the contents:
@@ -136,12 +136,12 @@ Feature: Using the auto-qc tool
 
   Examples: Operators
       | var_1 | lit_1 | lit_2 | result |
-      | 1     | 0     | 0     | FAIL   |
-      | 1     | 0     | 1     | PASS   |
-      | 1     | 1     | 0     | PASS   |
-      | 1     | 1     | 1     | PASS   |
+      | 1     | 0     | 0     | PASS   |
+      | 1     | 0     | 1     | FAIL   |
+      | 1     | 1     | 0     | FAIL   |
+      | 1     | 1     | 1     | FAIL   |
 
-  Scenario: A library passing on insert size
+  Scenario: A library failing on insert size
    Given I create the file "analysis.yml" with the contents:
      """
      - analysis: insert_size
@@ -177,11 +177,11 @@ Feature: Using the auto-qc tool
     And the exit code should be 0
     And the standard out should contain:
       """
-      PASS
+      FAIL
 
       """
 
-  Scenario: A library failing on insert size
+  Scenario: A library passing on insert size
    Given I create the file "analysis.yml" with the contents:
      """
      - analysis: insert_size
@@ -217,6 +217,6 @@ Feature: Using the auto-qc tool
     And the exit code should be 0
     And the standard out should contain:
       """
-      FAIL
+      PASS 
 
       """
