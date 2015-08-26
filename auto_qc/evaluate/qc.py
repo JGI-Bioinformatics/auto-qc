@@ -24,7 +24,7 @@ def build_qc_dict(destination, thresholds, nodes, results, status):
     Build a dict QC containing all data about this evaluation.
     """
     qc_dict = status[thresholds].copy()
-    qc_dict['state'] = {'fail': any(status[results])}
+    qc_dict['state'] = {'fail': not all(status[results])}
     qc_dict['evaluation'] = status[nodes]
 
     status[destination] = qc_dict
