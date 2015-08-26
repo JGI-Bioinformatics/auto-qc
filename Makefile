@@ -24,7 +24,8 @@ autofeature:
 		| xargs -n 1 -I {} bash -c "clear && $(feature)"
 
 feature: vendor/python
-	$(feature)
+	$(feature) --no-skipped $(FLAGS)
+
 
 Gemfile.lock: Gemfile
 	mkdir -p log
