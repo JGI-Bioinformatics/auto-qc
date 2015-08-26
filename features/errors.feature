@@ -57,7 +57,7 @@ Feature: Error messages for incorrect use of auto-qc
     And the standard error should contain:
       """
       Incompatible threshold file syntax: <version>.
-      Please update the syntax to version >= 1.0.0.
+      Please update the syntax to version >= 2.0.0.
 
       """
 
@@ -66,6 +66,7 @@ Feature: Error messages for incorrect use of auto-qc
       | 0       |
       | 0.1     |
       | 0.1.2   |
+      | 1.0.0   |
 
   Scenario Outline: The given value does not exist
    Given I create the file "analysis.yml" with the contents:
@@ -79,7 +80,7 @@ Feature: Error messages for incorrect use of auto-qc
      """
      metadata:
        version:
-         auto-qc: 1.0.0
+         auto-qc: 2.0.0
      thresholds:
      -
        - <operator>

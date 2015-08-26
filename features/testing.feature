@@ -15,7 +15,7 @@ Feature: Using the auto-qc tool
      """
      metadata:
        version:
-         auto-qc: 1.1.0
+         auto-qc: 2.0.0
      thresholds:
      -
        - <operator>
@@ -73,7 +73,7 @@ Feature: Using the auto-qc tool
      """
      metadata:
        version:
-         auto-qc: 1.1.0
+         auto-qc: 2.0.0
      thresholds:
      - [greater_than, ':object_1/metric_1/value', <lit_1>]
      - [greater_than, ':object_2/metric_2/value', <lit_2>]
@@ -109,7 +109,7 @@ Feature: Using the auto-qc tool
      """
      metadata:
        version:
-         auto-qc: 1.1.0
+         auto-qc: 2.0.0
      thresholds:
      -
        - and
@@ -156,7 +156,7 @@ Feature: Using the auto-qc tool
      """
      metadata:
        version:
-         auto-qc: 1.1.0
+         auto-qc: 2.0.0
      thresholds:
      -
        - and
@@ -196,7 +196,7 @@ Feature: Using the auto-qc tool
      """
      metadata:
        version:
-         auto-qc: 1.1.0
+         auto-qc: 2.0.0
      thresholds:
      -
        - and
@@ -217,6 +217,6 @@ Feature: Using the auto-qc tool
     And the exit code should be 0
     And the standard out should contain:
       """
-      PASS 
+      PASS
 
       """
