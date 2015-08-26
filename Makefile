@@ -1,6 +1,5 @@
 test    = PYTHONPATH=vendor/python/lib/python2.7/site-packages vendor/python/bin/nosetests --rednose
-feature = PYTHONPATH=vendor/python/lib/python2.7/site-packages vendor/python/bin/behave --stop
-
+feature = PYTHONPATH=vendor/python/lib/python2.7/site-packages vendor/python/bin/behave 
 bootstrap: Gemfile.lock vendor/python
 
 vendor/python: requirements.txt
@@ -24,7 +23,8 @@ autofeature:
 		| xargs -n 1 -I {} bash -c "clear && $(feature)"
 
 feature: vendor/python
-	$(feature)
+	$(feature) --stop --no-skipped $(FLAGS)
+
 
 Gemfile.lock: Gemfile
 	mkdir -p log

@@ -36,26 +36,26 @@ Feature: Using the auto-qc tool
 
   Examples: Operators
       | variable | operator     | literal      | result |
-      | 1        | greater_than | 0            | FAIL   |
-      | 1        | greater_than | 2            | PASS   |
-      | 1        | less_than    | 2            | FAIL   |
-      | 1        | less_than    | 0            | PASS   |
-      | True     | and          | True         | FAIL   |
-      | False    | and          | True         | PASS   |
-      | True     | and          | False        | PASS   |
-      | False    | and          | False        | PASS   |
-      | True     | or           | True         | FAIL   |
-      | False    | or           | True         | FAIL   |
-      | True     | or           | False        | FAIL   |
-      | False    | or           | False        | PASS   |
-      | 1        | not_equals   | 1            | PASS   |
-      | 2        | not_equals   | 1            | FAIL   |
-      | 1        | equals       | 1            | FAIL   |
-      | 2        | equals       | 1            | PASS   |
-      | A        | is_in        | [list, A, B] | FAIL   |
-      | C        | is_in        | [list, A, B] | PASS   |
-      | A        | is_not_in    | [list, A, B] | PASS   |
-      | C        | is_not_in    | [list, A, B] | FAIL   |
+      | 1        | greater_than | 0            | PASS   |
+      | 1        | greater_than | 2            | FAIL   |
+      | 1        | less_than    | 2            | PASS   |
+      | 1        | less_than    | 0            | FAIL   |
+      | True     | and          | True         | PASS   |
+      | False    | and          | True         | FAIL   |
+      | True     | and          | False        | FAIL   |
+      | False    | and          | False        | FAIL   |
+      | True     | or           | True         | PASS   |
+      | False    | or           | True         | PASS   |
+      | True     | or           | False        | PASS   |
+      | False    | or           | False        | FAIL   |
+      | 1        | not_equals   | 1            | FAIL   |
+      | 2        | not_equals   | 1            | PASS   |
+      | 1        | equals       | 1            | PASS   |
+      | 2        | equals       | 1            | FAIL   |
+      | A        | is_in        | [list, A, B] | PASS   |
+      | C        | is_in        | [list, A, B] | FAIL   |
+      | A        | is_not_in    | [list, A, B] | FAIL   |
+      | C        | is_not_in    | [list, A, B] | PASS   |
 
   Scenario Outline: Multiple thresholds
    Given I create the file "analysis.yml" with the contents:
@@ -92,10 +92,10 @@ Feature: Using the auto-qc tool
 
   Examples: Operators
       | var_1 | lit_1 | var_2 | lit_2 | result |
-      | 1     | 0     | 1     | 0     | FAIL   |
+      | 1     | 0     | 1     | 0     | PASS   |
       | 1     | 0     | 0     | 1     | FAIL   |
       | 0     | 1     | 1     | 0     | FAIL   |
-      | 0     | 1     | 0     | 1     | PASS   |
+      | 0     | 1     | 0     | 1     | FAIL   |
 
   Scenario Outline: Nested thresholds
    Given I create the file "analysis.yml" with the contents:
@@ -136,12 +136,12 @@ Feature: Using the auto-qc tool
 
   Examples: Operators
       | var_1 | lit_1 | lit_2 | result |
-      | 1     | 0     | 0     | FAIL   |
-      | 1     | 0     | 1     | PASS   |
-      | 1     | 1     | 0     | PASS   |
-      | 1     | 1     | 1     | PASS   |
+      | 1     | 0     | 0     | PASS   |
+      | 1     | 0     | 1     | FAIL   |
+      | 1     | 1     | 0     | FAIL   |
+      | 1     | 1     | 1     | FAIL   |
 
-  Scenario: A library passing on insert size
+  Scenario: A library failing on insert size
    Given I create the file "analysis.yml" with the contents:
      """
      - analysis: insert_size
@@ -177,11 +177,11 @@ Feature: Using the auto-qc tool
     And the exit code should be 0
     And the standard out should contain:
       """
-      PASS
+      FAIL
 
       """
 
-  Scenario: A library failing on insert size
+  Scenario: A library passing on insert size
    Given I create the file "analysis.yml" with the contents:
      """
      - analysis: insert_size
@@ -217,6 +217,6 @@ Feature: Using the auto-qc tool
     And the exit code should be 0
     And the standard out should contain:
       """
-      FAIL
+      PASS 
 
       """
