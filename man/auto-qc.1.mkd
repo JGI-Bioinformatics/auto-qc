@@ -7,99 +7,133 @@ auto-qc(1) -- automated passing and failing of libraries
 
 ## OPTIONS
 
-* `-a`, `--analysis-file` <ANALYSIS_FILE>:
-The path to the file containing the library metrics used for quality control.
+  * `-a`, `--analysis-file` <ANALYSIS_FILE>:
 
-* `-t`, `--threshold-file` <THRESHOLD_FILE>:
-The path to the file containing the pass/fail thresholds for quality control of the library.
+    The path to the file containing the library metrics used for quality
+    control.
 
-* `-x`, `--text-output`:
-Generate human readable output of the quality control test.
+  * `-t`, `--threshold-file` <THRESHOLD_FILE>:
 
-* `-y`, `--yaml-output`:
-Generate YAML output of the quality control test.
+    The path to the file containing the pass/fail thresholds for quality
+    control of the library.
+
+  * `-x`, `--text-output`:
+
+    Generate human readable output of the quality control test.
 
 ## SYNTAX
 
 ### ANALYSIS FILE
 
-The analysis file contains a YAML list of dictionaries. Each dictionary should
-represent a discrete analysis type. An example analysis related to *E.coli*
-contamination is as follows:
+The analysis file should contain a YAML dictionary with the keys `metadata` and
+`data`. The `data` field is a freeform dictionary that can contain any
+subdictionary with any fields. There is no restriction on the dictionary
+structure or keys. Arrays are however not permitted. The `metadata` field has
+one mandatory field `version`. The version number should match the version
+number of auto-qc according to [semantic versioning][semver]. An example
+analysis file is given below.
 
-    - analysis: ecoli_contamination
+[semver]: http://semver.org
 
-      metadata:
-        version:
-          library-metrics: 0.4.3
-
-      outputs:
-        bases:
-          contaminants: 1392000
-          initial: 1500000000
-          non_contaminants: 1498608000
-        metrics:
-          percent_contamination: 0.1
-        reads:
-          contaminants: 9280
-          initial: 10000000
-          non_contaminants: 9990720
-
-This analysis entry contains three keys in the dictionary: analysis, metadata,
-and outputs. These keys corresponding to the following:
-
-* **analysis** - The name of the analysis. This should be unique to each
-  analysis in the file, i.e. there should only be one entry with this name in
-  each analysis file.
-
-* **metadata** - Any associate metadata that you wish to include in the
-  analysis. In the example above there is a version key which specifies the
-  version of library metrics used to generate the analysis file. You add what
-  ever data you think may be useful if you have to return in future and
-  understand how the analysis was generated.
-
-* **outputs** - The field contains the data you would like to test for QC.
-  Under this should be all the values that related to QC metrics. In the
-  example above there are fields related to number of contaminated bases,
-  contaminated reads, and the calculated metrics.
+~~~ YAML
+---
+metadata:
+  version: 2.0.0
+data:
+  bases:
+    contaminants: 1392000
+    initial: 1500000000
+    non_contaminants: 1498608000
+  metrics:
+    percent_contamination: 0.1
+  reads:
+    contaminants: 9280
+    initial: 10000000
+    non_contaminants: 9990720
+~~~
 
 ### THRESHOLD FILE
 
-The threshold file specifies the QC criteria for pass or fail. This file
-contains two fields **metadata** and **thresholds** as shown below:
+The threshold file specifies the QC criteria for pass or fail. This is a YAML
+format dictionary contains two fields `metadata` and `thresholds`. These fields
+are defined as:
 
-    metadata:
-      version:
-        auto-qc: 1.0.0
+  * **metadata** - This contains any metadata that you wish to associate with
+    your threshold file. The field `metadata/version/auto-qc` is mandatory and
+    is checked by auto-qc to determine if the QC threshold syntax matches that
+    of the version of auto-qc according to [semantic versioning][semver].
 
-    thresholds:
-    -
-      - greater_than
-      - ':ecoli_contamination/metrics/percent_contamination
-      - 5
+  * **thresholds** - This field should contain a list of s-expressions. These
+    s-expressions are lists defining the QC thresholds. The format of each
+    threshold is:
 
-* **metadata** - This contains any metadata that you wish to associate with
-  your threshold file. The metadata/version/auto-qc field is required as this
-  is checked by auto-qc to determine if the QC threshold syntax matches that of
-  the version of auto-qc.
+    * **doc string** - (*optional*) A dictionary with documentation fields for
+      the associated QC threshold. The allowed fields are: `name` `fail_msg`
+      and `pass_msg`. The values of `fail_msg` and `pass_msg` are return in the
+      standard out when the threshold fails. The `name` field is used to
+      describe the QC tests.
 
-* **thresholds** - This field should contain a list of threshold metrics. Each
-  metric is itself a list also. In the example there is just one threshold
-  which tests whether the percentage of contaminating *E.coli* DNA is not
-  greater than 5. The format of each threshold metric should be the following:
+    * **operator** - An operator to test the QC value. This may be mathematical
+      comparison operators such as '>' or Boolean operators such as 'AND'. The
+      list of allowed operators is described in the section below.
 
-  * **operator** - A mathematical operator to test the QC value. In the above
-    case the operator is 'greater_than'. The list of allowed operators is
-    described below.
+    * **analysis value** - The value from the analysis file that should be
+      tested. The colon ':' indicates that this a reference to a value in the
+      analysis file. The remainder of this string shows the path to the value
+      to be tested.
 
-  * **analysis_value** - The value from the analysis file that should be
-    tested. The colon ':' indicates that this a reference to a value in the
-    analysis file. The remainder of this string shows the path to the value to
-    be tested. In the example this will file the analysis named
-    'ecoli_contamination', then find the field 'metrics/percent_contamination'.
+    * **literal value** - A literal value that to compare with the reference
+      value.
 
-  * **literal_value** - This is a literal value that will be compared with the
-    referenced analysis value.
+An example of a simple threshold file with two QC tests is given below. In this
+example if both QC evaluations return TRUE then this will pass. If either
+return FALSE then this will fail QC.
+
+~~~ YAML
+metadata:
+  version:
+    auto-qc: 1.0.0
+thresholds:
+- [<, :metrics/percent_contamination, 2]
+- [<, :reads/contaminants, 1e6]
+~~~
+
+A more complex example uses `NOT` and `AND` to create a QC threshold that
+fails only when both of the nested thresholds fail. Boolean operators can be
+use arbitrarily to create more complex QC tests.
+
+~~~ YAML
+metadata:
+  version:
+    auto-qc: 1.0.0
+thresholds:
+- NOT
+- - AND
+  - - [>, :metrics/percent_contamination, 2]
+    - [>, :reads/contaminants, 1e6]
+~~~
+
+A final example uses the optional *doc string* dictionary at the start of the
+expression. This names the QC check an provides fail and pass messages that
+provide more descriptive output to the user when using auto-qc. Values inside
+`{}` braces are interpolated with their value in the QC threshold file.
+
+~~~ YAML
+metadata:
+  version:
+    auto-qc: 1.0.0
+thresholds:
+- name: Contamination test
+  fail_msg: |
+    Contains {metrics/percent_contamination}% contaminants and
+    {reads/contaminants} contaminating reads indicating a high degree of
+    sequencing contamination.
+  pass_msg: Passes contamination QC check.
+- NOT
+- - AND
+  - - [>, :metrics/percent_contamination, 2]
+    - [>, :reads/contaminants, 1e6]
+~~~
 
 ### AVAILABLE OPERATORS
 
