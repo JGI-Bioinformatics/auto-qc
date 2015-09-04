@@ -3,7 +3,7 @@ Feature: Using the auto-qc tool
   The auto-qc tool can be used to
   Test quality thresholds
 
-  Scenario Outline: Threshold operators
+  Scenario Outline: Using different comparison operators
    Given I create the file "analysis.yml" with the contents:
      """
      - analysis: object_1
@@ -57,7 +57,7 @@ Feature: Using the auto-qc tool
       | A        | is_not_in    | [list, A, B] | FAIL   |
       | C        | is_not_in    | [list, A, B] | PASS   |
 
-  Scenario Outline: Multiple thresholds
+  Scenario Outline: Testing multiple different thresholds
    Given I create the file "analysis.yml" with the contents:
      """
      - analysis: object_1
@@ -97,7 +97,7 @@ Feature: Using the auto-qc tool
       | 0     | 1     | 1     | 0     | FAIL   |
       | 0     | 1     | 0     | 1     | FAIL   |
 
-  Scenario Outline: Nested thresholds
+  Scenario Outline: Using nested thresholds
    Given I create the file "analysis.yml" with the contents:
      """
      - analysis: object_1
@@ -140,83 +140,3 @@ Feature: Using the auto-qc tool
       | 1     | 0     | 1     | FAIL   |
       | 1     | 1     | 0     | FAIL   |
       | 1     | 1     | 1     | FAIL   |
-
-  Scenario: A library failing on insert size
-   Given I create the file "analysis.yml" with the contents:
-     """
-     - analysis: insert_size
-       outputs:
-         metrics:
-           mode: 198
-     - analysis: library_type
-       outputs:
-         protocol: Ultra-Low Input (DNA)
-     """
-     And I create the file "threshold.yml" with the contents:
-     """
-     metadata:
-       version:
-         auto-qc: 2.0.0
-     thresholds:
-     -
-       - and
-       -
-         - less_than
-         - :insert_size/metrics/mode
-         - 200
-       -
-         - not_equals
-         - :library_type/protocol
-         - Ultra-Low Input (DNA)
-     """
-    When I run the command "../bin/auto-qc" with the arguments:
-       | key              | value         |
-       | --analysis-file  | analysis.yml  |
-       | --threshold-file | threshold.yml |
-   Then the standard error should be empty
-    And the exit code should be 0
-    And the standard out should contain:
-      """
-      FAIL
-
-      """
-
-  Scenario: A library passing on insert size
-   Given I create the file "analysis.yml" with the contents:
-     """
-     - analysis: insert_size
-       outputs:
-         metrics:
-           mode: 198
-     - analysis: library_type
-       outputs:
-         protocol: Standard
-     """
-     And I create the file "threshold.yml" with the contents:
-     """
-     metadata:
-       version:
-         auto-qc: 2.0.0
-     thresholds:
-     -
-       - and
-       -
-         - less_than
-         - :insert_size/metrics/mode
-         - 200
-       -
-         - not_equals
-         - :library_type/protocol
-         - Ultra-Low Input (DNA)
-     """
-    When I run the command "../bin/auto-qc" with the arguments:
-       | key              | value         |
-       | --analysis-file  | analysis.yml  |
-       | --threshold-file | threshold.yml |
-   Then the standard error should be empty
-    And the exit code should be 0
-    And the standard out should contain:
-      """
-      PASS
-
-      """
