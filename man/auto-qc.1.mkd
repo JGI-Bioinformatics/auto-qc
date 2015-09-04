@@ -137,16 +137,16 @@ thresholds:
 
 ### AVAILABLE OPERATORS
 
-**equals** / **not_equals** - Test whether two values are equal or not.
+**==** / **!=** - Test whether two values are equal or not.
 
-    - equals
+    - ==
     - ':run_metadata/protocol
     - Low Input DNA
 
-**greater_than** / **less_than** - Test whether one numeric value is
+**>** / **<** / **>=** / **<=** - Test whether one numeric value is
 greater/smaller than another.
 
-    - greater_than
+    - >
     - ':human_contamination/metrics/percent_contamination
     - 5
 
@@ -176,10 +176,15 @@ operator are themselves thresholds.
       - ':dog_contamination/metrics/percent_contamination'
       - 5
 
-**is_in** / **is_not_in** - Test whether a value is in a list of values. Note
-that the list of values must begin with the **list** operator.
+**not** - Flips the boolean value
 
-    - is_in
+      - not
+      - :cat_contamination/is_contaminated'
+
+**in** / **not_in** - Test whether a value is in a list of values. Note that
+the list of values must begin with the **list** operator.
+
+    - in
     - ':cat_contamination/name_of_cat'
     -
       - list
