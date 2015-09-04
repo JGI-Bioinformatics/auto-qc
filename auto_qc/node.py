@@ -22,19 +22,42 @@ def is_operator(v):
 def operator(v):
     return OPERATORS[v]
 
+def identity(x):
+    return x
+
+def recursive_apply(list_func, atom_func = identity):
+    def _f(x):
+        if isinstance(x, list):
+            return list_func(x)
+        else:
+            return atom_func(x)
+    return _f
+
 def eval_variables(analyses, node):
     """
-    Replace all variables in a node with their referenced literal value.
+    Replace all variables in a node s-expression with their referenced literal
+    value.
+
+    Args:
+      analysis (dict): A dictionary corresponding to the values referenced in the
+      given s-expression.
+
+      node (list): An s-expression list in the form of [operator, arg1, arg2, ...].
+
+    Yields:
+      A node expression with referenced values replaced with their literal values.
+
+    Examples:
+      >>> eval_variables({a: 1}, [>, :a, 2])
+      [>, 1, 2]
     """
     def _eval(n):
         if var.is_variable(n):
             return var.variable(analyses, n)
-        elif isinstance(n, list):
-            return eval_variables(analyses, n)
         else:
             return n
 
-    return map(_eval, node)
+    return map(recursive_apply(F(eval_variables, analyses), _eval), node)
 
 def eval(node):
     """
@@ -51,13 +74,6 @@ def eval(node):
       >>> eval([>, 0, 1])
       FALSE
     """
-
-    def _eval(n):
-        if isinstance(n, list):
-            return eval(n)
-        else:
-            return n
-
-    args = map(_eval, it.tail(node))
+    args = map(recursive_apply(eval), it.tail(node))
     f    = operator(it.head(node))
     return apply(f, args)
