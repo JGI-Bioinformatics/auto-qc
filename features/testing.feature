@@ -140,3 +140,35 @@ Feature: Using the auto-qc tool
       | 1     | 0     | 1     | FAIL   |
       | 1     | 1     | 0     | FAIL   |
       | 1     | 1     | 1     | FAIL   |
+
+  Scenario: Using a doc string to name the threshold
+   Given I create the file "analysis.yml" with the contents:
+     """
+     - analysis: object_1
+       outputs:
+         metric_1:
+           value: 2
+     """
+     And I create the file "threshold.yml" with the contents:
+     """
+     metadata:
+       version:
+         auto-qc: 2.0.0
+     thresholds:
+     -
+       - name: "My QC threshold"
+       - greater_than
+       - :object_1/metric_1/value
+       - 1
+     """
+    When I run the command "../bin/auto-qc" with the arguments:
+       | key              | value         |
+       | --analysis-file  | analysis.yml  |
+       | --threshold-file | threshold.yml |
+   Then the standard error should be empty
+    And the exit code should be 0
+    And the standard out should contain:
+      """
+      PASS
+
+      """

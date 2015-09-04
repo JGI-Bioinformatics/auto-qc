@@ -36,17 +36,28 @@ def eval_variables(analyses, node):
 
     return map(_eval, node)
 
-def apply_operator(node):
+def eval(node):
     """
-    Resolve node value by applying the operator to arguments.
+    Evaluate an s-expression by applying the operator to the rest of the arguments.
+
+    Args:
+      node (list): An s-expression list in the form of [operator, arg1, arg2, ...]
+
+    Yields:
+      The result of "applying" the operator to the arugments. Will evaluate
+      recursively if any of the args are a list.
+
+    Examples:
+      >>> eval([>, 0, 1])
+      FALSE
     """
 
-    def _apply(n):
+    def _eval(n):
         if isinstance(n, list):
-            return apply_operator(n)
+            return eval(n)
         else:
             return n
 
-    args = map(_apply, it.tail(node))
+    args = map(_eval, it.tail(node))
     f    = operator(it.head(node))
     return apply(f, args)

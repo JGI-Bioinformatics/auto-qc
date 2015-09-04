@@ -49,7 +49,7 @@ def row_array(n):
 
     def format_node((threshold, evaluation)):
         operator = it.head(evaluation)
-        value    = node.apply_operator(evaluation)
+        value    = node.eval(evaluation)
 
         if operator in ["or", "and"]:
             return {'name'     : OPERATORS[operator],
