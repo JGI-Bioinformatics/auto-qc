@@ -2,7 +2,8 @@ import operator      as op
 from fn import iters as it
 from fn import F
 
-import auto_qc.variable as var
+import auto_qc.variable        as var
+import auto_qc.util.functional as fn
 
 OPERATORS = {
     'greater_than': op.gt,
@@ -21,17 +22,6 @@ def is_operator(v):
 
 def operator(v):
     return OPERATORS[v]
-
-def identity(x):
-    return x
-
-def recursive_apply(list_func, atom_func = identity):
-    def _f(x):
-        if isinstance(x, list):
-            return list_func(x)
-        else:
-            return atom_func(x)
-    return _f
 
 def eval_variables(analyses, node):
     """
@@ -57,7 +47,7 @@ def eval_variables(analyses, node):
         else:
             return n
 
-    return map(recursive_apply(F(eval_variables, analyses), _eval), node)
+    return map(fn.recursive_apply(F(eval_variables, analyses), _eval), node)
 
 def eval(node):
     """
@@ -74,6 +64,6 @@ def eval(node):
       >>> eval([>, 0, 1])
       FALSE
     """
-    args = map(recursive_apply(eval), it.tail(node))
+    args = map(fn.recursive_apply(eval), it.tail(node))
     f    = operator(it.head(node))
     return apply(f, args)
