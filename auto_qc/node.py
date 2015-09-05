@@ -64,6 +64,9 @@ def eval(node):
       >>> eval([>, 0, 1])
       FALSE
     """
-    args = map(fn.recursive_apply(eval), it.tail(node))
-    f    = operator(it.head(node))
-    return apply(f, args)
+    if isinstance(it.head(node), dict):
+        return eval(list(it.tail(node)))
+    else:
+        args = map(fn.recursive_apply(eval), it.tail(node))
+        f = operator(it.head(node))
+        return apply(f, args)

@@ -58,3 +58,26 @@ def test_check_operators_with_unknown_operator():
     status = {'nodes' : {'thresholds' : n}}
     assert_in('error', er.check_operators('nodes', status))
     assert_equal(status['error'], "Unknown operator 'unknown.'")
+
+def test_check_operators_with_unknown_nested_operator():
+    n = [['and', ['or', ['unknown', 2, 1]]]]
+    status = {'nodes' : {'thresholds' : n}}
+    assert_in('error', er.check_operators('nodes', status))
+    assert_equal(status['error'], "Unknown operator 'unknown.'")
+
+def test_check_operators_with_doc_string():
+    n = [[{'name': 'my qc threshold'}, 'less_than', 2, 1]]
+    status = {'nodes' : {'thresholds' : n}}
+    assert_not_in('error', er.check_operators('nodes', status))
+
+def test_check_unknown_operator_with_doc_string():
+    n = [[{'name': 'my qc threshold'}, 'unknown', 2, 1]]
+    status = {'nodes' : {'thresholds' : n}}
+    assert_in('error', er.check_operators('nodes', status))
+    assert_equal(status['error'], "Unknown operator 'unknown.'")
+
+def test_check_operators_with_unknown_nested_operator_with_doc_string():
+    n = [[{'name': 'my qc threshold'}, 'unknown', ['or', ['less_than', 2, 1]]]]
+    status = {'nodes' : {'thresholds' : n}}
+    assert_in('error', er.check_operators('nodes', status))
+    assert_equal(status['error'], "Unknown operator 'unknown.'")

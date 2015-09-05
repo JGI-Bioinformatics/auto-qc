@@ -1,8 +1,22 @@
 def identity(x):
     """
-    The identity function
+    The identity function.
     """
     return x
+
+def empty_list(*args):
+    """
+    Returns an empty list, whatever the arguments.
+    """
+    return []
+
+def flatten(n):
+    def _f(acc, x):
+        if isinstance(x, list):
+            return acc + flatten(x)
+        else:
+            return acc + [x]
+    return reduce(_f, n, [])
 
 def recursive_apply(list_func, atom_func = identity):
     """
