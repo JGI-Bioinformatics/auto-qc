@@ -2,9 +2,10 @@ import fn.iters as it
 import string   as st
 from fn import F, _
 
-import auto_qc.util.metadata as meta
-import auto_qc.variable      as var
-import auto_qc.node          as nd
+import auto_qc.util.metadata   as meta
+import auto_qc.variable        as var
+import auto_qc.node            as nd
+import auto_qc.util.functional as fn
 
 def check_version_number(threshold, status):
     version =  meta.major_version()
@@ -56,19 +57,22 @@ def check_node_paths(nodes, analyses, status):
 
     return status
 
-def check_operators(nodes, status):
+def check_operators(node_ref, status):
+    nodes = status[node_ref]['thresholds']
 
-    def fetch_operators(acc, n):
-        if isinstance(n, list):
-            operator = it.head(n)
-            rest     = it.tail(n)
-            return reduce(fetch_operators, rest, acc + [operator])
+    def _parse_list(node):
+        if isinstance(it.head(node), dict):
+            return _parse_list(list(it.tail(node)))
         else:
-            return acc
+            operator = it.head(node)
+            rest     = it.tail(node)
+            return [operator] + map(fn.recursive_apply(_parse_list, fn.empty_list), rest)
+
+    operators = fn.flatten(map(fn.recursive_apply(_parse_list, fn.empty_list), nodes))
 
     f = F(it.map, lambda x: "Unknown operator '{}.'".format(x)) << F(it.filterfalse, nd.is_operator)
 
-    errors = list(f(reduce(fetch_operators, status[nodes]['thresholds'], [])))
+    errors = list(f(operators))
     if len(errors) > 0:
         status['error'] = st.join(errors, "\n")
 

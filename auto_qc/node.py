@@ -2,7 +2,8 @@ import operator      as op
 from fn import iters as it
 from fn import F
 
-import auto_qc.variable as var
+import auto_qc.variable        as var
+import auto_qc.util.functional as fn
 
 OPERATORS = {
     'greater_than': op.gt,
@@ -24,29 +25,48 @@ def operator(v):
 
 def eval_variables(analyses, node):
     """
-    Replace all variables in a node with their referenced literal value.
+    Replace all variables in a node s-expression with their referenced literal
+    value.
+
+    Args:
+      analysis (dict): A dictionary corresponding to the values referenced in the
+      given s-expression.
+
+      node (list): An s-expression list in the form of [operator, arg1, arg2, ...].
+
+    Yields:
+      A node expression with referenced values replaced with their literal values.
+
+    Examples:
+      >>> eval_variables({a: 1}, [>, :a, 2])
+      [>, 1, 2]
     """
     def _eval(n):
         if var.is_variable(n):
             return var.variable(analyses, n)
-        elif isinstance(n, list):
-            return eval_variables(analyses, n)
         else:
             return n
 
-    return map(_eval, node)
+    return map(fn.recursive_apply(F(eval_variables, analyses), _eval), node)
 
-def apply_operator(node):
+def eval(node):
     """
-    Resolve node value by applying the operator to arguments.
+    Evaluate an s-expression by applying the operator to the rest of the arguments.
+
+    Args:
+      node (list): An s-expression list in the form of [operator, arg1, arg2, ...]
+
+    Yields:
+      The result of "applying" the operator to the arugments. Will evaluate
+      recursively if any of the args are a list.
+
+    Examples:
+      >>> eval([>, 0, 1])
+      FALSE
     """
-
-    def _apply(n):
-        if isinstance(n, list):
-            return apply_operator(n)
-        else:
-            return n
-
-    args = map(_apply, it.tail(node))
-    f    = operator(it.head(node))
-    return apply(f, args)
+    if isinstance(it.head(node), dict):
+        return eval(list(it.tail(node)))
+    else:
+        args = map(fn.recursive_apply(eval), it.tail(node))
+        f = operator(it.head(node))
+        return apply(f, args)

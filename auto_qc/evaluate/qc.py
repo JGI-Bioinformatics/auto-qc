@@ -16,7 +16,7 @@ def apply_thresholds(destination, nodes, status):
     Apply operations to nodes
     """
     nodes = status[nodes]
-    status[destination] = map(node.apply_operator, nodes)
+    status[destination] = map(node.eval, nodes)
     return status
 
 def build_qc_dict(destination, thresholds, nodes, results, status):
