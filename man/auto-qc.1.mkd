@@ -94,8 +94,8 @@ metadata:
   version:
     auto-qc: 1.0.0
 thresholds:
-- [<, :metrics/percent_contamination, 2]
-- [<, :reads/contaminants, 1e6]
+- ['<', :metrics/percent_contamination, 2]
+- ['<', :reads/contaminants, 1e6]
 ~~~
 
 A more complex example uses `NOT` and `AND` to create a QC threshold that
@@ -109,8 +109,8 @@ metadata:
 thresholds:
 - NOT
 - - AND
-  - - [>, :metrics/percent_contamination, 2]
-    - [>, :reads/contaminants, 1e6]
+  - - ['>', :metrics/percent_contamination, 2]
+    - ['>', :reads/contaminants, 1e6]
 ~~~
 
 A final example uses the optional *doc string* dictionary at the start of the
@@ -131,8 +131,8 @@ thresholds:
   pass_msg: Passes contamination QC check.
 - NOT
 - - AND
-  - - [>, :metrics/percent_contamination, 2]
-    - [>, :reads/contaminants, 1e6]
+  - - ['>', :metrics/percent_contamination, 2]
+    - ['>', :reads/contaminants, 1e6]
 ~~~
 
 ### AVAILABLE OPERATORS
@@ -146,7 +146,7 @@ thresholds:
 **>** / **<** / **>=** / **<=** - Test whether one numeric value is
 greater/smaller than another.
 
-    - >
+    - '>'
     - ':human_contamination/metrics/percent_contamination
     - 5
 
