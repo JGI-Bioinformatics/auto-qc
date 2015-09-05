@@ -2,48 +2,48 @@ from nose.tools import *
 import auto_qc.node as node
 
 def test_eval_greater_than_with_two_literals():
-    n = ['greater_than', 2, 1]
+    n = ['>', 2, 1]
     assert_true(node.eval(n))
 
 def test_eval_less_than_with_two_literals():
-    n = ['less_than', 2, 1]
+    n = ['<', 2, 1]
     assert_false(node.eval(n))
 
 def test_eval_true_with_nested_lists():
-    n = ['and', ['greater_than', 2, 1],['greater_than', 2, 1]]
+    n = ['and', ['>', 2, 1],['>', 2, 1]]
     assert_true(node.eval(n))
 
 def test_eval_false_with_nested_lists():
-    n = ['and', ['greater_than', 1, 2],['greater_than', 1, 2]]
+    n = ['and', ['>', 1, 2],['>', 1, 2]]
     assert_false(node.eval(n))
 
 def test_eval_with_list():
     n = ['list', 2, 1]
     assert_equal([2, 1], node.eval(n))
 
-def test_eval_with_is_in():
-    n = ['is_in', 2, ['list', 2, 1]]
+def test_eval_with_in():
+    n = ['in', 2, ['list', 2, 1]]
     assert_true(node.eval(n))
 
-def test_eval_with_is_not_in():
-    n = ['is_not_in', 2, ['list', 2, 1]]
+def test_eval_with_not_in():
+    n = ['not_in', 2, ['list', 2, 1]]
     assert_false(node.eval(n))
 
 def test_eval_variable_with_literal_and_variable():
-    n = ['less_than', ':ref/metric_1', 1]
+    n = ['<', ':ref/metric_1', 1]
     a = [{'analysis' : 'ref',
           'outputs'  : {
             'metric_1' : 2 }}]
-    assert_equal(['less_than', 2, 1], node.eval_variables(a, n))
+    assert_equal(['<', 2, 1], node.eval_variables(a, n))
 
 def test_eval_variable_with_nested_list():
-    n = ['and', ['less_than', ':ref/metric_1', 1], ['less_than', ':ref/metric_1', 1]]
+    n = ['and', ['<', ':ref/metric_1', 1], ['<', ':ref/metric_1', 1]]
     a = [{'analysis' : 'ref',
           'outputs'  : {
             'metric_1' : 2 }}]
 
-    assert_equal(['and', ['less_than', 2, 1], ['less_than', 2, 1]], node.eval_variables(a, n))
+    assert_equal(['and', ['<', 2, 1], ['<', 2, 1]], node.eval_variables(a, n))
 
 def test_eval_with_doc_string():
-    n = [{'name': 'my threshold'}, 'greater_than', 2, 1]
+    n = [{'name': 'my threshold'}, '>', 2, 1]
     assert_true(node.eval(n))

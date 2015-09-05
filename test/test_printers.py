@@ -3,8 +3,8 @@ import auto_qc.printers               as prn
 import more_assertive_nose.assertions as asrt
 
 def test_single_passing_threshold():
-    threshold  = [['greater_than', ':var_1', 2]]
-    evaluation = [['greater_than',       1,  2]]
+    threshold  = [['>', ':var_1', 2]]
+    evaluation = [['>',       1,  2]]
     expected   = [{'name'     : ':var_1',
                    'expected' : '> 2',
                    'actual'   : '1',
@@ -12,8 +12,8 @@ def test_single_passing_threshold():
     assert_equal(expected, prn.row_array(zip(threshold, evaluation)))
 
 def test_single_failing_threshold():
-    threshold  = [['less_than', ':var_1', 2]]
-    evaluation = [['less_than',       1,  2]]
+    threshold  = [['<', ':var_1', 2]]
+    evaluation = [['<',       1,  2]]
     expected   = [{'name'     : ':var_1',
                    'expected' : '< 2',
                    'actual'   : '1',
@@ -21,22 +21,22 @@ def test_single_failing_threshold():
     assert_equal(expected, prn.row_array(zip(threshold, evaluation)))
 
 def test_multiple_passing_threshold():
-    threshold  = [['greater_than', ':var_1', 2], ['greater_than', ':var_1', 2]]
-    evaluation = [['greater_than',       1,  2], ['greater_than',       1,  2]]
+    threshold  = [['>', ':var_1', 2], ['>', ':var_1', 2]]
+    evaluation = [['>',       1,  2], ['>',       1,  2]]
     expected   = [{'name' : ':var_1', 'expected' : '> 2', 'actual' : '1', 'value' : False},
                   {'name' : ':var_1', 'expected' : '> 2', 'actual' : '1', 'value' : False}]
     assert_equal(expected, prn.row_array(zip(threshold, evaluation)))
 
 def test_nested_failing_and_threshold():
-    threshold  = [['and', ['less_than', ':var_1', 2]]]
-    evaluation = [['and', ['less_than', 1, 2]]]
+    threshold  = [['and', ['<', ':var_1', 2]]]
+    evaluation = [['and', ['<', 1, 2]]]
     expected   = [{'name' : 'AND:', 'value': True, 'children' : [
         {'name' : ':var_1', 'expected' : '< 2', 'actual' : '1', 'value' : True}]}]
     assert_equal(expected, prn.row_array(zip(threshold, evaluation)))
 
 def test_multiple_nested_failing_and_threshold():
-    threshold  = [['and', ['less_than', ':var_1', 2], ['less_than', ':var_1', 2]]]
-    evaluation = [['and', ['less_than', 1, 2], ['less_than', 1, 2]]]
+    threshold  = [['and', ['<', ':var_1', 2], ['<', ':var_1', 2]]]
+    evaluation = [['and', ['<', 1, 2], ['<', 1, 2]]]
     expected   = [{'name' : 'AND:', 'value': True, 'children' : [
         {'name' : ':var_1', 'expected' : '< 2', 'actual' : '1', 'value' : True},
         {'name' : ':var_1', 'expected' : '< 2', 'actual' : '1', 'value' : True},
@@ -44,8 +44,8 @@ def test_multiple_nested_failing_and_threshold():
     assert_equal(expected, prn.row_array(zip(threshold, evaluation)))
 
 def test_row_array_with_long_list():
-    threshold  = [['is_in', ':var_1', ['list', 'A', 'B', 'C', 'D', 'E']]]
-    evaluation = [['is_in', 'A',  ['list', 'A', 'B', 'C', 'D', 'E']]]
+    threshold  = [['in', ':var_1', ['list', 'A', 'B', 'C', 'D', 'E']]]
+    evaluation = [['in', 'A',  ['list', 'A', 'B', 'C', 'D', 'E']]]
     expected   = [{'name'     : ':var_1',
                    'expected' : "is in [A, B, C, ...]",
                    'actual'   : 'A',
