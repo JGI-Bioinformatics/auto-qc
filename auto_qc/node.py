@@ -6,15 +6,18 @@ import auto_qc.variable        as var
 import auto_qc.util.functional as fn
 
 OPERATORS = {
-    'greater_than': op.gt,
-    'less_than'   : op.lt,
-    'equals'      : op.eq,
-    'not_equals'  : op.ne,
-    'and'         : lambda *args: all(args),
-    'or'          : lambda *args: any(args),
-    'is_in'       : lambda x, y: x in y,
-    'is_not_in'   : lambda x, y: x not in y,
-    'list'        : lambda *args: list(args)
+    '>'      : op.gt,
+    '<'      : op.lt,
+    '>='     : op.ge,
+    '<='     : op.le,
+    '=='     : op.eq,
+    '!='     : op.ne,
+    'and'    : lambda *args: all(args),
+    'or'     : lambda *args: any(args),
+    'not'    : lambda x: not x,
+    'in'     : lambda x, y: x in y,
+    'not_in' : lambda x, y: x not in y,
+    'list'   : lambda *args: list(args)
         }
 
 def is_operator(v):

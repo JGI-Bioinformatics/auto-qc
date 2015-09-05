@@ -60,15 +60,18 @@ def check_node_paths(nodes, analyses, status):
 def check_operators(node_ref, status):
     nodes = status[node_ref]['thresholds']
 
+    def _f(x):
+      return map(fn.recursive_apply(_parse_list, fn.empty_list), x)
+
     def _parse_list(node):
         if isinstance(it.head(node), dict):
             return _parse_list(list(it.tail(node)))
         else:
             operator = it.head(node)
             rest     = it.tail(node)
-            return [operator] + map(fn.recursive_apply(_parse_list, fn.empty_list), rest)
+            return [operator] + _f(rest)
 
-    operators = fn.flatten(map(fn.recursive_apply(_parse_list, fn.empty_list), nodes))
+    operators = fn.flatten(_f(nodes))
 
     f = F(it.map, lambda x: "Unknown operator '{}.'".format(x)) << F(it.filterfalse, nd.is_operator)
 

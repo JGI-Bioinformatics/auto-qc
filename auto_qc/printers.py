@@ -5,14 +5,14 @@ from fn import F, _
 from re import sub
 
 OPERATORS = {
-        'greater_than' : '>',
-        'less_than'    : '<',
-        'and'          : 'AND:',
-        'or'           : 'OR:',
-        'equals'       : '==',
-        'not_equals'   : '=/=',
-        'is_in'        : 'is in',
-        'is_not_in'    : 'is not in'
+        '>'          : '>',
+        '<'          : '<',
+        'and'        : 'AND:',
+        'or'         : 'OR:',
+        'equals'     : '==',
+        'not_equals' : '=/=',
+        'in'         : 'is in',
+        'not_in'     : 'is not in'
         }
 
 def simple(qc_dict):

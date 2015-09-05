@@ -35,27 +35,62 @@ Feature: Using the auto-qc tool
       """
 
   Examples: Operators
-      | variable | operator     | literal      | result |
-      | 1        | greater_than | 0            | PASS   |
-      | 1        | greater_than | 2            | FAIL   |
-      | 1        | less_than    | 2            | PASS   |
-      | 1        | less_than    | 0            | FAIL   |
-      | True     | and          | True         | PASS   |
-      | False    | and          | True         | FAIL   |
-      | True     | and          | False        | FAIL   |
-      | False    | and          | False        | FAIL   |
-      | True     | or           | True         | PASS   |
-      | False    | or           | True         | PASS   |
-      | True     | or           | False        | PASS   |
-      | False    | or           | False        | FAIL   |
-      | 1        | not_equals   | 1            | FAIL   |
-      | 2        | not_equals   | 1            | PASS   |
-      | 1        | equals       | 1            | PASS   |
-      | 2        | equals       | 1            | FAIL   |
-      | A        | is_in        | [list, A, B] | PASS   |
-      | C        | is_in        | [list, A, B] | FAIL   |
-      | A        | is_not_in    | [list, A, B] | FAIL   |
-      | C        | is_not_in    | [list, A, B] | PASS   |
+      | variable | operator | literal      | result |
+      | 1        | '>'      | 0            | PASS   |
+      | 1        | '<'      | 2            | PASS   |
+      | 1        | '>'      | 2            | FAIL   |
+      | 1        | '<'      | 0            | FAIL   |
+      | 1        | '<='     | 0            | FAIL   |
+      | 1        | '>='     | 0            | PASS   |
+      | 1        | '<='     | 1            | PASS   |
+      | 1        | '>='     | 1            | PASS   |
+      | True     | and      | True         | PASS   |
+      | False    | and      | True         | FAIL   |
+      | True     | and      | False        | FAIL   |
+      | False    | and      | False        | FAIL   |
+      | True     | or       | True         | PASS   |
+      | False    | or       | True         | PASS   |
+      | True     | or       | False        | PASS   |
+      | False    | or       | False        | FAIL   |
+      | 1        | '!='     | 1            | FAIL   |
+      | 2        | '!='     | 1            | PASS   |
+      | 1        | '=='     | 1            | PASS   |
+      | 2        | '=='     | 1            | FAIL   |
+      | A        | in       | [list, A, B] | PASS   |
+      | C        | in       | [list, A, B] | FAIL   |
+      | A        | not_in   | [list, A, B] | FAIL   |
+      | C        | not_in   | [list, A, B] | PASS   |
+
+
+  Scenario: Using the unary not operator
+   Given I create the file "analysis.yml" with the contents:
+     """
+     - analysis: object_1
+       outputs:
+         metric_1:
+           value: true
+     """
+     And I create the file "threshold.yml" with the contents:
+     """
+     metadata:
+       version:
+         auto-qc: 2.0.0
+     thresholds:
+     -
+       - not
+       - :object_1/metric_1/value
+     """
+    When I run the command "../bin/auto-qc" with the arguments:
+       | key              | value         |
+       | --analysis-file  | analysis.yml  |
+       | --threshold-file | threshold.yml |
+   Then the standard error should be empty
+    And the exit code should be 0
+    And the standard out should contain:
+      """
+      FAIL
+
+      """
 
   Scenario Outline: Testing multiple different thresholds
    Given I create the file "analysis.yml" with the contents:
@@ -75,8 +110,8 @@ Feature: Using the auto-qc tool
        version:
          auto-qc: 2.0.0
      thresholds:
-     - [greater_than, ':object_1/metric_1/value', <lit_1>]
-     - [greater_than, ':object_2/metric_2/value', <lit_2>]
+     - ['>', ':object_1/metric_1/value', <lit_1>]
+     - ['>', ':object_2/metric_2/value', <lit_2>]
      """
     When I run the command "../bin/auto-qc" with the arguments:
        | key              | value         |
@@ -114,11 +149,11 @@ Feature: Using the auto-qc tool
      -
        - and
        -
-         - greater_than
+         - '>'
          - :object_1/metric_1/value
          - <lit_1>
        -
-         - greater_than
+         - '>'
          - :object_1/metric_1/value
          - <lit_2>
      """
@@ -157,7 +192,7 @@ Feature: Using the auto-qc tool
      thresholds:
      -
        - name: "My QC threshold"
-       - greater_than
+       - '>'
        - :object_1/metric_1/value
        - 1
      """
