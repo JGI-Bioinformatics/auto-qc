@@ -71,10 +71,10 @@ Feature: Error messages for incorrect use of auto-qc
   Scenario Outline: The given value does not exist
    Given I create the file "analysis.yml" with the contents:
      """
-     - analysis: anl
-       outputs:
-         metric_1:
-           val: 1
+     metadata:
+     data:
+       metric_1:
+         val: 1
      """
      And I create the file "threshold.yml" with the contents:
      """
@@ -100,7 +100,6 @@ Feature: Error messages for incorrect use of auto-qc
     And the exit code should be 1
 
   Examples: Errors
-    | operator     | variable                   | error                                                    |
-    | greater_than | :anl/metric_1/non_value    | No matching metric 'metric_1/non_value' found in ':anl.' |
-    | greater_than | :non_object/metric_1/val   | No matching analysis called 'non_object' found.          |
-    | unknown      | :anl/metric_1/val          | Unknown operator 'unknown.'                              |
+    | operator     | variable            | error                                           |
+    | greater_than | :metric_1/non_value | No matching metric ':metric_1/non_value' found. |
+    | unknown      | :metric_1/val       | Unknown operator 'unknown.'                     |

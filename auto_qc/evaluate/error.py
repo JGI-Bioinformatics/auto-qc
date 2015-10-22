@@ -39,16 +39,11 @@ def check_node_paths(nodes, analyses, status):
         else:
             return acc
 
-    def eval_path(p):
-        namespace, path = var.split_into_namespace_and_path(p)
-        analysis = var.get_analysis(status[analyses], p)
-        if analysis is None:
-            return "No matching analysis called '{}' found.".format(namespace)
-        try:
-            variable = var.get_variable_value(analysis, p)
-        except KeyError as e:
-            msg = "No matching metric '{}' found in ':{}.'"
-            return msg.format(st.join(path, "/"), namespace)
+    def eval_path(path):
+        analysis = status[analyses]
+        if not var.is_variable_path_valid(analysis, path):
+            msg = "No matching metric '{}' found."
+            return msg.format(path)
 
     errors = list(it.compact(it.flatten(map(f, status[nodes]['thresholds']))))
 

@@ -31,16 +31,18 @@ def test_eval_with_not_in():
 
 def test_eval_variable_with_literal_and_variable():
     n = ['<', ':ref/metric_1', 1]
-    a = [{'analysis' : 'ref',
-          'outputs'  : {
-            'metric_1' : 2 }}]
+    a = {'metadata' : {},
+         'data' : {
+           'ref' : {
+             'metric_1' : 2 }}}
     assert_equal(['<', 2, 1], node.eval_variables(a, n))
 
 def test_eval_variable_with_nested_list():
     n = ['and', ['<', ':ref/metric_1', 1], ['<', ':ref/metric_1', 1]]
-    a = [{'analysis' : 'ref',
-          'outputs'  : {
-            'metric_1' : 2 }}]
+    a = {'metadata' : {},
+         'data' : {
+           'ref' : {
+             'metric_1' : 2 }}}
 
     assert_equal(['and', ['<', 2, 1], ['<', 2, 1]], node.eval_variables(a, n))
 

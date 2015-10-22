@@ -21,32 +21,25 @@ def test_check_version_number():
 
 def test_check_node_paths_with_valid_node():
     n = [['<', ':ref/metric_1', 1]]
-    a = [{'analysis' : 'ref',
-          'outputs'  : {
-            'metric_1' : 2 }}]
+    a = {'metadata' : {},
+         'data' : {
+           'ref' : {
+           'metric_1' : 2 }}}
 
     status = {'nodes' : {'thresholds' : n}, 'analyses' : a}
-    assert_not_in('error', er.check_node_paths('nodes', 'analyses', status))
-
-def test_check_node_paths_with_unknown_namespace():
-    n = [['<', ':unknown/metric_1', 1]]
-    a = [{'analysis' : 'ref',
-          'outputs'  : {
-            'metric_1' : 2 }}]
-
-    status = {'nodes' : {'thresholds' : n}, 'analyses' : a}
-    assert_in('error', er.check_node_paths('nodes', 'analyses', status))
-    assert_equal(status['error'], "No matching analysis called 'unknown' found.")
+    assert_not_in('error', status)
 
 def test_check_node_paths_with_unknown_path():
     n = [['<', ':ref/unknown', 1]]
-    a = [{'analysis' : 'ref',
-          'outputs'  : {
-            'metric_1' : 2 }}]
+    a = {'metadata' : {},
+         'data' : {
+           'ref' : {
+           'metric_1' : 2 }}}
 
     status = {'nodes' : {'thresholds' : n}, 'analyses' : a}
-    assert_in('error', er.check_node_paths('nodes', 'analyses', status))
-    assert_equal(status['error'], "No matching metric 'unknown' found in ':ref.'")
+    result = er.check_node_paths('nodes', 'analyses', status)
+    assert_in('error', result)
+    assert_equal(result['error'], "No matching metric ':ref/unknown' found.")
 
 def test_check_operators_with_known_operator():
     n = [['<', 2, 1]]
