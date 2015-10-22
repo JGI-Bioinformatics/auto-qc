@@ -5,14 +5,20 @@ import auto_qc.evaluate.error   as er
 import auto_qc.evaluate.qc      as qc
 
 method_chain = [
-    (fs.check_for_file, ['analysis_file']),
+
+    # Check threshold file
     (fs.check_for_file, ['threshold_file']),
     (fs.read_yaml_file, ['threshold_file', 'thresholds']),
     (er.check_version_number, ['thresholds']),
 
+    # Check analysis file
+    (fs.check_for_file,    ['analysis_file']),
     (fs.read_yaml_file,    ['analysis_file',  'analyses']),
+    
+    # Check threshold variables and operators are correct
     (er.check_node_paths,  ['thresholds', 'analyses']),
     (er.check_operators,   ['thresholds']),
+
     (qc.evaluate,          ['evaluated_nodes', 'thresholds', 'analyses']),
     (qc.apply_thresholds,  ['node_results', 'evaluated_nodes']),
     (qc.build_qc_dict,     ['qc_dict', 'thresholds', 'evaluated_nodes', 'node_results'])

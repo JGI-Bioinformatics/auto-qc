@@ -46,7 +46,7 @@ def eval_variables(analyses, node):
     """
     def _eval(n):
         if var.is_variable(n):
-            return var.variable(analyses, n)
+            return var.get_variable_value(analyses, n)
         else:
             return n
 

@@ -6,8 +6,9 @@ Feature: Using the auto-qc tool
   Scenario Outline: Using different comparison operators
    Given I create the file "analysis.yml" with the contents:
      """
-     - analysis: object_1
-       outputs:
+     metadata:
+     data:
+       object_1:
          metric_1:
            value: <variable>
      """
@@ -65,8 +66,9 @@ Feature: Using the auto-qc tool
   Scenario: Using the unary not operator
    Given I create the file "analysis.yml" with the contents:
      """
-     - analysis: object_1
-       outputs:
+     metadata:
+     data:
+       object_1:
          metric_1:
            value: true
      """
@@ -95,12 +97,12 @@ Feature: Using the auto-qc tool
   Scenario Outline: Testing multiple different thresholds
    Given I create the file "analysis.yml" with the contents:
      """
-     - analysis: object_1
-       outputs:
+     metadata:
+     data:
+       object_1:
          metric_1:
            value: <var_1>
-     - analysis: object_2
-       outputs:
+       object_2:
          metric_2:
            value: <var_2>
      """
@@ -135,8 +137,9 @@ Feature: Using the auto-qc tool
   Scenario Outline: Using nested thresholds
    Given I create the file "analysis.yml" with the contents:
      """
-     - analysis: object_1
-       outputs:
+     metadata:
+     data:
+       object_1:
          metric_1:
            value: <var_1>
      """
@@ -179,8 +182,9 @@ Feature: Using the auto-qc tool
   Scenario: Using a doc string to name the threshold
    Given I create the file "analysis.yml" with the contents:
      """
-     - analysis: object_1
-       outputs:
+     metadata:
+     data:
+       object_1:
          metric_1:
            value: 2
      """

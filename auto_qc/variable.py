@@ -8,7 +8,7 @@ def is_variable(var):
 
 def is_variable_path_valid(analysis, path):
     """
-    Does the variable path have a matching value in the analysis?
+    Does the variable path have a matching path in the analysis?
     """
     try:
         get_variable_value(analysis, path)
@@ -18,7 +18,7 @@ def is_variable_path_valid(analysis, path):
 
 def get_variable_value(analysis, path):
     """
-    Get variable value by traversing path into analysis
+    Get variable's value by traversing its path into the analysis
     """
     drop_colon = path[1:]
     path_array = drop_colon.split('/')
