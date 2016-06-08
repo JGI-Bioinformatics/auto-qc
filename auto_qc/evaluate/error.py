@@ -2,6 +2,8 @@ import fn.iters as it
 import string   as st
 from fn import F, _
 
+import funcy
+
 import auto_qc.util.metadata   as meta
 import auto_qc.variable        as var
 import auto_qc.node            as nd
@@ -19,38 +21,26 @@ Please update the syntax to version >= {}.0.0.
 
     return status
 
+def variable_error_message(variable):
+    msg = "No matching metric '{}' found."
+    return msg.format(variable)
+
 
 def check_node_paths(nodes, analyses, status):
     """
-    Set an error message in the status if node variable paths are not valid.
+    Checks all variable paths listed in the QC file are valid. Sets an error
+    message in the status if not.
     """
+    variables = var.get_variable_names(status[nodes]['thresholds'])
+    f = funcy.partial(var.is_variable_path_valid, status[analyses])
+    invalid_variables = set(funcy.remove(f, variables))
 
-    def f(node):
-        paths  = reduce(fetch_paths, node, [])
-        errors = list(it.compact(map(eval_path, paths)))
-        if len(errors) > 0:
-            return errors
-
-    def fetch_paths(acc, n):
-        if var.is_variable(n):
-            return acc + [n]
-        elif isinstance(n, list):
-            return reduce(fetch_paths, n, acc)
-        else:
-            return acc
-
-    def eval_path(path):
-        analysis = status[analyses]
-        if not var.is_variable_path_valid(analysis, path):
-            msg = "No matching metric '{}' found."
-            return msg.format(path)
-
-    errors = list(it.compact(it.flatten(map(f, status[nodes]['thresholds']))))
-
-    if len(errors) > 0:
+    if len(invalid_variables) > 0:
+        errors = map(variable_error_message, invalid_variables)
         status['error'] = st.join(errors, "\n")
 
     return status
+
 
 def check_operators(node_ref, status):
     nodes = status[node_ref]['thresholds']
