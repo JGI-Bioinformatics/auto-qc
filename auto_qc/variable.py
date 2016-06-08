@@ -1,4 +1,5 @@
 from fn import iters as it
+import funcy as fn
 
 def is_variable(var):
     """
@@ -23,3 +24,6 @@ def get_variable_value(analysis, path):
     drop_colon = path[1:]
     path_array = drop_colon.split('/')
     return reduce(lambda a, k: a[k], path_array, analysis['data'])
+
+def get_variable_names(qc_node):
+    return fn.select(is_variable, fn.flatten(qc_node))
