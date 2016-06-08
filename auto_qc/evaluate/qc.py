@@ -1,4 +1,5 @@
-import auto_qc.node as node
+import auto_qc.variable as var
+import auto_qc.node     as node
 from fn import F
 
 def evaluate(destination, thresholds, analyses, status):
@@ -29,3 +30,10 @@ def build_qc_dict(destination, thresholds, nodes, results, status):
 
     status[destination] = qc_dict
     return status
+
+def create_variable_dict(input_node, analysis):
+    f = lambda x: (x, var.get_variable_value(analysis, x))
+    return dict(map(f, var.get_variable_names(input_node)))
+
+def build_qc_node(input_node, analysis):
+    return {'variables' : create_variable_dict(input_node, analysis)}
