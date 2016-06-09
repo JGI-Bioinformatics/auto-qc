@@ -18,3 +18,12 @@ def test_is_variable_path_valid_with_invalid_path():
         'ref' : {
         'metric_1' : 2 }}}
     nt.assert_false(var.is_variable_path_valid(analysis, path))
+
+def test_get_variables_with_no_nesting():
+    qc_node = ['<', ':ref/metric_1', 1]
+    nt.assert_equal(var.get_variable_names(qc_node), [':ref/metric_1'])
+
+def test_get_variables_with_nesting():
+    qc_node = [['and', ['or', [':ref/metric_1', 2, 1], [':ref/metric_2', 2, 1]]]]
+    expected = [':ref/metric_1', ':ref/metric_2']
+    nt.assert_equal(var.get_variable_names(qc_node), expected)

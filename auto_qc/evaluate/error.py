@@ -2,10 +2,27 @@ import fn.iters as it
 import string   as st
 from fn import F, _
 
+import funcy
+
 import auto_qc.util.metadata   as meta
 import auto_qc.variable        as var
 import auto_qc.node            as nd
 import auto_qc.util.functional as fn
+
+
+def variable_error_message(variable):
+    msg = "No matching metric '{}' found."
+    return msg.format(variable)
+
+
+def operator_error_message(operator):
+    msg = "Unknown operator '{}.'"
+    return msg.format(operator)
+
+
+def generator_error_string(f, xs):
+    return st.join(map(f, xs), "\n")
+
 
 def check_version_number(threshold, status):
     version =  meta.major_version()
@@ -22,56 +39,28 @@ Please update the syntax to version >= {}.0.0.
 
 def check_node_paths(nodes, analyses, status):
     """
-    Set an error message in the status if node variable paths are not valid.
+    Checks that all variable paths listed in the QC file are valid. Sets an error
+    message in the status if not.
     """
-
-    def f(node):
-        paths  = reduce(fetch_paths, node, [])
-        errors = list(it.compact(map(eval_path, paths)))
-        if len(errors) > 0:
-            return errors
-
-    def fetch_paths(acc, n):
-        if var.is_variable(n):
-            return acc + [n]
-        elif isinstance(n, list):
-            return reduce(fetch_paths, n, acc)
-        else:
-            return acc
-
-    def eval_path(path):
-        analysis = status[analyses]
-        if not var.is_variable_path_valid(analysis, path):
-            msg = "No matching metric '{}' found."
-            return msg.format(path)
-
-    errors = list(it.compact(it.flatten(map(f, status[nodes]['thresholds']))))
+    variables = var.get_variable_names(status[nodes]['thresholds'])
+    f = funcy.partial(var.is_variable_path_valid, status[analyses])
+    errors = set(funcy.remove(f, variables))
 
     if len(errors) > 0:
-        status['error'] = st.join(errors, "\n")
+        status['error'] = generator_error_string(variable_error_message, errors)
 
     return status
 
+
 def check_operators(node_ref, status):
-    nodes = status[node_ref]['thresholds']
+    """
+    Checks that all operators listed in the QC file are valid. Sets an error
+    message in the status if not.
+    """
+    operators = funcy.mapcat(nd.get_all_operators, status[node_ref]['thresholds'])
+    errors    = funcy.remove(nd.is_operator, operators)
 
-    def _f(x):
-      return map(fn.recursive_apply(_parse_list, fn.empty_list), x)
-
-    def _parse_list(node):
-        if isinstance(it.head(node), dict):
-            return _parse_list(list(it.tail(node)))
-        else:
-            operator = it.head(node)
-            rest     = it.tail(node)
-            return [operator] + _f(rest)
-
-    operators = fn.flatten(_f(nodes))
-
-    f = F(it.map, lambda x: "Unknown operator '{}.'".format(x)) << F(it.filterfalse, nd.is_operator)
-
-    errors = list(f(operators))
     if len(errors) > 0:
-        status['error'] = st.join(errors, "\n")
+        status['error'] = generator_error_string(operator_error_message, errors)
 
     return status

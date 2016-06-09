@@ -2,91 +2,17 @@ from nose.tools import *
 import auto_qc.printers               as prn
 import more_assertive_nose.assertions as asrt
 
-def test_single_passing_threshold():
-    threshold  = [['>', ':var_1', 2]]
-    evaluation = [['>',       1,  2]]
-    expected   = [{'name'     : ':var_1',
-                   'expected' : '> 2',
-                   'actual'   : '1',
-                   'value'     : False}]
-    assert_equal(expected, prn.row_array(zip(threshold, evaluation)))
+def test_text_printer_with_single_failing_result():
+    qc_dict = {
+        'evaluation' : [{'variables' : {'ref/metric_1' : 2},
+                         'pass'      : False,
+                         'message'   : 'fails' }],
+        'pass'       : False }
+    expected ="""\
+FAIL
 
-def test_single_failing_threshold():
-    threshold  = [['<', ':var_1', 2]]
-    evaluation = [['<',       1,  2]]
-    expected   = [{'name'     : ':var_1',
-                   'expected' : '< 2',
-                   'actual'   : '1',
-                   'value'     : True}]
-    assert_equal(expected, prn.row_array(zip(threshold, evaluation)))
+  * fails
 
-def test_multiple_passing_threshold():
-    threshold  = [['>', ':var_1', 2], ['>', ':var_1', 2]]
-    evaluation = [['>',       1,  2], ['>',       1,  2]]
-    expected   = [{'name' : ':var_1', 'expected' : '> 2', 'actual' : '1', 'value' : False},
-                  {'name' : ':var_1', 'expected' : '> 2', 'actual' : '1', 'value' : False}]
-    assert_equal(expected, prn.row_array(zip(threshold, evaluation)))
-
-def test_nested_failing_and_threshold():
-    threshold  = [['and', ['<', ':var_1', 2]]]
-    evaluation = [['and', ['<', 1, 2]]]
-    expected   = [{'name' : 'AND:', 'value': True, 'children' : [
-        {'name' : ':var_1', 'expected' : '< 2', 'actual' : '1', 'value' : True}]}]
-    assert_equal(expected, prn.row_array(zip(threshold, evaluation)))
-
-def test_multiple_nested_failing_and_threshold():
-    threshold  = [['and', ['<', ':var_1', 2], ['<', ':var_1', 2]]]
-    evaluation = [['and', ['<', 1, 2], ['<', 1, 2]]]
-    expected   = [{'name' : 'AND:', 'value': True, 'children' : [
-        {'name' : ':var_1', 'expected' : '< 2', 'actual' : '1', 'value' : True},
-        {'name' : ':var_1', 'expected' : '< 2', 'actual' : '1', 'value' : True},
-        ]}]
-    assert_equal(expected, prn.row_array(zip(threshold, evaluation)))
-
-def test_row_array_with_long_list():
-    threshold  = [['in', ':var_1', ['list', 'A', 'B', 'C', 'D', 'E']]]
-    evaluation = [['in', 'A',  ['list', 'A', 'B', 'C', 'D', 'E']]]
-    expected   = [{'name'     : ':var_1',
-                   'expected' : "is in [A, B, C, ...]",
-                   'actual'   : 'A',
-                   'value'     : True}]
-    assert_equal(expected, prn.row_array(zip(threshold, evaluation)))
-
-
-def test_text_table_with_single_failing_metric():
-    row = [{'name'     : ':object_1/metric_1/value',
-            'expected' : '< 2',
-            'actual'   : '1',
-            'value'    : True}]
-    expected = """\
-                           Failure At   Actual
-
-:object_1/metric_1/value          < 2        1   T   FAIL
-""".rstrip()
-    asrt.assert_diff(expected, prn.text_table(row))
-
-def test_text_table_with_single_passing_metric():
-    row = [{'name'     : ':object_1/metric_1/value',
-            'expected' : '> 2',
-            'actual'   : '1',
-            'value'    : False}]
-    expected = """\
-                           Failure At   Actual
-
-:object_1/metric_1/value          > 2        1   F
-""".rstrip()
-    asrt.assert_diff(expected, prn.text_table(row))
-
-
-def test_text_table_with_single_nested_failing_metric():
-    row = [{'name' : 'AND:', 'value': True, 'children' : [
-        {'name' : ':object_1/metric_1/value', 'expected' : '< 2', 'actual' : '1', 'value' : True}]}]
-
-    expected = """\
-                              Failure At   Actual
-
-AND:                                                T      FAIL
-   :object_1/metric_1/value          < 2        1   +--T
-""".rstrip()
-    asrt.assert_diff(expected, prn.text_table(row))
-
+Auto QC Version: 2.0.0
+"""
+    asrt.assert_diff(expected.strip(), prn.text(qc_dict))

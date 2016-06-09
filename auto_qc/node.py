@@ -2,6 +2,8 @@ import operator      as op
 from fn import iters as it
 from fn import F
 
+import funcy
+
 import auto_qc.variable        as var
 import auto_qc.util.functional as fn
 
@@ -25,6 +27,26 @@ def is_operator(v):
 
 def operator(v):
     return OPERATORS[v]
+
+def has_doc_dict(qc_node):
+    return isinstance(it.head(qc_node), dict)
+
+def get_all_operators(qc_node):
+    """
+    Returns all operators listed in a QC node
+    """
+
+    def _walk_node(n):
+        if has_doc_dict(n):
+            return _walk_node(list(it.tail(n)))
+        else:
+            operator = it.head(n)
+            rest     = it.tail(n)
+            return [operator] + f(rest)
+
+    f = funcy.partial(map, fn.recursive_apply(_walk_node, fn.empty_list))
+
+    return fn.flatten(_walk_node(qc_node))
 
 def eval_variables(analyses, node):
     """

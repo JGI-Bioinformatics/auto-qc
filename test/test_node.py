@@ -49,3 +49,16 @@ def test_eval_variable_with_nested_list():
 def test_eval_with_doc_string():
     n = [{'name': 'my threshold'}, '>', 2, 1]
     assert_true(node.eval(n))
+
+
+def test_get_all_operators_with_single_threshold():
+    n = ['<', 2, 1]
+    assert_equal(node.get_all_operators(n), ['<'])
+
+def test_get_all_operators_with_nested_threshold():
+    n = ['and', ['or', ['<', 2, 1]]]
+    assert_equal(node.get_all_operators(n), ['and', 'or', '<'])
+
+def test_get_all_operators_with_doc_string():
+    n = [{'name': 'my qc threshold'}, '<', 2, 1]
+    assert_equal(node.get_all_operators(n), ['<'])

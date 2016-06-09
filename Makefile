@@ -1,14 +1,21 @@
 test    = PYTHONPATH=vendor/python/lib/python2.7/site-packages vendor/python/bin/nosetests --rednose
-feature = PYTHONPATH=vendor/python/lib/python2.7/site-packages vendor/python/bin/behave 
-bootstrap: Gemfile.lock vendor/python
+feature = PYTHONPATH=vendor/python/lib/python2.7/site-packages vendor/python/bin/behave
 
-vendor/python: requirements.txt
-	mkdir -p log
-	virtualenv $@ 2>&1 > log/virtualenv.txt
-	$@/bin/pip install -r $< 2>&1 > log/pip.txt
+#################################################
+#
+# Documentation
+#
+#################################################
 
 doc: $(find man/*.mkd) Gemfile.lock
 	bundle exec ronn ./man/auto-qc.1.mkd
+
+#################################################
+#
+# Unit tests
+#
+#################################################
+
 
 test: vendor/python
 	$(test)
@@ -25,6 +32,18 @@ autofeature:
 feature: vendor/python
 	$(feature) --stop --no-skipped $(FLAGS)
 
+#################################################
+#
+# Bootstrap project requirements for development
+#
+#################################################
+
+bootstrap: Gemfile.lock vendor/python
+
+vendor/python: requirements.txt
+	mkdir -p log
+	virtualenv $@ 2>&1 > log/virtualenv.txt
+	$@/bin/pip install -r $< 2>&1 > log/pip.txt
 
 Gemfile.lock: Gemfile
 	mkdir -p log
