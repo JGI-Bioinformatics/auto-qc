@@ -45,5 +45,6 @@ def build_qc_node(input_node, analysis):
     variables = create_variable_dict(input_node, analysis)
 
     return {'variables' : variables,
+            'name'      : funcy.get_in(input_node, [0, 'name']),
             'pass'      : is_pass,
             'message'   : create_qc_message(is_pass, input_node, variables)}

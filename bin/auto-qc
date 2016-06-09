@@ -14,7 +14,7 @@ parser.add_argument('--analysis-file',  '-a', dest='analysis_file',  required=Tr
 parser.add_argument('--threshold-file', '-t', dest='threshold_file', required=True)
 
 group = parser.add_mutually_exclusive_group(required=False)
-group.add_argument('--yaml-output', '-y', dest='yaml', action='store_true')
+group.add_argument('--json-output', '-j', dest='json', action='store_true')
 group.add_argument('--text-output', '-x', dest='text', action='store_true')
 
 args = vars(parser.parse_args())
