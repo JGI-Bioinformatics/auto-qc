@@ -22,8 +22,8 @@ def run(args):
 
     flow.exit_if_error(status)
 
-    if args['yaml']:
-        f = prn.yaml
+    if args['json']:
+        f = prn.json
     elif args['text']:
         f = prn.text
     else:

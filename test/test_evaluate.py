@@ -11,6 +11,7 @@ METADATA = {
 def test_build_passing_qc_node_with_two_literals():
     n = [METADATA, '>', 2, 1]
     expected = {'variables' : {},
+                'name'      : "Example test",
                 'pass'      : True,
                 'message'   : 'passes' }
     assert_equal(qc.build_qc_node(n, {}), expected)
@@ -22,6 +23,7 @@ def test_build_failing_qc_node_with_literal_and_variable():
            'ref' : {
              'metric_1' : 2 }}}
     expected = {'variables' : {'ref/metric_1' : 2},
+                'name'      : "Example test",
                 'pass'      : False,
                 'message'   : 'fails' }
     assert_equal(qc.build_qc_node(n, a), expected)
