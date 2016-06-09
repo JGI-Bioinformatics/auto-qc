@@ -5,6 +5,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 2.0.0
 
+### Added
+
+  * Added the `--json-output` flag. This generates a JSON formatted document
+    describing the QC results.
+
 ### Changed
 
   * Each threshold file entry must have associated metadata. This metadata
@@ -23,3 +28,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
   * Removed namespacing of analyses in the analysis file. The analysis file is
     now a dictionary with the fields `data` and `metadata`. The field `data` is
     a dictionary containing a the required metrics to do QC.
+
+
+### Removed
+
+  * The `--yaml-output` flag is now longer supported.
