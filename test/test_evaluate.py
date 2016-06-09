@@ -9,7 +9,7 @@ METADATA = {
 
 
 def test_build_passing_qc_node_with_two_literals():
-    n = [METADATA, '>', 2, 1]
+    n = [METADATA, 'greater_than', 2, 1]
     expected = {'variables' : {},
                 'name'      : "Example test",
                 'pass'      : True,
@@ -17,7 +17,7 @@ def test_build_passing_qc_node_with_two_literals():
     assert_equal(qc.build_qc_node(n, {}), expected)
 
 def test_build_failing_qc_node_with_literal_and_variable():
-    n = [METADATA, '<', ':ref/metric_1', 1]
+    n = [METADATA, 'less_than', ':ref/metric_1', 1]
     a = {'metadata' : {},
          'data' : {
            'ref' : {
@@ -31,7 +31,7 @@ def test_build_failing_qc_node_with_literal_and_variable():
 
 def test_build_passing_qc_node_with_interpolated_msg():
     metadata = funcy.merge(METADATA, {'fail_msg' : 'Metric is {ref/metric_1}'})
-    n = [metadata, '<', ':ref/metric_1', 1]
+    n = [metadata, 'less_than', ':ref/metric_1', 1]
     a = {'metadata' : {},
          'data' : {
            'ref' : {

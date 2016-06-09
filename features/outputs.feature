@@ -18,7 +18,7 @@ Feature: Printing different output formats
      - - name: example test
          fail_msg: fails
          pass_msg: passes
-       - '>'
+       - 'greater_than'
        - :value
        - <literal>
      """
@@ -61,7 +61,7 @@ Feature: Printing different output formats
      - - name: example test
          fail_msg: fails
          pass_msg: passes
-       - '>'
+       - 'greater_than'
        - :value
        - <literal>
      """
