@@ -20,7 +20,7 @@ def test_check_version_number():
 
 
 def test_check_node_paths_with_valid_node():
-    n = [['<', ':ref/metric_1', 1]]
+    n = [['less_than', ':ref/metric_1', 1]]
     a = {'metadata' : {},
          'data' : {
            'ref' : {
@@ -30,7 +30,7 @@ def test_check_node_paths_with_valid_node():
     assert_not_in('error', status)
 
 def test_check_node_paths_with_unknown_path():
-    n = [['<', ':ref/unknown', 1]]
+    n = [['less_than', ':ref/unknown', 1]]
     a = {'metadata' : {},
          'data' : {
            'ref' : {
@@ -42,7 +42,7 @@ def test_check_node_paths_with_unknown_path():
     assert_equal(result['error'], "No matching metric ':ref/unknown' found.")
 
 def test_check_operators_with_known_operator():
-    n = [['<', 2, 1]]
+    n = [['less_than', 2, 1]]
     status = {'nodes' : {'thresholds' : n}}
     assert_not_in('error', er.check_operators('nodes', status))
 
@@ -59,7 +59,7 @@ def test_check_operators_with_unknown_nested_operator():
     assert_equal(status['error'], "Unknown operator 'unknown.'")
 
 def test_check_operators_with_doc_string():
-    n = [[{'name': 'my qc threshold'}, '<', 2, 1]]
+    n = [[{'name': 'my qc threshold'}, 'less_than', 2, 1]]
     status = {'nodes' : {'thresholds' : n}}
     assert_not_in('error', er.check_operators('nodes', status))
 
@@ -70,7 +70,7 @@ def test_check_unknown_operator_with_doc_string():
     assert_equal(status['error'], "Unknown operator 'unknown.'")
 
 def test_check_operators_with_unknown_nested_operator_with_doc_string():
-    n = [[{'name': 'my qc threshold'}, 'unknown', ['or', ['<', 2, 1]]]]
+    n = [[{'name': 'my qc threshold'}, 'unknown', ['or', ['less_than', 2, 1]]]]
     status = {'nodes' : {'thresholds' : n}}
     assert_in('error', er.check_operators('nodes', status))
     assert_equal(status['error'], "Unknown operator 'unknown.'")
