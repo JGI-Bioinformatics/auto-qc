@@ -31,7 +31,6 @@ def operator(v):
 def has_doc_dict(qc_node):
     return isinstance(it.head(qc_node), dict)
 
-
 def get_all_operators(qc_node):
     """
     Returns all operators listed in a QC node
@@ -46,7 +45,6 @@ def get_all_operators(qc_node):
             return [operator] + f(rest)
 
     f = funcy.partial(map, fn.recursive_apply(_walk_node, fn.empty_list))
-
 
     return fn.flatten(_walk_node(qc_node))
 

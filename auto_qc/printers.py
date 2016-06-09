@@ -16,7 +16,7 @@ OPERATORS = {
         }
 
 def simple(qc_dict):
-    return 'FAIL' if qc_dict['state']['fail'] else 'PASS'
+    return 'PASS' if qc_dict['pass'] else 'FAIL'
 
 def yaml(qc_dict):
     import yaml
