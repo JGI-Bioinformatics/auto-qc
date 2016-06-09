@@ -21,7 +21,7 @@ test: vendor/python
 	$(test)
 
 autotest:
-	clear && $(test)
+	clear && $(test) || true
 	fswatch -o ./auto_qc -o ./test | xargs -n 1 -I {} bash -c "clear && $(test)"
 
 autofeature:
