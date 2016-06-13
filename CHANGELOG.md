@@ -12,12 +12,15 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 
-  * Each threshold file entry must have associated metadata. This metadata
-    includes the name of the test and pass/fail messages. This is used to
-    generate human readable output with more relevant information as the
-    analyst can write the QC pass/fail messages themselves rather than less
-    readable machine generated output. These pass/fail messages are available
-    via the `message` key in the JSON output.
+  * Each threshold file entry should include pass/fail messages. This is used
+    to generate human readable output with more relevant information because
+    the analyst can write the QC pass/fail messages themselves rather than the
+    less readable machine-generated output. These pass/fail messages are
+    available via the `message` key in the JSON output.
+
+  * Each threshold file entry should include an `fail_code`. The failure codes
+    are returned for the failing QC thresholds. These can then be used to make
+    downstream QC decisions.
 
   * The threshold file tests must now must all evaluate to TRUE for a pass.
     This contrasts with the 1.x version where all thresholds must evaluate to
@@ -28,7 +31,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
   * Removed namespacing of analyses in the analysis file. The analysis file is
     now a dictionary with the fields `data` and `metadata`. The field `data` is
     a dictionary containing a the required metrics to do QC.
-
 
 ### Removed
 
