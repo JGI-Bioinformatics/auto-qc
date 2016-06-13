@@ -3,9 +3,10 @@ import auto_qc.evaluate.qc as qc
 import funcy
 
 METADATA = {
-        'name'     : 'Example test',
-        'pass_msg' : 'passes',
-        'fail_msg' : 'fails' }
+        'name'      : 'Example test',
+        'pass_msg'  : 'passes',
+        'fail_msg'  : 'fails',
+        'fail_code' : 'ERR01'}
 
 
 def test_build_passing_qc_node_with_two_literals():
@@ -13,8 +14,10 @@ def test_build_passing_qc_node_with_two_literals():
     expected = {'variables' : {},
                 'name'      : "Example test",
                 'pass'      : True,
+                'fail_code' : 'ERR01',
                 'message'   : 'passes' }
     assert_equal(qc.build_qc_node(n, {}), expected)
+
 
 def test_build_failing_qc_node_with_literal_and_variable():
     n = [METADATA, 'less_than', ':ref/metric_1', 1]
@@ -25,6 +28,7 @@ def test_build_failing_qc_node_with_literal_and_variable():
     expected = {'variables' : {'ref/metric_1' : 2},
                 'name'      : "Example test",
                 'pass'      : False,
+                'fail_code' : 'ERR01',
                 'message'   : 'fails' }
     assert_equal(qc.build_qc_node(n, a), expected)
 
