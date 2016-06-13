@@ -6,7 +6,7 @@ import json                           as json
 def step_impl(context, stream):
 
     def refmt(t):
-        return json.dumps(json.loads(s), indent=4, sort_keys=True)
+        return json.dumps(json.loads(t), indent=4, sort_keys=True)
 
     if   stream == 'out':
         s = context.output.stdout

@@ -62,4 +62,5 @@ def build_qc_node(input_node, analysis):
             'name'      : funcy.get_in(input_node, [0, 'name']),
             'pass'      : is_pass,
             'fail_code' : funcy.get_in(input_node, [0, 'fail_code']),
+            'tags'      : funcy.get_in(input_node, [0, 'tags']) or [],
             'message'   : create_qc_message(is_pass, input_node, variables)}

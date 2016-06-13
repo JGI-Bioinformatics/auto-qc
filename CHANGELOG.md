@@ -10,8 +10,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
   * Added the `--json-output` flag. This generates a JSON formatted document
     describing the QC results.
 
-### Changed
-
   * Each threshold file entry should include pass/fail messages. This is used
     to generate human readable output with more relevant information because
     the analyst can write the QC pass/fail messages themselves rather than the
@@ -21,6 +19,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
   * Each threshold file entry should include an `fail_code`. The failure codes
     are returned for the failing QC thresholds. These can then be used to make
     downstream QC decisions.
+
+  * Each threshold file entry has an optional `tags` field. This can be used
+    for adding analyst metadata to each entry, such as labelling the threshold
+    types.
+
+### Changed
 
   * The threshold file tests must now must all evaluate to TRUE for a pass.
     This contrasts with the 1.x version where all thresholds must evaluate to
