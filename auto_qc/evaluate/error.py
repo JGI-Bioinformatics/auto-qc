@@ -19,10 +19,12 @@ def operator_error_message(operator):
     msg = "Unknown operator '{}.'"
     return msg.format(operator)
 
+def fail_code_error_message(node):
+    msg = "The QC entry '{}' is missing a failure code"
+    return msg.format(funcy.get_in(node, [0, 'name']))
 
 def generator_error_string(f, xs):
     return st.join(map(f, xs), "\n")
-
 
 def check_version_number(threshold, status):
     version =  meta.major_version()
@@ -63,4 +65,14 @@ def check_operators(node_ref, status):
     if len(errors) > 0:
         status['error'] = generator_error_string(operator_error_message, errors)
 
+    return status
+
+
+def check_failure_codes(node_ref, status):
+    """
+    Checks all QC entries have defined failure codes
+    """
+    errors = funcy.remove(lambda x: 'fail_code' in x[0], status[node_ref]['thresholds'])
+    if len(errors) > 0:
+        status['error'] = generator_error_string(fail_code_error_message, errors)
     return status

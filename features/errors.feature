@@ -32,10 +32,10 @@ Feature: Error messages for incorrect use of auto-qc
   Scenario Outline: Incompatible threshold file version number
    Given I create the file "analysis.yml" with the contents:
      """
-     - analysis: object_1
-       outputs:
-         metric_1:
-           value: 1
+     metadata:
+     data:
+       metric_1:
+         val: 1
      """
      And I create the file "threshold.yml" with the contents:
      """
@@ -103,3 +103,36 @@ Feature: Error messages for incorrect use of auto-qc
     | operator     | variable            | error                                           |
     | greater_than | :metric_1/non_value | No matching metric ':metric_1/non_value' found. |
     | unknown      | :metric_1/val       | Unknown operator 'unknown.'                     |
+
+
+  Scenario: A QC entry is missing a failure code
+   Given I create the file "analysis.yml" with the contents:
+     """
+     metadata:
+     data:
+       value: 2
+     """
+     And I create the file "threshold.yml" with the contents:
+     """
+     metadata:
+       version:
+         auto-qc: 2.0.0
+     thresholds:
+     - - name: example test
+         fail_msg: fails
+         pass_msg: passes
+       - 'greater_than'
+       - :value
+       - 2
+     """
+    When I run the command "../bin/auto-qc" with the arguments:
+       | key              | value         |
+       | --analysis-file  | analysis.yml  |
+       | --threshold-file | threshold.yml |
+   Then the standard out should be empty
+    And the standard error should equal:
+      """
+      The QC entry 'example test' is missing a failure code
+
+      """
+    And the exit code should be 1
