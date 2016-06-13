@@ -19,6 +19,7 @@ Feature: Printing different output formats
          fail_msg: fails
          pass_msg: passes
          fail_code: ERR00001
+         tags: ["contamination"]
        - 'greater_than'
        - :value
        - <literal>
@@ -41,7 +42,8 @@ Feature: Printing different output formats
                   "fail_code": "ERR00001",
                   "message": "<msg>",
                   "name": "example test",
-                  "pass": <pass>
+                  "pass": <pass>,
+                  "tags": ["contamination"]
               }
           ]
       }
