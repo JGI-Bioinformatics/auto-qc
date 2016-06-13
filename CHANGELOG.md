@@ -16,13 +16,13 @@ This project adheres to [Semantic Versioning](http://semver.org/).
     includes the name of the test and pass/fail messages. This is used to
     generate human readable output with more relevant information as the
     analyst can write the QC pass/fail messages themselves rather than less
-    readable manchine generated output. This text output is available via the
-    `--text-output` flag.
+    readable machine generated output. These pass/fail messages are available
+    via the `message` key in the JSON output.
 
   * The threshold file tests must now must all evaluate to TRUE for a pass.
     This contrasts with the 1.x version where all thresholds must evaluate to
     FALSE for a pass. This means the threshold file is now written as a series
-    of statments describing how the sequence data should be to considered as
+    of statements describing how the sequence data should be to considered as
     passing QC.
 
   * Removed namespacing of analyses in the analysis file. The analysis file is
@@ -32,4 +32,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Removed
 
-  * The `--yaml-output` flag is now longer supported.
+  * The `--yaml-output` and `--text-output` flags are now no longer supported.
+    Detailed information instead retrieved using the `--json-output` flag.
+    Tools such as `jq` can then be used to formatted this into whatever
+    human-readable format is desired.
