@@ -13,16 +13,3 @@ def json(qc_dict):
     qc_dict['auto_qc_version'] = meta.version()
     output = jsn.dumps(qc_dict, indent=4, sort_keys=True)
     return "\n".join(map(lambda x: x.rstrip(), output.split("\n")))
-
-def generate_text_qc_list(qc_dict):
-    f = lambda x: "  * " + x['message']
-    return "\n".join(map(f, qc_dict['evaluation']))
-
-def text(qc_dict):
-    return """\
-{0}
-
-{1}
-
-Auto QC Version: {2}
-""".format(simple(qc_dict), generate_text_qc_list(qc_dict), meta.version()).strip()
