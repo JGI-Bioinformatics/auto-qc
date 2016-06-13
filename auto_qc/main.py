@@ -24,8 +24,6 @@ def run(args):
 
     if args['json']:
         f = prn.json
-    elif args['text']:
-        f = prn.text
     else:
         f = prn.simple
 
