@@ -18,6 +18,7 @@ Feature: Printing different output formats
      - - name: example test
          fail_msg: fails
          pass_msg: passes
+         fail_code: ERR00001
        - 'greater_than'
        - :value
        - <literal>
@@ -29,13 +30,15 @@ Feature: Printing different output formats
        | --json-output    |               |
    Then the standard error should be empty
     And the exit code should be 0
-    And the standard out should equal:
+    And the JSON-format standard out should equal:
       """
       {
           "auto_qc_version": "2.0.0",
+          "fail_codes": <code>,
           "pass": <pass>,
           "qc": [
               {
+                  "fail_code": "ERR00001",
                   "message": "<msg>",
                   "name": "example test",
                   "pass": <pass>
@@ -46,6 +49,6 @@ Feature: Printing different output formats
       """
 
   Examples: Outputs
-      | literal | pass   | msg    |
-      | 0       | true   | passes |
-      | 2       | false  | fails  |
+      | literal | pass   | msg    | code         |
+      | 0       | true   | passes | []           |
+      | 2       | false  | fails  | ["ERR00001"] |

@@ -1,20 +1,34 @@
 import auto_qc.variable as var
 import auto_qc.node     as node
-from fn import F
 import funcy
+from functools import partial
+
 
 def build_qc_dict(destination, thresholds, analysis, status):
     """
     Build a dict QC containing all data about this evaluation.
     """
-    f     = funcy.rpartial(build_qc_node, status[analysis])
-    nodes = map(f, status[thresholds]['thresholds'])
+    f        = funcy.rpartial(build_qc_node, status[analysis])
+    nodes    = map(f, status[thresholds]['thresholds'])
+    failures = funcy.rcompose(
+            partial(funcy.remove, does_pass),
+            partial(map, fail_code),
+            funcy.distinct)(nodes)
 
-    qc_dict = {'pass'       : all(map(lambda x: x['pass'], nodes)),
+    qc_dict = {'pass'       : len(failures) == 0,
+               # Testing empty list as true/false is pythonic.
+               # What is considered pythonic appears subjective and abitrary to me.
+               'fail_codes' : failures,
                'evaluation' : nodes}
 
     status[destination] = qc_dict
     return status
+
+def does_pass(node):
+    return node['pass']
+
+def fail_code(node):
+    return node['fail_code']
 
 def create_variable_dict(input_node, analysis):
     f = lambda x: (x[1:], var.get_variable_value(analysis, x))
@@ -47,4 +61,5 @@ def build_qc_node(input_node, analysis):
     return {'variables' : variables,
             'name'      : funcy.get_in(input_node, [0, 'name']),
             'pass'      : is_pass,
+            'fail_code' : funcy.get_in(input_node, [0, 'fail_code']),
             'message'   : create_qc_message(is_pass, input_node, variables)}

@@ -22,6 +22,7 @@ Feature: Using the auto-qc tool
        - name: example test
          fail_msg: fails
          pass_msg: passes
+         fail_code: ERR
        - <operator>
        - :object_1/metric_1/value
        - <literal>
@@ -87,6 +88,7 @@ Feature: Using the auto-qc tool
        - name: example test
          fail_msg: fails
          pass_msg: passes
+         fail_code: ERR
        - not
        - :object_1/metric_1/value
      """
@@ -123,12 +125,14 @@ Feature: Using the auto-qc tool
      - - name: example test 1
          fail_msg: fails
          pass_msg: passes
+         fail_code: ERR
        - 'greater_than'
        - ':object_1/metric_1/value'
        - <lit_1>
      - - name: example test 2
          fail_msg: fails
          pass_msg: passes
+         fail_code: ERR
        - 'greater_than'
        - ':object_2/metric_2/value'
        - <lit_2>
@@ -171,6 +175,7 @@ Feature: Using the auto-qc tool
        - name: example test 1
          fail_msg: fails
          pass_msg: passes
+         fail_code: ERR
        - and
        - - 'greater_than'
          - :object_1/metric_1/value

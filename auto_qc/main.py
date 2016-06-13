@@ -14,6 +14,7 @@ method_chain = [
     (er.check_version_number, ['thresholds']),
     (er.check_node_paths,     ['thresholds', 'analyses']),
     (er.check_operators,      ['thresholds']),
+    (er.check_failure_codes,  ['thresholds']),
 
     (qc.build_qc_dict,     ['qc_dict', 'thresholds', 'analyses'])]
 
