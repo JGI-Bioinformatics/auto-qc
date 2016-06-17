@@ -1,5 +1,3 @@
-feature = $(path) behave --stop --no-skipped $(FLAGS)
-
 #################################################
 #
 # Documentation
@@ -11,14 +9,17 @@ doc: $(find man/*.mkd) Gemfile.lock
 
 #################################################
 #
-# Unit tests
+# Unit and Feature tests
 #
 #################################################
 
 autofeature:
-	clear && $(feature)
-	fswatch -o ./auto_qc -o ./test -o ./bin -o ./features \
-		| xargs -n 1 -I {} bash -c "clear && $(feature)"
+	@clear && $(feature) || true
+	@fswatch \
+		--exclude 'pyc' \
+		--one-per-batch	./auto_qc \
+		--one-per-batch ./feature \
+		| xargs -n 1 -I {} bash -c "$(feature)"
 
 feature:
 	@$(feature)
@@ -29,12 +30,14 @@ autotest:
 		--exclude 'pyc' \
 		--one-per-batch	./auto_qc \
 		--one-per-batch ./test \
-		| xargs -n 1 -I {} bash -c "$(autotest)"
+		| xargs -n 1 -I {} bash -c "$(test)"
 
 test:
 	@$(test)
 
-test    = clear && tox
+# Commands for running tests and features
+feature = tox -e feature $(FLAGS)
+test    = clear && tox -e unit
 
 #################################################
 #
