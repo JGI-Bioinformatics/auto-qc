@@ -4,9 +4,6 @@ import sys,os.path
 root = os.path.join(os.path.dirname(__file__), '..')
 sys.path.append(root)
 
-from auto_qc.util.misc import virtual_env
-virtual_env(root)
-
 import argparse
 parser = argparse.ArgumentParser(
            description='Calculates if sample passes based on QC thresholds')
