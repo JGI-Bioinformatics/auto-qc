@@ -10,3 +10,4 @@ man/*
 !man/*.mkd
 Gemfile.lock
 .bundle
+.tox

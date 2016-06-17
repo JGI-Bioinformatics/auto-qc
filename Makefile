@@ -1,5 +1,4 @@
-test    = PYTHONPATH=vendor/python/lib/python2.7/site-packages vendor/python/bin/nosetests --rednose
-feature = PYTHONPATH=vendor/python/lib/python2.7/site-packages vendor/python/bin/behave
+feature = $(path) behave --stop --no-skipped $(FLAGS)
 
 #################################################
 #
@@ -16,21 +15,26 @@ doc: $(find man/*.mkd) Gemfile.lock
 #
 #################################################
 
-
-test: vendor/python
-	$(test)
-
-autotest:
-	clear && $(test) || true
-	fswatch -o ./auto_qc -o ./test | xargs -n 1 -I {} bash -c "clear && $(test)"
-
 autofeature:
 	clear && $(feature)
 	fswatch -o ./auto_qc -o ./test -o ./bin -o ./features \
 		| xargs -n 1 -I {} bash -c "clear && $(feature)"
 
-feature: vendor/python
-	$(feature) --stop --no-skipped $(FLAGS)
+feature:
+	@$(feature)
+
+autotest:
+	@clear && $(test) || true
+	@fswatch \
+		--exclude 'pyc' \
+		--one-per-batch	./auto_qc \
+		--one-per-batch ./test \
+		| xargs -n 1 -I {} bash -c "$(autotest)"
+
+test:
+	@$(test)
+
+test    = clear && tox
 
 #################################################
 #
@@ -38,12 +42,11 @@ feature: vendor/python
 #
 #################################################
 
-bootstrap: Gemfile.lock vendor/python
+bootstrap: Gemfile.lock .tox
 
-vendor/python: requirements.txt
-	mkdir -p log
-	virtualenv $@ 2>&1 > log/virtualenv.txt
-	$@/bin/pip install -r $< 2>&1 > log/pip.txt
+.tox: requirements.txt
+	tox --notest
+	@touch $@
 
 Gemfile.lock: Gemfile
 	mkdir -p log
