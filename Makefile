@@ -1,5 +1,31 @@
 #################################################
 #
+# Build
+#
+#################################################
+
+version := $(shell cat VERSION)
+name    := auto_qc
+dist    := dist/$(name)-$(version).tar.gz
+
+objs = \
+       $(shell find auto_qc) \
+       requirements/default.txt \
+       setup.py \
+       MANIFEST.in \
+       man/auto-qc.1 \
+       tox.ini
+
+build: $(dist)
+
+$(dist): $(objs)
+	tox -e build
+
+clean:
+	rm -f dist/*
+
+#################################################
+#
 # Documentation
 #
 #################################################
@@ -49,7 +75,7 @@ test    = clear && tox -e unit
 
 bootstrap: Gemfile.lock .tox
 
-.tox: requirements.txt
+.tox: requirements/default.txt requirements/development.txt
 	tox --notest
 	@touch $@
 
