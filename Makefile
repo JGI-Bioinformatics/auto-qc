@@ -4,8 +4,10 @@
 #
 #################################################
 
-doc: $(find man/*.mkd) Gemfile.lock
-	bundle exec ronn ./man/auto-qc.1.mkd
+doc: man/auto-qc.1
+
+man/%: man/%.mkd
+	bundle exec ronn $<
 
 #################################################
 #
