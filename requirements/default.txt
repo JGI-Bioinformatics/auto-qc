@@ -1,0 +1,4 @@
+python-termstyle == 0.1.10
+PyYAML           == 3.11
+funcy            == 1.7.1
+fn               == 0.2.13
