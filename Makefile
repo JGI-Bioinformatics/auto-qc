@@ -1,11 +1,34 @@
+version := $(shell cat VERSION)
+name    := auto_qc
+
+HLT=\033[0;34m
+NC=\033[0m
+
+define HELP
+
+Auto QC Version $(version)
+
+The following commands are available for building and testing:
+
+  $(HLT)make bootstrap$(NC)   Installs python and ruby dependencies locally
+  $(HLT)make test$(NC)        Runs all unit tests defined in the test/
+  $(HLT)make feature$(NC)     Runs all feature tests defined in the features/
+  $(HLT)make doc$(NC)         Builds man page and html documentation in doc/
+  $(HLT)make build$(NC)       Builds a python package of auto_qc in dist/
+
+
+endef
+export HELP
+
+help:
+	clear && echo "$$HELP"
+
 #################################################
 #
 # Build
 #
 #################################################
 
-version := $(shell cat VERSION)
-name    := auto_qc
 dist    := dist/$(name)-$(version).tar.gz
 
 objs = \
