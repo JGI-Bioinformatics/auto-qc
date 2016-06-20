@@ -1,4 +1,4 @@
-import auto_qc.util.metadata as meta
+import auto_qc.version as ver
 import funcy
 
 def simple(qc_dict):
@@ -10,6 +10,6 @@ def json(qc_dict):
     del qc_dict['evaluation']
     for node in qc_dict['qc']:
         del node['variables']
-    qc_dict['auto_qc_version'] = meta.version()
+    qc_dict['auto_qc_version'] = ver.__version__
     output = jsn.dumps(qc_dict, indent=4, sort_keys=True)
     return "\n".join(map(lambda x: x.rstrip(), output.split("\n")))

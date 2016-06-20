@@ -1,4 +1,4 @@
-version := $(shell cat VERSION)
+version := $(shell python setup.py --version)
 name    := auto_qc
 
 HLT=\033[0;34m
