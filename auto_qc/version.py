@@ -1,6 +1,4 @@
-def fetch_version():
-    import os, pkg_resources
-    path = os.path.join('..', 'VERSION')
-    return pkg_resources.resource_string(__name__, path)
+__version__ = '2.0.0'
 
-__version__ = fetch_version()
+def major_version():
+    return __version__.split('.')[0]

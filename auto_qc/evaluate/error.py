@@ -4,7 +4,7 @@ from fn import F, _
 
 import funcy
 
-import auto_qc.util.metadata   as meta
+import auto_qc.version         as ver
 import auto_qc.variable        as var
 import auto_qc.node            as nd
 import auto_qc.util.functional as fn
@@ -27,7 +27,7 @@ def generator_error_string(f, xs):
     return st.join(map(f, xs), "\n")
 
 def check_version_number(threshold, status):
-    version =  meta.major_version()
+    version =  ver.major_version()
     threshold_version = str(status[threshold]['metadata']['version']['auto-qc'])
 
     if  version != threshold_version.split('.')[0]:
