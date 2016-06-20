@@ -1,5 +1,5 @@
-auto-qc(1) -- automated passing and failing of libraries
-========================================================
+auto-qc(1) -- A command line tool for automated quality control
+==============================================================
 
 ## SYNOPSIS
 
@@ -9,36 +9,45 @@ auto-qc(1) -- automated passing and failing of libraries
 
   * `-a`, `--analysis-file` <ANALYSIS_FILE>:
 
-    The path to the file containing the library metrics used for quality
-    control.
+    The path to the file containing input data to be checked for quality.
 
   * `-t`, `--threshold-file` <THRESHOLD_FILE>:
 
     The path to the file containing the pass/fail thresholds for quality
-    control of the library.
+    control.
 
-  * `-x`, `--text-output`:
+  * `-j`, `--json-output`:
 
-    Generate human readable output of the quality control test.
+    Generate JSON output describing each of the quality control tests.
 
 ## SYNTAX
 
 ### ANALYSIS FILE
 
-The analysis file should contain a YAML dictionary with the keys `metadata` and
-`data`. The `data` field is a freeform dictionary that can contain any
-subdictionary with any fields. There is no restriction on the dictionary
-structure or keys. Arrays are however not permitted. The `metadata` field has
-one mandatory field `version`. The version number should match the version
-number of auto-qc according to [semantic versioning][semver]. An example
-analysis file is given below.
+The analysis file is a YAML dictionary with the keys `metadata` and `data`.
+Both these `metadata` and `data` fields are freeform dictionaries that can
+contain any subdictionary with any fields.
+
+The `metadata` field contains an additional data that is required to be stored
+about the QC data. The one mandatory field is required under `metadata` is
+`version/auto-qc`. The version number should match the version number of
+auto-qc being used. This version number is checked by auto-qc to prevent
+incompatible versions being used. [Semantic versioning][semver] is followed
+when defining version numbers for auto-qc.
 
 [semver]: http://semver.org
+
+The `data` field is used to store all the metrics values used to make the QC
+decision. There is no restriction on the dictionary structure or keys. Arrays
+are however not permitted.
+
+An example analysis file is given below.
 
 ~~~ YAML
 ---
 metadata:
-  version: 2.0.0
+  auto-qc:
+    version: 2.0.0
 data:
   bases:
     contaminants: 1392000
@@ -63,18 +72,35 @@ are defined as:
     is checked by auto-qc to determine if the QC threshold syntax matches that
     of the version of auto-qc according to [semantic versioning][semver].
 
-  * **thresholds** - This field should contain a list of s-expressions. These
-    s-expressions are lists defining the QC thresholds. The format of each
-    threshold is:
+  * **thresholds** - This field should contain an array of
+    [s-expressions][sexp]. Each s-expression is a list defining a single QC
+    threshold. The format of each threshold is:
 
-    * **doc string** - (*optional*) A dictionary with documentation fields for
-      the associated QC threshold. The allowed fields are: `name` `fail_msg`
-      and `pass_msg`. The values of `fail_msg` and `pass_msg` are return in the
-      standard out when the threshold fails. The `name` field is used to
-      describe the QC tests.
+    * **metadata dictionary** - A dictionary with metadata fields for the QC
+      threshold. The required fields are: `name`, `fail_msg` and `pass_msg`,
+      with an optional `tags' field. The description of each of these fields
+      are:
+
+        * **name**: A unique name describing the QC entry
+
+        * **fail_msg**: The message to return when this entry QC entry fails.
+          Python string interpolation can be used to customise this message
+          with values from the analysis file.
+
+        * **pass_msg**: The message to return when this entry QC entry pass.
+          Python string interpolation may also be used to customise this
+          message with values from the analysis file.
+
+        * **fail_code**: An ID for the kind of failure identified if this entry
+          does not pass QC. The list of failure codes is returned in the JSON
+          output with the `--json-output` flag.
+
+        * **tags**: A optional list of tags for the QC entry. These tags are
+          returned in the JSON output and can be used to organise the QC
+          entries.
 
     * **operator** - An operator to test the QC value. This may be mathematical
-      comparison operators such as '>' or Boolean operators such as 'AND'. The
+      comparison operators such as 'greater_than' or Boolean operators such as 'AND'. The
       list of allowed operators is described in the section below.
 
     * **analysis value** - The value from the analysis file that should be
@@ -85,17 +111,25 @@ are defined as:
     * **literal value** - A literal value that to compare with the reference
       value.
 
+[sexp]: https://en.wikipedia.org/wiki/S-expression
+
 An example of a simple threshold file with two QC tests is given below. In this
 example if both QC evaluations return TRUE then this will pass. If either
 return FALSE then this will fail QC.
 
 ~~~ YAML
 metadata:
-  version:
-    auto-qc: 1.0.0
+ version:
+   auto-qc: 2.0.0
 thresholds:
-- ['<', :metrics/percent_contamination, 2]
-- ['<', :reads/contaminants, 1e6]
+- - name: example test
+    pass_msg: No obvious contamination detected.
+    fail_msg: Contamination detected at {metrics/percent_contamination}%
+    fail_code: ERR00001
+    tags: ["contamination"]
+  - greater_than
+  - :metrics/percent_contamination
+  - 2
 ~~~
 
 A more complex example uses `NOT` and `AND` to create a QC threshold that
@@ -104,50 +138,32 @@ use arbitrarily to create more complex QC tests.
 
 ~~~ YAML
 metadata:
-  version:
-    auto-qc: 1.0.0
+ version:
+   auto-qc: 2.0.0
 thresholds:
-- NOT
-- - AND
-  - - ['>', :metrics/percent_contamination, 2]
-    - ['>', :reads/contaminants, 1e6]
-~~~
-
-A final example uses the optional *doc string* dictionary at the start of the
-expression. This names the QC check an provides fail and pass messages that
-provide more descriptive output to the user when using auto-qc. Values inside
-`{}` braces are interpolated with their value in the QC threshold file.
-
-~~~ YAML
-metadata:
-  version:
-    auto-qc: 1.0.0
-thresholds:
-- name: Contamination test
-  fail_msg: |
-    Contains {metrics/percent_contamination}% contaminants and
-    {reads/contaminants} contaminating reads indicating a high degree of
-    sequencing contamination.
-  pass_msg: Passes contamination QC check.
-- NOT
-- - AND
-  - - ['>', :metrics/percent_contamination, 2]
-    - ['>', :reads/contaminants, 1e6]
+- - name: example test
+    pass_msg: No obvious contamination detected.
+    fail_msg: Contamination detected at {metrics/percent_contamination}% with {reads/contaminants} reads.
+    fail_code: ERR00001
+    tags: ["contamination"]
+  - AND
+  - - [less_than :metrics/percent_contamination, 2]
+    - [less_than, :reads/contaminants, 1e6]
 ~~~
 
 ### AVAILABLE OPERATORS
 
-**==** / **!=** - Test whether two values are equal or not.
+**equals** / **not_equals** - Test whether two values are equal or not.
 
-    - ==
-    - ':run_metadata/protocol
+    - equals
+    - :run_metadata/protocol
     - Low Input DNA
 
-**>** / **<** / **>=** / **<=** - Test whether one numeric value is
-greater/smaller than another.
+**greater_than** / **less_than** / **greater_equal_than** / **less_equal_than** - Test whether one
+numeric value is greater/smaller than another.
 
-    - '>'
-    - ':human_contamination/metrics/percent_contamination
+    - greater_than
+    - :human_contamination/metrics/percent_contamination
     - 5
 
 **and** - Test whether two values are both true. The example here illustrates
@@ -157,11 +173,11 @@ operator are themselves thresholds.
     - and
     -
       - greater_than
-      - ':cat_contamination/metrics/percent_contamination'
+      - :cat_contamination/metrics/percent_contamination
       - 5
     -
       - greater_than
-      - ':dog_contamination/metrics/percent_contamination'
+      - :dog_contamination/metrics/percent_contamination
       - 5
 
 **or** - Test whether any values are true.
@@ -169,23 +185,23 @@ operator are themselves thresholds.
     - or
     -
       - greater_than
-      - ':cat_contamination/metrics/percent_contamination'
+      - :cat_contamination/metrics/percent_contamination
       - 5
     -
       - greater_than
-      - ':dog_contamination/metrics/percent_contamination'
+      - :dog_contamination/metrics/percent_contamination
       - 5
 
-**not** - Flips the boolean value
+**not** - Flips the Boolean value
 
       - not
-      - :cat_contamination/is_contaminated'
+      - :cat_contamination/is_contaminated
 
-**in** / **not_in** - Test whether a value is in a list of values. Note that
-the list of values must begin with the **list** operator.
+**is_in** / **is_not_in** - Test whether a value is in a list of values. Note
+that the list of values must begin with the **list** operator.
 
-    - in
-    - ':cat_contamination/name_of_cat'
+    - is_in
+    - :cat_contamination/name_of_cat
     -
       - list
       - "Chase No Face"
@@ -198,10 +214,11 @@ the list of values must begin with the **list** operator.
 
 ## AUTHOR
 
-Michael Barton <mbarton@lbl.gov>
+Michael Barton <mail@michaelbarton.me.uk>
 
 ## HISTORY
 
+* 2.0.0 - Mon 20 Jun 2016
 * 1.1.0 - Mon 27 Apr 2015
 * 1.0.0 - Fri 15 Aug 2014
 * 0.2.1 - Tue 20 May 2014
