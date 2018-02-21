@@ -1,5 +1,5 @@
 import behave                         as bh
-import more_assertive_nose.assertions as asrt
+import behave_command_line.assertions as asrt
 import json                           as json
 
 @bh.then(u'the JSON-format standard {stream} should equal')
