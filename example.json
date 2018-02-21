@@ -1,0 +1,11 @@
+{
+    "pass": true,
+    "qc": [
+        {
+            "message": "<msg>",
+            "name": "example test"
+	    "pass" : true
+        }
+    ],
+    "version": "2.0.0"
+}

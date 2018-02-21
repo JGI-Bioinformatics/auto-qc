@@ -9,24 +9,22 @@ method_chain = [
     (fs.check_for_file, ['analysis_file']),
     (fs.check_for_file, ['threshold_file']),
     (fs.read_yaml_file, ['threshold_file', 'thresholds']),
-    (er.check_version_number, ['thresholds']),
+    (fs.read_yaml_file, ['analysis_file',  'analyses']),
 
-    (fs.read_yaml_file,    ['analysis_file',  'analyses']),
-    (er.check_node_paths,  ['thresholds', 'analyses']),
-    (er.check_operators,   ['thresholds']),
-    (qc.evaluate,          ['evaluated_nodes', 'thresholds', 'analyses']),
-    (qc.apply_thresholds,  ['node_results', 'evaluated_nodes']),
-    (qc.build_qc_dict,     ['qc_dict', 'thresholds', 'evaluated_nodes', 'node_results'])
-        ]
+    (er.check_version_number, ['thresholds']),
+    (er.check_node_paths,     ['thresholds', 'analyses']),
+    (er.check_operators,      ['thresholds']),
+    (er.check_failure_codes,  ['thresholds']),
+
+    (qc.build_qc_dict,     ['qc_dict', 'thresholds', 'analyses'])]
 
 def run(args):
     status = flow.thread_status(method_chain, args)
+
     flow.exit_if_error(status)
 
-    if args['yaml']:
-        f = prn.yaml
-    elif args['text']:
-        f = prn.text
+    if args['json']:
+        f = prn.json
     else:
         f = prn.simple
 
